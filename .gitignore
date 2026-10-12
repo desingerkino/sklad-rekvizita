@@ -1,0 +1,21 @@
+# окружение и сборка
+.venv/
+venv/
+__pycache__/
+*.pyc
+build/work/
+dist/
+*.egg-info/
+# данные программы — никогда не в репозиторий
+*.db
+*.sqlite
+*.sqlite3
+*.key
+*.bak
+backups/
+data/
+# модель поиска по фото (скачивается программой)
+assets/models/
+# системное
+.DS_Store
+Thumbs.db
