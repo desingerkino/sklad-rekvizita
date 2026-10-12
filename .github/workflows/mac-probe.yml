@@ -1,0 +1,33 @@
+name: Mac probe
+on:
+  push:
+    branches: [mac-dmg]
+    paths: [".github/workflows/mac-probe.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Wheels for macOS 10.15 x86_64
+        run: |
+          mkdir -p out; : > out/probe.txt
+          for pyv in 3.10 3.11; do
+            abi=cp${pyv/./}
+            for spec in "PySide6==6.4.3" "PySide6==6.5.3" "PySide6==6.7.3" "onnxruntime>=1.17,<2" "onnxruntime==1.16.3" "numpy>=1.26,<2" "numpy<2" "Pillow>=10.4.0,<12" "pillow-heif>=0.16.0" "cryptography>=43.0.1" "argon2-cffi>=23.1.0" "reportlab>=4.2.2,<5" "openpyxl>=3.1.5,<4" "pyinstaller>=6.10.0"; do
+              echo "== py$pyv $spec" >> out/probe.txt
+              rm -rf /tmp/w; pip download --no-deps --only-binary=:all: --platform macosx_10_15_x86_64 --platform macosx_10_9_x86_64 --platform macosx_10_10_x86_64 --platform macosx_10_12_x86_64 --platform macosx_10_13_x86_64 --platform macosx_10_14_x86_64 --platform macosx_10_9_universal2 --platform macosx_10_15_universal2 --platform macosx_10_14_universal2 --platform macosx_10_13_universal2 --platform macosx_10_12_universal2 --python-version $pyv --implementation cp --abi $abi --abi abi3 --abi none -d /tmp/w "$spec" >> out/probe.txt 2>&1 || echo "FAIL" >> out/probe.txt
+              ls /tmp/w 2>/dev/null >> out/probe.txt
+            done
+          done
+          cat out/probe.txt | grep -v "^  \|Collecting\|Downloading\|Saved\|Successfully"
+      - name: Publish
+        if: always()
+        run: |
+          git config user.name ci; git config user.email ci@example.com
+          d=out_pub/probe-${GITHUB_RUN_NUMBER}; mkdir -p $d; cp out/* $d/
+          git fetch origin ci-renders; git checkout -f ci-renders; mkdir -p probe-${GITHUB_RUN_NUMBER}; cp $d/* probe-${GITHUB_RUN_NUMBER}/; git add probe-${GITHUB_RUN_NUMBER}; git commit -qm "probe ${GITHUB_RUN_NUMBER}"; git push origin ci-renders
