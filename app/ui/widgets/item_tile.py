@@ -42,7 +42,7 @@ class ItemTile(Card):
         name = QLabel(item["name"])
         name.setWordWrap(True)
         name.setObjectName("TileTitle")
-        name.setFixedHeight(max(44, 2 * name.fontMetrics().lineSpacing() + 10))   # ровно две строки: плитки в ряду одной высоты
+        name.setFixedHeight(52)                # длинное название не растягивает плитку
         name.setAlignment(Qt.AlignTop)
         name.setToolTip(item["name"])
         self.body.addWidget(name)

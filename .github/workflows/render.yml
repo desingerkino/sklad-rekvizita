@@ -37,6 +37,7 @@ jobs:
         timeout-minutes: 20
         shell: bash
         run: |
+          set +e      # проваленный набор не должен прерывать цикл: иначе остальные не запускаются
           mkdir -p out
           : > out/tests_summary.txt
           for f in tests/test_*.py tests/check_imports.py; do
