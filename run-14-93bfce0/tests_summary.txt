@@ -1,0 +1,15 @@
+=== tests.test_bigdata ===
+tests.test_bigdata exit=0 ok=41 fail=0
+=== tests.test_brand ===
+tests.test_brand exit=0 ok=19 fail=0
+=== tests.test_core ===
+tests.test_core exit=0 ok=71 fail=0
+=== tests.test_durability ===
+tests.test_durability exit=0 ok=65 fail=0
+=== tests.test_migration ===
+tests.test_migration exit=0 ok=18 fail=0
+=== tests.test_qa ===
+tests.test_qa exit=0 ok=267 fail=0
+=== tests.test_security ===
+tests.test_security exit=0 ok=80 fail=0
+=== tests.test_ui_scroll ===
