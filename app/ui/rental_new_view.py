@@ -28,6 +28,7 @@ from ..version import RENTAL_PERIOD_DAYS
 from .errors import show_error
 from .widgets.common import (Card, DatePicker, PhotoLabel, cell, icon, muted,
                              section_title, title_label)
+from .theme import Space
 from .widgets.scan_input import ScanInput
 from .widgets.suggest import SuggestList
 
