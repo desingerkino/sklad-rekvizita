@@ -78,7 +78,7 @@ class CatalogView(QWidget):
 
         self.new_btn = QPushButton("  Добавить реквизит")
         # главное действие экрана одно — «Новая аренда» в верхней панели
-        self.new_btn.setIcon(icon("plus", "white"))
+        self.new_btn.setIcon(icon("plus"))
         self.new_btn.setIconSize(QSize(18, 18))
         self.new_btn.setMinimumHeight(46)
         self.new_btn.setCursor(Qt.PointingHandCursor)
