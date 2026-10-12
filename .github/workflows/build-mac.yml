@@ -1,0 +1,139 @@
+name: Build macOS
+
+# Сборка .app и .dmg для macOS 10.15+ (Intel). Подпись: только ad-hoc (Apple Developer ID нет).
+# Готовый dmg кладётся в ЧЕРНОВИК релиза (виден только владельцу репозитория),
+# журналы проверок — в ветку ci-renders.
+on:
+  push:
+    branches: [mac-dmg]
+  pull_request:
+    paths: ["requirements-mac.txt", "build/sklad_mac.spec", ".github/workflows/build-mac.yml", "tools/make_icns.py", "tools/check_macho_minos.py", "app/paths.py"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  MACOSX_DEPLOYMENT_TARGET: "10.15"
+  PYTHON_PKG: https://www.python.org/ftp/python/3.11.9/python-3.11.9-macos11.pkg
+  QT_QPA_PLATFORM: offscreen
+  PYTHONUTF8: "1"
+
+jobs:
+  build:
+    runs-on: macos-15-intel
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python 3.11 с python.org (универсальный, рассчитан на macOS 10.9+)
+        run: |
+          mkdir -p out
+          curl -fsSL "$PYTHON_PKG" -o /tmp/python.pkg
+          sudo installer -pkg /tmp/python.pkg -target /
+          PY=/Library/Frameworks/Python.framework/Versions/3.11/bin/python3.11
+          $PY --version
+          $PY -m venv .venv
+          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+          uname -m | tee out/arch.txt
+          sw_vers | tee -a out/arch.txt
+
+      - name: Зависимости
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-mac.txt -r requirements-dev.txt 2>&1 | tee out/pip.log | tail -5
+          pip list 2>&1 | tee out/pip_list.txt | grep -i "pyside\|shiboken\|onnx\|numpy\|pillow\|crypto\|pyinstaller"
+
+      - name: Проверка импортов и запуск главного окна без показа
+        run: |
+          python tests/check_imports.py 2>&1 | tee out/check_imports.log | tail -5
+          python -c "import app.ui.main_window as m; print('ok', m.MainWindow)" 2>&1 | tee out/smoke.log
+
+      - name: Тесты
+        continue-on-error: true
+        timeout-minutes: 25
+        run: |
+          : > out/tests_summary.txt
+          for f in tests/test_*.py tests/check_imports.py; do
+            mod=$(echo "${f%.py}" | tr '/' '.')
+            b=$(basename ${f%.py})
+            python -m "$mod" > "out/$b.log" 2>&1
+            code=$?
+            ok=$(grep -c "^  ok " "out/$b.log" || true)
+            fail=$(grep -c "^  FAIL" "out/$b.log" || true)
+            echo "$mod exit=$code ok=$ok fail=$fail" | tee -a out/tests_summary.txt
+          done
+
+      - name: Иконка .icns
+        run: |
+          python -m tools.make_icns
+          iconutil -c icns assets/app.iconset -o assets/app.icns
+          rm -rf assets/app.iconset
+          ls -l assets/app.icns
+
+      - name: Сборка .app (PyInstaller)
+        run: |
+          pyinstaller build/sklad_mac.spec --noconfirm 2>&1 | tee out/pyinstaller.log | tail -15
+          test -d dist/SkladRekvizita.app
+          du -sh dist/SkladRekvizita.app | tee -a out/sizes.txt
+
+      - name: Совместимость с macOS 10.15 (минимальная версия в каждом файле)
+        run: python tools/check_macho_minos.py dist/SkladRekvizita.app 10.15 2>&1 | tee out/minos.txt
+
+      - name: Подпись ad-hoc
+        run: |
+          codesign --force --deep -s - dist/SkladRekvizita.app 2>&1 | tee out/codesign.txt
+          codesign -dv dist/SkladRekvizita.app 2>&1 | tee -a out/codesign.txt
+
+      - name: Запуск собранного приложения (должно стартовать и не упасть за 15 секунд)
+        run: |
+          export SKLAD_DATA_DIR="$(mktemp -d)" SKLAD_KEY_DIR="$(mktemp -d)"
+          set +e
+          timeout 15 dist/SkladRekvizita.app/Contents/MacOS/SkladRekvizita > out/launch.log 2>&1
+          code=$?
+          echo "exit=$code (124 = работало до таймаута, это успех)" | tee -a out/launch.log
+          ls -R "$SKLAD_DATA_DIR" | head -20 | tee -a out/launch.log
+          [ "$code" = 124 ]
+
+      - name: Образ .dmg
+        run: |
+          VERSION=$(python -c "from app.version import VERSION; print(VERSION)")
+          DMG="SkladRekvizita-${VERSION}-mac-x86_64.dmg"
+          rm -rf stage && mkdir stage
+          cp -R dist/SkladRekvizita.app stage/
+          ln -s /Applications stage/Applications
+          hdiutil create -volname "Склад Реквизита ${VERSION}" -srcfolder stage -ov -format UDZO "$DMG"
+          hdiutil verify "$DMG" 2>&1 | tail -2
+          MP=$(mktemp -d)
+          hdiutil attach "$DMG" -mountpoint "$MP" -nobrowse -quiet
+          ls "$MP" | tee out/dmg_contents.txt
+          test -d "$MP/SkladRekvizita.app"
+          hdiutil detach "$MP" -quiet
+          ls -l "$DMG" | tee -a out/sizes.txt
+          echo "DMG=$DMG" >> "$GITHUB_ENV"
+
+      - name: Артефакт
+        uses: actions/upload-artifact@v4
+        with:
+          name: SkladRekvizita-mac-dmg
+          path: ${{ env.DMG }}
+
+      - name: Черновик релиза с dmg
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="mac-build-${GITHUB_RUN_NUMBER}"
+          gh release create "$TAG" "$DMG" --draft --prerelease --target "$GITHUB_SHA" \
+            --title "macOS (Intel, 10.15+) — сборка ${GITHUB_RUN_NUMBER}, не подписана" \
+            --notes "Неподписанная сборка для проверки. Первый запуск: правый клик по программе → «Открыть» → «Открыть». Коммит ${GITHUB_SHA::7}." 2>&1 | tee out/release.txt
+
+      - name: Журналы в ветку ci-renders
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          git config user.name ci; git config user.email ci@example.com
+          d="mac-run-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
+          mkdir -p /tmp/pub/$d && cp -R out/. /tmp/pub/$d/
+          git fetch origin ci-renders && git checkout -f ci-renders
+          mkdir -p $d && cp -R /tmp/pub/$d/. $d/
+          git add $d && git commit -qm "mac $d" && git push origin ci-renders
