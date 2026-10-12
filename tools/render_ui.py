@@ -121,7 +121,17 @@ def main() -> int:
 
     data = seed(args.items)
 
+    # Модальные окна в рендере недопустимы: они блокируют цикл событий навсегда.
+    from PySide6.QtWidgets import QDialog, QMessageBox
+    QDialog.exec = lambda self, *a, **k: 0
+    QMessageBox.exec = lambda self, *a, **k: 0
+    QMessageBox.information = staticmethod(lambda *a, **k: QMessageBox.Ok)
+    QMessageBox.warning = staticmethod(lambda *a, **k: QMessageBox.Ok)
+    QMessageBox.critical = staticmethod(lambda *a, **k: QMessageBox.Ok)
+    QMessageBox.question = staticmethod(lambda *a, **k: QMessageBox.No)
+
     from app.ui.main_window import MENU, MainWindow
+    MainWindow._startup_tasks = lambda self: None     # стартовые уведомления и копии не нужны
     window = MainWindow()
     window.show()
 

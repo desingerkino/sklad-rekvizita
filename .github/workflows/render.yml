@@ -34,6 +34,7 @@ jobs:
         run: python tools/check_contrast.py | tee contrast.txt || true
 
       - name: Tests
+        timeout-minutes: 20
         shell: bash
         run: |
           mkdir -p out
@@ -50,13 +51,15 @@ jobs:
         continue-on-error: true
 
       - name: Render screens
+        timeout-minutes: 10
         shell: bash
         run: |
           mkdir -p out/renders
-          python -m tools.render_ui --out out/renders --scale 1.0 || true
-          python -m tools.render_ui --out out/renders --scale 1.5 || true
+          timeout 240 python -u -m tools.render_ui --out out/renders --scale 1.0 || true
+          timeout 240 python -u -m tools.render_ui --out out/renders --scale 1.5 || true
 
       - name: Publish results to ci-renders branch
+        if: always()
         shell: bash
         run: |
           cp contrast.txt out/ 2>/dev/null || true
