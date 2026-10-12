@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "D:\a\sklad-rekvizita\sklad-rekvizita\tools\render_ui.py", line 213, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "D:\a\sklad-rekvizita\sklad-rekvizita\tools\render_ui.py", line 142, in main
+    from app.ui.main_window import MENU, MainWindow
+  File "D:\a\sklad-rekvizita\sklad-rekvizita\app\ui\main_window.py", line 40, in <module>
+    from .rental_hub import NewRentalHub
+  File "D:\a\sklad-rekvizita\sklad-rekvizita\app\ui\rental_hub.py", line 25, in <module>
+    from .rental_new_view import NewRentalView
+  File "D:\a\sklad-rekvizita\sklad-rekvizita\app\ui\rental_new_view.py", line 40, in <module>
+    class ResponsiveBoxes(QWidget):
+  File "D:\a\sklad-rekvizita\sklad-rekvizita\app\ui\rental_new_view.py", line 48, in ResponsiveBoxes
+    def __init__(self, parent=None, spacing: int = Space.LG):
+                                                   ^^^^^
+NameError: name 'Space' is not defined
+exit=2
