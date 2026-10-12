@@ -1,0 +1,1 @@
+282M	dist/SkladRekvizita.app

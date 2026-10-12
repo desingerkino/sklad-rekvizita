@@ -1,0 +1,2 @@
+/Users/runner/work/_temp/6d5be587-0f8a-4bcb-87ff-1d1fa6ff98c1.sh: line 3: timeout: command not found
+exit=127 (124 = работало до таймаута, это успех)

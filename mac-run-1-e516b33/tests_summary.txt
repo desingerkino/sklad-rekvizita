@@ -1,0 +1,7 @@
+tests.test_bigdata exit=0 ok=41 fail=0
+tests.test_brand exit=0 ok=19 fail=0
+tests.test_core exit=0 ok=71 fail=0
+tests.test_durability exit=0 ok=65 fail=0
+tests.test_migration exit=0 ok=18 fail=0
+tests.test_qa exit=0 ok=267 fail=0
+tests.test_security exit=0 ok=81 fail=0

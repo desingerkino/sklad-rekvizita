@@ -1,0 +1,3 @@
+  НОВЕЕ 10.15: 15.0  Contents/Frameworks/libcrypto.3.dylib
+  НОВЕЕ 10.15: 15.0  Contents/Frameworks/ossl-modules/legacy.dylib
+Mach-O файлов: 164, максимальная требуемая macOS: 15.0, превышений: 2
