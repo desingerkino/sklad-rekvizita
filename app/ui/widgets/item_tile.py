@@ -41,7 +41,7 @@ class ItemTile(Card):
 
         name = QLabel(item["name"])
         name.setWordWrap(True)
-        name.setStyleSheet("font-weight: 600;")
+        name.setObjectName("TileTitle")
         name.setFixedHeight(52)                # длинное название не растягивает плитку
         name.setAlignment(Qt.AlignTop)
         name.setToolTip(item["name"])
@@ -63,7 +63,7 @@ class ItemTile(Card):
         self.body.addLayout(row)
 
         price = QLabel(f"{money_plain(item['rental_price'])} ₽")
-        price.setStyleSheet(f"font-weight: 700; color: {Color.TEXT};")
+        price.setObjectName("TilePrice")
         period = QLabel(f"за {RENTAL_PERIOD_DAYS} дн.")
         period.setObjectName("Hint")
         price_row = QHBoxLayout()
@@ -78,6 +78,9 @@ class ItemTile(Card):
         self.body.addLayout(price_row)
 
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # рамка и подсветка задаются в theme.py по свойствам: без своего стиля
+        # на каждой плитке (в каталоге их сотни)
+        self.setProperty("tile", "true")
         self._selected = False
         self._apply_style()
 
@@ -86,22 +89,9 @@ class ItemTile(Card):
         self._apply_style()
 
     def _apply_style(self) -> None:
-        border = Color.PRIMARY if self._selected else Color.BORDER
-        background = Color.PRIMARY_SOFT if self._selected else Color.SURFACE
-        self.setStyleSheet(
-            f"#Card {{ background: {background}; border: 1px solid {border};"
-            f" border-radius: 14px; }}")
-
-    def enterEvent(self, event):
-        if not self._selected:
-            self.setStyleSheet(
-                f"#Card {{ background: {Color.SURFACE}; border: 1px solid {Color.BORDER_STRONG};"
-                f" border-radius: 14px; }}")
-        super().enterEvent(event)
-
-    def leaveEvent(self, event):
-        self._apply_style()
-        super().leaveEvent(event)
+        self.setProperty("selected", "true" if self._selected else "false")
+        self.style().unpolish(self)
+        self.style().polish(self)
 
     def mousePressEvent(self, event):
         self.clicked.emit(self.item_id)

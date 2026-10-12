@@ -176,7 +176,8 @@ class CatalogView(QWidget):
         self.empty_label.setVisible(False)
         results_layout.addWidget(self.empty_label)
 
-        actions = QHBoxLayout()
+        # FlowLayout: при нехватке ширины кнопки переносятся, а не обрезаются
+        actions = FlowLayout(spacing=Space.SM)
         self.open_btn = QPushButton("  Открыть карточку")
         self.open_btn.setIcon(icon("eye"))
         self.open_btn.setIconSize(QSize(18, 18))
@@ -209,7 +210,6 @@ class CatalogView(QWidget):
             "подпапки станут категориями, имена файлов — названиями")
         self.import_btn.clicked.connect(self._import_from_folder)
         actions.addWidget(self.import_btn)
-        actions.addStretch()
         results_layout.addLayout(actions)
 
         splitter.addWidget(results)
