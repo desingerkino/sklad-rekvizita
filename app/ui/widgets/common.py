@@ -261,6 +261,7 @@ def make_table(headers: list[str], stretch_column: int = 1) -> QTableWidget:
     table.verticalHeader().setDefaultSectionSize(46)
     table.horizontalHeader().setStretchLastSection(False)
     table.horizontalHeader().setHighlightSections(False)
+    table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft | Qt.AlignVCenter)
     table.setFrameShape(QTableWidget.NoFrame)
     if 0 <= stretch_column < len(headers):
         table.horizontalHeader().setSectionResizeMode(stretch_column, QHeaderView.Stretch)

@@ -7,7 +7,7 @@ from typing import Optional
 from datetime import date
 
 from PySide6.QtCore import Qt, QTimer, Signal
-from PySide6.QtWidgets import (QComboBox, QDoubleSpinBox, QFormLayout, QGroupBox,
+from PySide6.QtWidgets import (QComboBox, QDoubleSpinBox, QFormLayout, QGridLayout, QGroupBox,
                                QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMessageBox,
                                QPushButton, QSpinBox, QTableWidget, QTableWidgetItem,
                                QVBoxLayout, QWidget, QInputDialog)
@@ -35,6 +35,68 @@ from .widgets.suggest import SuggestList
 # и без явной высоты форма выглядит сплюснутой.
 FIELD_HEIGHT = 38
 FORM_BOX_WIDTH = 420
+
+
+class ResponsiveBoxes(QWidget):
+    """Блоки формы в один ряд, а если ширины не хватает — в два ряда или в столбик.
+
+    Раньше у блоков был жёсткий минимум 420 px, меньше своего содержимого, и поля
+    наезжали друг на друга. Теперь минимум задаёт само содержимое, а лишний блок
+    переносится вниз.
+    """
+
+    def __init__(self, parent=None, spacing: int = Space.LG):
+        super().__init__(parent)
+        self._grid = QGridLayout(self)
+        self._grid.setContentsMargins(0, 0, 0, 0)
+        self._grid.setSpacing(spacing)
+        self._spacing = spacing
+        self._boxes: list[tuple[QWidget, int]] = []
+        self._mode = ""
+
+    def add_box(self, box: QWidget, stretch: int = 1) -> None:
+        self._boxes.append((box, stretch))
+        self._relayout(self.width(), force=True)
+
+    def _need(self, boxes) -> int:
+        return (sum(b.minimumSizeHint().width() for b, _ in boxes)
+                + self._spacing * max(0, len(boxes) - 1))
+
+    def _relayout(self, width: int, force: bool = False) -> None:
+        if not self._boxes:
+            return
+        boxes = self._boxes
+        if width <= 0 or width >= self._need(boxes):
+            mode = "row"
+        elif width >= self._need(boxes[:2]):
+            mode = "two"
+        else:
+            mode = "column"
+        if mode == self._mode and not force:
+            return
+        self._mode = mode
+        while self._grid.count():
+            self._grid.takeAt(0)
+        for column in range(4):
+            self._grid.setColumnStretch(column, 0)
+        for index, (box, stretch) in enumerate(boxes):
+            if mode == "row":
+                self._grid.addWidget(box, 0, index)
+                self._grid.setColumnStretch(index, stretch)
+            elif mode == "two":
+                if index < 2:
+                    self._grid.addWidget(box, 0, index)
+                    self._grid.setColumnStretch(index, 1)
+                else:
+                    self._grid.addWidget(box, 1, 0, 1, 2)
+            else:
+                self._grid.addWidget(box, index, 0)
+                self._grid.setColumnStretch(0, 1)
+        self.updateGeometry()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._relayout(event.size().width())
 
 COLUMNS = ["Инв. №", "Наименование", "Описание", "Примечание к аренде", "Кол-во",
            f"Цена за {RENTAL_PERIOD_DAYS} дн.", "Оценочная стоимость", "Сумма", ""]
@@ -92,10 +154,9 @@ class NewRentalView(QWidget):
             "Досрочный возврат стоимость периода не уменьшает; не возвращённые к концу периода "
             "позиции автоматически пролонгируются."))
 
-        top = QHBoxLayout()
+        top = ResponsiveBoxes()
 
         party = QGroupBox("Кто берёт")
-        party.setMinimumWidth(FORM_BOX_WIDTH)
         party_form = QFormLayout(party)
         party_form.setSpacing(Space.MD)
         party_form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -104,7 +165,7 @@ class NewRentalView(QWidget):
         self.client_edit = QLineEdit()
         self.client_edit.setPlaceholderText("Начните вводить фамилию…")
         self.client_edit.setMinimumHeight(FIELD_HEIGHT)
-        self.client_edit.setMinimumWidth(260)
+        self.client_edit.setMinimumWidth(160)
         self.client_edit.textEdited.connect(self._client_text_changed)
 
         # Подсказки по похожим именам: с телефоном и документом, чтобы двух
@@ -138,17 +199,16 @@ class NewRentalView(QWidget):
         party_form.addRow("Физ. лицо*:", client_widget)
         party_form.addRow("", self.client_suggest)      # подсказки прямо под полем
         party_form.addRow("Данные:", self.client_info)
-        top.addWidget(party, 1)
+        top.add_box(party, 1)
 
         work = QGroupBox("Продакшен и проект")
-        work.setMinimumWidth(FORM_BOX_WIDTH)
         work_form = QFormLayout(work)
         work_form.setSpacing(Space.MD)
         work_form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
         work_form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
         self.production = QComboBox()
         self.production.setMinimumHeight(FIELD_HEIGHT)
-        self.production.setMinimumWidth(220)
+        self.production.setMinimumWidth(150)
         self.production.currentIndexChanged.connect(self._production_changed)
         prod_row = QHBoxLayout()
         prod_row.addWidget(self.production, 1)
@@ -161,7 +221,7 @@ class NewRentalView(QWidget):
 
         self.project = QComboBox()
         self.project.setMinimumHeight(FIELD_HEIGHT)
-        self.project.setMinimumWidth(220)
+        self.project.setMinimumWidth(150)
         proj_row = QHBoxLayout()
         proj_row.addWidget(self.project, 1)
         new_proj = QPushButton("Новый…")
@@ -173,23 +233,22 @@ class NewRentalView(QWidget):
 
         self.payment = QComboBox()
         self.payment.setMinimumHeight(FIELD_HEIGHT)
-        self.payment.setMinimumWidth(220)
+        self.payment.setMinimumWidth(150)
         self.payment.addItem("Наличные", "cash")
         self.payment.addItem("Безналичные", "bank")
         self.payment.currentIndexChanged.connect(self._payment_changed)
         self.invoice_to = QComboBox()
         self.invoice_to.setMinimumHeight(FIELD_HEIGHT)
-        self.invoice_to.setMinimumWidth(220)
+        self.invoice_to.setMinimumWidth(150)
         self.invoice_to.setEnabled(False)
 
         work_form.addRow("Продакшен*:", prod_widget)
         work_form.addRow("Проект*:", proj_widget)
         work_form.addRow("Способ оплаты*:", self.payment)
         work_form.addRow("Счёт выставить на:", self.invoice_to)
-        top.addWidget(work, 1)
+        top.add_box(work, 1)
 
         period = QGroupBox("Сроки")
-        period.setMinimumWidth(320)
         period_form = QFormLayout(period)
         period_form.setSpacing(Space.MD)
         period_form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -199,8 +258,8 @@ class NewRentalView(QWidget):
         self.date_end.set_value(date.today())
         period_form.addRow("Аренда с*:", self.date_start)
         period_form.addRow("Аренда по:", self.date_end)
-        top.addWidget(period)
-        root.addLayout(top)
+        top.add_box(period, 0)
+        root.addWidget(top)
 
         add_row = QHBoxLayout()
         self.item_search = QLineEdit()
