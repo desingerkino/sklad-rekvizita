@@ -88,12 +88,17 @@ jobs:
       - name: Запуск собранного приложения (должно стартовать и не упасть за 15 секунд)
         run: |
           export SKLAD_DATA_DIR="$(mktemp -d)" SKLAD_KEY_DIR="$(mktemp -d)"
-          set +e
-          timeout 15 dist/SkladRekvizita.app/Contents/MacOS/SkladRekvizita > out/launch.log 2>&1
-          code=$?
-          echo "exit=$code (124 = работало до таймаута, это успех)" | tee -a out/launch.log
+          dist/SkladRekvizita.app/Contents/MacOS/SkladRekvizita > out/launch.log 2>&1 &
+          PID=$!
+          sleep 15
+          if kill -0 $PID 2>/dev/null; then
+            echo "процесс жив через 15 секунд: запуск успешен" | tee -a out/launch.log
+            kill $PID; RES=0
+          else
+            wait $PID; echo "процесс завершился сам, код $?" | tee -a out/launch.log; RES=1
+          fi
           ls -R "$SKLAD_DATA_DIR" | head -20 | tee -a out/launch.log
-          [ "$code" = 124 ]
+          exit $RES
 
       - name: Образ .dmg
         run: |

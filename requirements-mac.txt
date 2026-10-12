@@ -8,7 +8,8 @@
 PySide6==6.4.3
 Pillow>=10.4.0,<12
 reportlab>=4.2.2,<5
-cryptography>=43.0.1
+cryptography==48.0.1     # колесо macosx_10_9 (OpenSSL внутри). Более новые на раннере macOS 15 подтягивают
+                         # динамический OpenSSL из Homebrew, требующий macOS 15 — на Catalina не запустится
 argon2-cffi>=23.1.0
 onnxruntime==1.16.3
 numpy>=1.26,<2
