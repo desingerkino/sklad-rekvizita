@@ -1,0 +1,22 @@
+This plugin does not support propagateSizeHints()
+процесс жив через 15 секунд: запуск успешен
+avatars
+backups
+data.db
+data.db-shm
+data.db-wal
+documents
+logs
+photos
+temp
+
+/var/folders/20/jp1_0n3n7kndh6rnbqb5344m0000gn/T/tmp.T3ADnjfmrn/avatars:
+
+/var/folders/20/jp1_0n3n7kndh6rnbqb5344m0000gn/T/tmp.T3ADnjfmrn/backups:
+
+/var/folders/20/jp1_0n3n7kndh6rnbqb5344m0000gn/T/tmp.T3ADnjfmrn/documents:
+
+/var/folders/20/jp1_0n3n7kndh6rnbqb5344m0000gn/T/tmp.T3ADnjfmrn/logs:
+app.log
+
+/var/folders/20/jp1_0n3n7kndh6rnbqb5344m0000gn/T/tmp.T3ADnjfmrn/photos:
