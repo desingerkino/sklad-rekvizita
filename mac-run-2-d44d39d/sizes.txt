@@ -1,0 +1,2 @@
+287M	dist/SkladRekvizita.app
+-rw-r--r--@ 1 runner  staff  109291682 Oct 12 22:58 SkladRekvizita-2.4-mac-x86_64.dmg
