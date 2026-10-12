@@ -39,9 +39,11 @@ class StatCard(Card):
 
     def __init__(self, caption: str, tone: str = "info", parent=None):
         super().__init__(parent, padding=Space.MD)
-        color, background, border = status_tone(tone)
+        # Крупное число нейтральное; цвет только у тревожной карточки и только
+        # когда в ней есть что-то, кроме нуля (см. #StatTileValue в theme.py).
+        self._alert_tone = tone in ("prolonged", "danger", "out")
         self.value = QLabel("—")
-        self.value.setStyleSheet(f"font-size: 20pt; font-weight: 700; color: {color};")
+        self.value.setObjectName("StatTileValue")
         label = QLabel(caption)
         label.setObjectName("Hint")
         label.setWordWrap(True)
@@ -52,6 +54,10 @@ class StatCard(Card):
 
     def set_value(self, text: str) -> None:
         self.value.setText(text)
+        alert = self._alert_tone and text.strip() not in ("0", "0 ₽", "—", "")
+        self.value.setProperty("alert", "true" if alert else "false")
+        self.value.style().unpolish(self.value)
+        self.value.style().polish(self.value)
 
 
 class DayCell(QFrame):

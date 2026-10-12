@@ -38,12 +38,12 @@ class QuickAction(Card):
         mark.setPixmap(icon(icon_name, "active").pixmap(26, 26))
         mark.setFixedSize(48, 48)
         mark.setAlignment(Qt.AlignCenter)
-        mark.setStyleSheet(f"background: {Color.PRIMARY_SOFT}; border-radius: 12px;")
+        mark.setObjectName("IconTile")
         row.addWidget(mark)
         text = QVBoxLayout()
         text.setSpacing(1)
         name = QLabel(title)
-        name.setStyleSheet("font-weight: 600;")
+        name.setObjectName("CardTitle")
         note = QLabel(subtitle)
         note.setObjectName("Hint")
         note.setWordWrap(True)
@@ -52,18 +52,12 @@ class QuickAction(Card):
         row.addLayout(text, 1)
         self.body.addLayout(row)
         self.setMinimumWidth(240)
+        self.setProperty("interactive", "true")     # рамка при наведении — в theme.py
 
     def mousePressEvent(self, event):
         self.clicked.emit()
         super().mousePressEvent(event)
 
-    def enterEvent(self, event):
-        self.setStyleSheet(f"#Card {{ background: {Color.SURFACE};"
-                           f" border: 1px solid {Color.PRIMARY}; border-radius: 14px; }}")
-        super().enterEvent(event)
-
-    def leaveEvent(self, event):
-        self.setStyleSheet("")
         super().leaveEvent(event)
 
 
@@ -112,7 +106,7 @@ class DashboardView(QWidget):
             ("Новая аренда", "Оформить выдачу реквизита", "rental-new", 2),
             ("Каталог и поиск", "Найти реквизит, в том числе по фото", "search", 1),
             ("Принять возврат", "Реквизит вернулся на склад", "return", 4),
-            ("Отчёты", "История аренд, календарь и статистика", "chart", 7),
+            ("Отчёты", "История аренд, календарь и статистика", "chart", 9),
         ]
         for title, subtitle, icon_name, page in quick:
             action = QuickAction(title, subtitle, icon_name)

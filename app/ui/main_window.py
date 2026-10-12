@@ -88,6 +88,9 @@ PAGE_PROJECTS, PAGE_REPORTS, PAGE_AUDIT = 8, 9, 10
 PAGE_PACKING, PAGE_SETTINGS = 11, 12
 
 
+SIDEBAR_WIDTH = 248
+
+
 class MainWindow(QMainWindow):
     """Логика доступна только после входа: current_user уже установлен."""
 
@@ -196,13 +199,13 @@ class MainWindow(QMainWindow):
     def _build_sidebar(self) -> QWidget:
         sidebar = QFrame()
         sidebar.setObjectName("Sidebar")
-        sidebar.setFixedWidth(276)
+        sidebar.setFixedWidth(SIDEBAR_WIDTH)
         outer = QVBoxLayout(sidebar)
-        outer.setContentsMargins(0, Space.XL, 0, Space.LG)
+        outer.setContentsMargins(0, Space.LG, 0, Space.MD)
         outer.setSpacing(Space.SM)
 
         logo_row = QHBoxLayout()
-        logo_row.setContentsMargins(Space.XL, 0, Space.LG, 0)
+        logo_row.setContentsMargins(Space.LG + Space.XS, 0, Space.LG, 0)
         logo_row.setSpacing(Space.MD)
         mark = QLabel()
         mark.setPixmap(icon("box", "active").pixmap(30, 30))
@@ -218,7 +221,7 @@ class MainWindow(QMainWindow):
         logo_row.addLayout(titles)
         logo_row.addStretch()
         outer.addLayout(logo_row)
-        outer.addSpacing(Space.LG)
+        outer.addSpacing(Space.XS)
 
         menu_scroll = QScrollArea()
         menu_scroll.setWidgetResizable(True)
@@ -237,7 +240,7 @@ class MainWindow(QMainWindow):
                 current_group = group
                 caption = QLabel(group)
                 caption.setObjectName("NavGroup")
-                caption.setContentsMargins(Space.XL, Space.MD, 0, 2)
+                caption.setContentsMargins(Space.LG + Space.XS, Space.MD, 0, 2)
                 menu_layout.addWidget(caption)
             button = QPushButton("   " + label)
             button.setObjectName("NavButton")
@@ -265,9 +268,9 @@ class MainWindow(QMainWindow):
         outer.addWidget(self._build_stock_card())
 
         self.save_all_btn = QPushButton("   Сохранить всё")
-        self.save_all_btn.setObjectName("NavButton")
+        self.save_all_btn.setObjectName("NavButtonSmall")
         self.save_all_btn.setIcon(icon("save"))
-        self.save_all_btn.setIconSize(QSize(18, 18))
+        self.save_all_btn.setIconSize(QSize(16, 16))
         self.save_all_btn.setCursor(Qt.PointingHandCursor)
         self.save_all_btn.setToolTip(
             "Данные записываются в базу сразу после каждого действия.\n"
@@ -276,9 +279,9 @@ class MainWindow(QMainWindow):
         outer.addWidget(self.save_all_btn)
 
         self.logout_btn = QPushButton("   Выйти")
-        self.logout_btn.setObjectName("NavButton")
+        self.logout_btn.setObjectName("NavButtonSmall")
         self.logout_btn.setIcon(icon("logout"))
-        self.logout_btn.setIconSize(QSize(18, 18))
+        self.logout_btn.setIconSize(QSize(16, 16))
         self.logout_btn.setCursor(Qt.PointingHandCursor)
         self.logout_btn.clicked.connect(self._logout)
         outer.addWidget(self.logout_btn)
@@ -286,7 +289,7 @@ class MainWindow(QMainWindow):
 
     def _build_profile_card(self) -> QWidget:
         """Профиль сотрудника внизу меню: аватар, имя, должность и роль."""
-        card = Card(padding=Space.MD)
+        card = Card(padding=Space.SM + Space.XS)
         card.setObjectName("UserCard")
         card.setCursor(Qt.PointingHandCursor)
         card.mousePressEvent = lambda _e: self.open_profile()
@@ -294,7 +297,7 @@ class MainWindow(QMainWindow):
 
         row = QHBoxLayout()
         row.setSpacing(Space.MD)
-        self.avatar = PhotoLabel(46, radius=23)
+        self.avatar = PhotoLabel(38, radius=19)
         self.avatar.setToolTip("Фотография профиля")
         row.addWidget(self.avatar)
 
@@ -318,7 +321,7 @@ class MainWindow(QMainWindow):
 
     def _build_stock_card(self) -> QWidget:
         """Состояние склада: всего, доступно и круговой индикатор доступности."""
-        card = Card(padding=Space.MD)
+        card = Card(padding=Space.SM + Space.XS)
         card.setObjectName("StatCard")
         caption = QLabel("СОСТОЯНИЕ СКЛАДА")
         caption.setObjectName("NavGroup")
@@ -335,8 +338,7 @@ class MainWindow(QMainWindow):
         available_caption = QLabel("Доступно")
         available_caption.setObjectName("StatCaption")
         self.stat_available = QLabel("—")
-        self.stat_available.setStyleSheet(
-            f"font-size: 15pt; font-weight: 700; color: {Color.SUCCESS};")
+        self.stat_available.setObjectName("StatValueOk")
         left.addWidget(total_caption)
         left.addWidget(self.stat_total)
         left.addSpacing(Space.SM)
@@ -344,21 +346,22 @@ class MainWindow(QMainWindow):
         left.addWidget(self.stat_available)
         numbers.addLayout(left, 1)
 
-        self.availability = CircularProgress(size=104, thickness=9)
+        self.availability = CircularProgress(size=76, thickness=8)
         numbers.addWidget(self.availability, 0, Qt.AlignVCenter)
         card.body.addLayout(numbers)
 
         self.stock_hint = QLabel("")
         self.stock_hint.setObjectName("StatHint")
         self.stock_hint.setWordWrap(True)
-        card.body.addWidget(self.stock_hint)
+        # сводка «808 из 957» повторяет числа слева; текст остаётся в подсказке
+        self.stock_hint.hide()
         self._pad(card)
         return card
 
     @staticmethod
     def _pad(widget: QWidget) -> None:
         """Боковые отступы для карточек в меню."""
-        widget.setFixedWidth(276 - 2 * Space.LG - 4)
+        widget.setFixedWidth(SIDEBAR_WIDTH - 2 * Space.MD)
 
     def _build_topbar(self) -> QWidget:
         bar = QFrame()

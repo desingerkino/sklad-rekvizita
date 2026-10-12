@@ -155,11 +155,15 @@ class RentalsView(QWidget):
             self.table.setItem(index, 10, cell({"active": "Действует", "closed": "Завершена",
                                                 "cancelled": "Отменена"}.get(row["status"], row["status"])))
             if row["status"] == "active" and left is not None and left <= 2:
+                # цвет только у ячейки «осталось дней», где и есть тревога:
+                # окрашенная целиком строка читается хуже и шумит
                 color = QColor(DANGER if left < 0 else WARN)
-                for col in range(self.table.columnCount()):
-                    item = self.table.item(index, col)
-                    if item:
-                        item.setForeground(color)
+                alarm = self.table.item(index, 6)
+                if alarm:
+                    alarm.setForeground(color)
+                    font = alarm.font()
+                    font.setBold(True)
+                    alarm.setFont(font)
             if row["status"] == "active":
                 total += row["total_final"]
         self.table.setSortingEnabled(True)
@@ -480,10 +484,13 @@ class RentalCardDialog(QDialog):
             else:
                 color = None
             if color:
-                for col in range(self.items_table.columnCount()):
-                    cell_item = self.items_table.item(index, col)
-                    if cell_item:
-                        cell_item.setForeground(color)
+                # тревожным цветом помечается только столбец состояния
+                cell_item = self.items_table.item(index, 10)
+                if cell_item:
+                    cell_item.setForeground(color)
+                    font = cell_item.font()
+                    font.setBold(True)
+                    cell_item.setFont(font)
         self.items_table.setSortingEnabled(True)
         self.items_table.resizeColumnsToContents()
 

@@ -48,7 +48,7 @@ def pairs() -> list[tuple[str, str, str, float]]:
         ("текст на главной кнопке", c.TEXT_ON_PRIMARY, c.PRIMARY, 4.5),
         ("акцент-ссылка на поверхности", c.PRIMARY, c.SURFACE, 4.5),
         ("акцент на мягком фоне", c.PRIMARY, c.PRIMARY_SOFT, 4.5),
-        ("граница поля к поверхности", c.BORDER_STRONG, c.SURFACE, 3.0),
+        ("граница поля к поверхности", c.INPUT_BORDER, c.SURFACE, 3.0),
         ("кольцо фокуса к поверхности", c.FOCUS, c.SURFACE, 3.0),
     ]
     for name, (fg, bg, _border) in STATUS_TONES.items():
