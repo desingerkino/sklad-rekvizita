@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QComboBox, QDialog, QFrame, QGridLayout, QHBoxLay
 from ..services.categories_service import categories_service
 from ..services.reports_service import STATUS_LABELS, period_bounds, reports_service
 from ..utils import fmt_date, fmt_dt, money, money_plain
-from .theme import Color, Space, status_tone
+from .theme import Color, Font, Space, status_tone
 from .widgets.common import (Card, DatePicker, StatusBadge, cell, hint, icon, make_table,
                              muted, scrollable_body, section_title)
 
@@ -94,6 +94,8 @@ class DayCell(QFrame):
             color, background, border = status_tone(STATUS_TONES.get(entry["status"], "info"))
             bar = QPushButton(f"{entry['number']} · {entry['client']}")
             bar.setCursor(Qt.PointingHandCursor)
+            # длинная подпись не должна раздвигать колонку календаря: колонки равные
+            bar.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Fixed)
             period = (f"по {fmt_date(entry['date_end'])}" if entry.get("date_end")
                       else "дата возврата не указана")
             bar.setToolTip(f"{entry['number']} · {entry['project']} · {entry['client']}\n"
@@ -102,7 +104,7 @@ class DayCell(QFrame):
             bar.setStyleSheet(
                 f"QPushButton {{ background: {background}; color: {color}; border: none;"
                 f" border-left: 3px solid {color}; border-radius: 5px; padding: 3px 6px;"
-                f" text-align: left; font-size: 8pt; }}"
+                f" text-align: left; font-size: {Font.TINY}pt; }}"
                 f"QPushButton:hover {{ background: {color}; color: {Color.TEXT_ON_PRIMARY}; }}")
             bar.clicked.connect(lambda _=False, rid=entry["rental_id"]: self.rental_clicked.emit(rid))
             layout.addWidget(bar)

@@ -58,6 +58,20 @@ jobs:
           timeout 240 python -u -m tools.render_ui --out out/renders --scale 1.0 > out/render_x1_0.log 2>&1 || echo "exit=$?" >> out/render_x1_0.log
           timeout 240 python -u -m tools.render_ui --out out/renders --scale 1.5 > out/render_x1_5.log 2>&1 || echo "exit=$?" >> out/render_x1_5.log
 
+      - name: Catalog benchmark (branch vs main)
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          mkdir -p out
+          echo "branch:" > out/bench.txt
+          timeout 400 python -u -m tools.bench_catalog >> out/bench.txt 2>&1 || echo "exit=$?" >> out/bench.txt
+          git fetch origin main --depth 1
+          git worktree add ../base FETCH_HEAD
+          cp tools/bench_catalog.py ../base/tools/bench_catalog.py
+          echo "main:" >> out/bench.txt
+          (cd ../base && timeout 400 python -u -m tools.bench_catalog >> "$GITHUB_WORKSPACE/out/bench.txt" 2>&1) || echo "exit=$?" >> out/bench.txt
+          cat out/bench.txt
+
       - name: Publish results to ci-renders branch
         if: always()
         shell: bash
