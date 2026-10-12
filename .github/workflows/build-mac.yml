@@ -53,6 +53,7 @@ jobs:
         continue-on-error: true
         timeout-minutes: 25
         run: |
+          set +e      # проваленный набор не прерывает остальные
           : > out/tests_summary.txt
           for f in tests/test_*.py tests/check_imports.py; do
             mod=$(echo "${f%.py}" | tr '/' '.')
