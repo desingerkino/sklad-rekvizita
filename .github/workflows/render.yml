@@ -55,8 +55,8 @@ jobs:
         shell: bash
         run: |
           mkdir -p out/renders
-          timeout 240 python -u -m tools.render_ui --out out/renders --scale 1.0 || true
-          timeout 240 python -u -m tools.render_ui --out out/renders --scale 1.5 || true
+          timeout 240 python -u -m tools.render_ui --out out/renders --scale 1.0 > out/render_x1_0.log 2>&1 || echo "exit=$?" >> out/render_x1_0.log
+          timeout 240 python -u -m tools.render_ui --out out/renders --scale 1.5 > out/render_x1_5.log 2>&1 || echo "exit=$?" >> out/render_x1_5.log
 
       - name: Publish results to ci-renders branch
         if: always()

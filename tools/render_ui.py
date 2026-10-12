@@ -209,4 +209,10 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except SystemExit:
+        raise
+    except BaseException:
+        traceback.print_exc()
+        sys.exit(2)
