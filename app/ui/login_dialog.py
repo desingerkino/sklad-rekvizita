@@ -14,6 +14,7 @@ from ..services.auth_service import ROLE_LABELS, auth_service
 from ..version import DISPLAY_NAME, VERSION
 from .errors import show_error
 from .theme import Color, Space
+from .brand import mark_pixmap
 from .widgets.common import Card, icon
 
 
@@ -37,7 +38,7 @@ class LoginDialog(QDialog):
         root.setSpacing(Space.MD)
 
         mark = QLabel()
-        mark.setPixmap(icon("box", "active").pixmap(40, 40))
+        mark.setPixmap(mark_pixmap(56) or icon("box", "active").pixmap(40, 40))
         mark.setAlignment(Qt.AlignCenter)
         root.addWidget(mark)
 

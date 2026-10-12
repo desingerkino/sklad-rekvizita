@@ -12,7 +12,7 @@ from __future__ import annotations
 import logging
 
 from PySide6.QtCore import QEvent, QSettings, QSize, Qt, QTimer, Signal
-from PySide6.QtGui import QAction, QKeySequence
+from PySide6.QtGui import QAction, QFont, QKeySequence
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QFrame, QHBoxLayout, QLabel,
                                QLineEdit,
                                QMainWindow, QMessageBox, QPushButton, QScrollArea,
@@ -47,6 +47,7 @@ from .settings_view import SettingsView
 from .theme import Color, Space
 from .widgets.circular import CircularProgress
 from .widgets.suggest import SuggestList
+from .brand import mark_pixmap
 from .widgets.common import Card, PhotoLabel, StatusBadge, fade_in, icon, icon_button
 
 log = logging.getLogger(__name__)
@@ -208,15 +209,21 @@ class MainWindow(QMainWindow):
         logo_row.setContentsMargins(Space.LG + Space.XS, 0, Space.LG, 0)
         logo_row.setSpacing(Space.MD)
         mark = QLabel()
-        mark.setPixmap(icon("box", "active").pixmap(30, 30))
+        mark.setPixmap(mark_pixmap(38) or icon("box", "active").pixmap(30, 30))
         logo_row.addWidget(mark)
         titles = QVBoxLayout()
         titles.setSpacing(0)
-        name = QLabel("СКЛАД\nРЕКВИЗИТА")
+        name = QLabel("СКЛАД")
         name.setObjectName("SidebarLogo")
+        word = QLabel("РЕКВИЗИТА")
+        word.setObjectName("SidebarLogoWord")
+        word_font = QFont(word.font())
+        word_font.setLetterSpacing(QFont.AbsoluteSpacing, 2.6)    # разрядка, как в логотипе
+        word.setFont(word_font)
         version_label = QLabel(f"версия {VERSION}")
         version_label.setObjectName("SidebarLogoSub")
         titles.addWidget(name)
+        titles.addWidget(word)
         titles.addWidget(version_label)
         logo_row.addLayout(titles)
         logo_row.addStretch()
@@ -593,7 +600,7 @@ class MainWindow(QMainWindow):
         for button in self.buttons.buttons():
             name = button.property("icon_name")
             if name:
-                button.setIcon(icon(name, "active" if button.isChecked() else ""))
+                button.setIcon(icon(name, "white" if button.isChecked() else ""))
 
     @staticmethod
     def _shorten(text: str, limit: int = 48) -> str:

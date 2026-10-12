@@ -14,9 +14,9 @@ class Color:
     """Цветовые токены. Значения соответствуют референсу версии 2.1."""
 
     # поверхности
-    BG = "#F5F7FA"              # фон рабочей области
+    BG = "#F7F9FC"              # фон рабочей области
     SURFACE = "#FFFFFF"         # карточки, панели, таблицы
-    SURFACE_ALT = "#F9FAFB"     # чередование строк, вложенные блоки
+    SURFACE_ALT = "#F1F5F9"     # чередование строк, вложенные блоки
     SIDEBAR = "#FFFFFF"         # боковое меню
     TOPBAR = "#FFFFFF"          # верхняя панель
     OVERLAY = "#0F172A"         # затемнение под модальными окнами
@@ -25,18 +25,19 @@ class Color:
     PRIMARY = "#2563EB"
     PRIMARY_HOVER = "#1D4ED8"
     PRIMARY_PRESSED = "#1E40AF"
-    PRIMARY_SOFT = "#EFF6FF"    # фон активного пункта меню и выделения
-    SECONDARY = "#0EA5E9"       # вторичный акцент (информация, ссылки)
+    PRIMARY_SOFT = "#EEF4FF"    # фон выделения под текстом акцентного цвета (контраст >= 4.5)
+    BRAND_TINT = "#DBEAFE"      # светло-голубой бренда: плитки значков, подложки без текста
+    SECONDARY = "#60A5FA"       # голубой акцент бренда (градиент #2563EB → #60A5FA)
 
     # текст
-    TEXT = "#111827"
-    TEXT_SECONDARY = "#4B5563"       # 7.6:1 на белом
-    TEXT_MUTED = "#667085"           # 4.9:1 на белом, 4.5+ на фоне — подсказки, подписи
+    TEXT = "#172B4D"
+    TEXT_SECONDARY = "#475569"       # 7.6:1 на белом
+    TEXT_MUTED = "#5B6B82"           # 5.4:1 на белом, 5.0 на фоне — подсказки, подписи
     TEXT_ON_PRIMARY = "#FFFFFF"
 
     # границы
-    BORDER = "#E5E7EB"
-    BORDER_STRONG = "#D1D5DB"   # разделители, наведение
+    BORDER = "#E2E8F0"
+    BORDER_STRONG = "#CBD5E1"   # разделители, наведение
     INPUT_BORDER = "#8A94A6"    # граница полей ввода: >= 3:1 к поверхности
     FOCUS = "#2563EB"           # кольцо фокуса: заметное, >= 3:1
     DISABLED_BG = "#E8EBF0"     # отключённая кнопка
@@ -62,8 +63,8 @@ class Color:
     NEUTRAL_SOFT = "#F3F4F6"
     NEUTRAL_BORDER = "#E5E7EB"
 
-    SELECTED = "#EFF6FF"
-    HOVER = "#F3F6FA"
+    SELECTED = "#EAF2FF"
+    HOVER = "#EEF3FA"
 
 
 class Radius:
@@ -83,7 +84,7 @@ class Space:
 
 
 class Font:
-    FAMILY = "'Segoe UI', 'Inter', 'Helvetica Neue', Arial"
+    FAMILY = "'Inter', 'Segoe UI', 'Helvetica Neue', Arial"
     H1 = 20
     H2 = 15
     H3 = 13
@@ -163,7 +164,8 @@ QScrollArea > QWidget > QWidget {{ background: transparent; }}
 
 /* ------------------------------------------------------------ сайдбар */
 #Sidebar {{ background: {c.SIDEBAR}; border-right: 1px solid {c.BORDER}; }}
-#SidebarLogo {{ font-size: {f.H2}pt; font-weight: 700; color: {c.TEXT}; }}
+#SidebarLogo {{ font-size: {f.H1}pt; font-weight: 700; color: {c.TEXT}; }}
+#SidebarLogoWord {{ font-size: {f.SMALL}pt; font-weight: 600; color: {c.TEXT_SECONDARY}; }}
 #SidebarLogoSub {{ font-size: {f.SMALL}pt; color: {c.TEXT_SECONDARY}; }}
 #NavButton {{
     background: transparent; border: none; text-align: left;
@@ -172,7 +174,7 @@ QScrollArea > QWidget > QWidget {{ background: transparent; }}
 }}
 #NavButton:hover {{ background: {c.HOVER}; color: {c.TEXT}; }}
 #NavButton:checked {{
-    background: {c.PRIMARY_SOFT}; color: {c.PRIMARY}; font-weight: 600;
+    background: {c.PRIMARY}; color: {c.TEXT_ON_PRIMARY}; font-weight: 600;
 }}
 #NavButtonSmall {{
     background: transparent; border: none; text-align: left;
@@ -430,7 +432,7 @@ QCalendarWidget QAbstractItemView:enabled {{
 }}
 #TileTitle {{ font-weight: 600; }}
 #TilePrice {{ font-weight: 700; color: {c.TEXT}; }}
-#IconTile {{ background: {c.PRIMARY_SOFT}; border-radius: {r.MD}px; }}
+#IconTile {{ background: {c.BRAND_TINT}; border-radius: {r.MD}px; }}
 #CardTitle {{ font-weight: 600; }}
 #Card[interactive="true"]:hover {{ border: 1px solid {c.PRIMARY}; }}
 #BigNumber {{ font-size: {f.H1}pt; font-weight: 700; color: {c.PRIMARY}; }}
