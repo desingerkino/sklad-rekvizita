@@ -16,6 +16,7 @@ backups/
 data/
 # модель поиска по фото (скачивается программой)
 assets/models/
+assets/models/*.onnx
 # системное
 .DS_Store
 Thumbs.db
