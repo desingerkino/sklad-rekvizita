@@ -116,8 +116,17 @@ def main() -> int:
 
     from PySide6.QtWidgets import QApplication
     app = QApplication(sys.argv)
-    from app.ui.theme import QSS
-    app.setStyleSheet(QSS)
+    # В offscreen-режиме на сервере нет системных шрифтов с кириллицей (текст
+    # превращается в квадраты). Подключаем шрифт из assets и подставляем его в
+    # стек шрифтов ТОЛЬКО в этом скрипте; сама программа остаётся как есть.
+    # DejaVu шире Segoe UI, поэтому обрезка текста на снимках — с запасом.
+    from PySide6.QtGui import QFont, QFontDatabase
+    for ttf in (ROOT / "assets" / "fonts").glob("DejaVuSans*.ttf"):
+        QFontDatabase.addApplicationFont(str(ttf))
+    from app.ui import theme
+    theme.Font.FAMILY = "'DejaVu Sans'"
+    app.setFont(QFont("DejaVu Sans", 10))
+    app.setStyleSheet(theme.build_qss())
 
     data = seed(args.items)
 
