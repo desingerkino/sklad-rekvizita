@@ -90,11 +90,11 @@ class DashboardView(QWidget):
         stats = QHBoxLayout()
         stats.setSpacing(Space.MD)
         self.cards = {
-            "items": StatCard("Позиций в каталоге", "info"),
-            "available": StatCard("Свободно экземпляров", "in_stock"),
-            "active": StatCard("Действующих аренд", "rented"),
-            "overdue": StatCard("Просроченных аренд", "prolonged"),
-            "revenue": StatCard("Начислено в этом месяце", "finished"),
+            "items": StatCard("Позиций в каталоге", "info", icon_name="box"),
+            "available": StatCard("Свободно экземпляров", "in_stock", icon_name="check"),
+            "active": StatCard("Действующих аренд", "rented", icon_name="rental-new"),
+            "overdue": StatCard("Просроченных аренд", "prolonged", icon_name="alert"),
+            "revenue": StatCard("Начислено в этом месяце", "finished", icon_name="chart"),
         }
         for card in self.cards.values():
             stats.addWidget(card)

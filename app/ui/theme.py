@@ -433,6 +433,7 @@ QCalendarWidget QAbstractItemView:enabled {{
 #TileTitle {{ font-weight: 600; }}
 #TilePrice {{ font-weight: 700; color: {c.TEXT}; }}
 #IconTile {{ background: {c.BRAND_TINT}; border-radius: {r.MD}px; }}
+#IconTile[alert="true"] {{ background: {c.DANGER_SOFT}; }}
 #CardTitle {{ font-weight: 600; }}
 #Card[interactive="true"]:hover {{ border: 1px solid {c.PRIMARY}; }}
 #BigNumber {{ font-size: {f.H1}pt; font-weight: 700; color: {c.PRIMARY}; }}

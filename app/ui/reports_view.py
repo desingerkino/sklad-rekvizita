@@ -37,7 +37,7 @@ WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
 class StatCard(Card):
     """Аналитическая карточка: значение и подпись."""
 
-    def __init__(self, caption: str, tone: str = "info", parent=None):
+    def __init__(self, caption: str, tone: str = "info", parent=None, icon_name: str = ""):
         super().__init__(parent, padding=Space.MD)
         # Крупное число нейтральное; цвет только у тревожной карточки и только
         # когда в ней есть что-то, кроме нуля (см. #StatTileValue в theme.py).
@@ -47,9 +47,27 @@ class StatCard(Card):
         label = QLabel(caption)
         label.setObjectName("Hint")
         label.setWordWrap(True)
-        self.body.setSpacing(2)
-        self.body.addWidget(self.value)
-        self.body.addWidget(label)
+        if icon_name:
+            # значок в светлой плитке, как в фирменном стиле; тревожная карточка — красный
+            row = QHBoxLayout()
+            row.setSpacing(Space.MD)
+            chip = QLabel()
+            chip.setObjectName("IconTile")
+            chip.setProperty("alert", "true" if self._alert_tone else "false")
+            chip.setFixedSize(44, 44)
+            chip.setAlignment(Qt.AlignCenter)
+            chip.setPixmap(icon(icon_name, "danger" if self._alert_tone else "active").pixmap(22, 22))
+            row.addWidget(chip, 0, Qt.AlignVCenter)
+            text = QVBoxLayout()
+            text.setSpacing(2)
+            text.addWidget(self.value)
+            text.addWidget(label)
+            row.addLayout(text, 1)
+            self.body.addLayout(row)
+        else:
+            self.body.setSpacing(2)
+            self.body.addWidget(self.value)
+            self.body.addWidget(label)
         self.setMinimumWidth(150)
 
     def set_value(self, text: str) -> None:

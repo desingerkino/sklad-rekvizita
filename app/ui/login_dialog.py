@@ -25,7 +25,7 @@ class LoginDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle(DISPLAY_NAME)
         self.setModal(True)
-        self.setFixedWidth(460)
+        self.setMinimumWidth(460)        # не фиксируем: с другим шрифтом подписи не должны обрезаться
         self.user = None
         self._build()
 
@@ -149,7 +149,7 @@ class FirstRunDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle(f"{DISPLAY_NAME} — первый запуск")
         self.setModal(True)
-        self.setFixedWidth(500)
+        self.setMinimumWidth(500)
         self.created = False
         self._build()
 
