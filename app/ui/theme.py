@@ -336,8 +336,7 @@ QTableView::item:selected {{ background: {c.SELECTED}; color: {c.TEXT}; }}
 QTreeWidget::item {{ padding: 7px 4px; }}
 QTreeWidget::item:selected {{ background: {c.PRIMARY_SOFT}; color: {c.PRIMARY}; }}
 QTreeWidget::item:hover {{ background: {c.HOVER}; }}
-QTreeWidget::branch {{ background: transparent; }}
-QTreeWidget::branch:selected {{ background: transparent; }}
+QTreeWidget {{ selection-background-color: transparent; }}
 QListWidget::item {{ padding: 6px; border-radius: {r.SM}px; }}
 QListWidget::item:selected {{ background: {c.PRIMARY_SOFT}; color: {c.TEXT}; }}
 
