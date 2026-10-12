@@ -80,10 +80,15 @@ jobs:
           rm -rf assets/app.iconset
           ls -l assets/app.icns
 
+      - name: Нейросеть в поставку (скачать, проверить, положить в assets/models)
+        run: python tools/fetch_model.py 2>&1 | tee out/model.log
+
       - name: Сборка .app (PyInstaller)
         run: |
           pyinstaller build/sklad_mac.spec --noconfirm 2>&1 | tee out/pyinstaller.log | tail -15
           test -d dist/SkladRekvizita.app
+          find dist/SkladRekvizita.app -name clip_image.onnx | tee out/model_in_app.txt
+          test -s out/model_in_app.txt
           du -sh dist/SkladRekvizita.app | tee -a out/sizes.txt
 
       - name: Совместимость с macOS 10.15 (минимальная версия в каждом файле)

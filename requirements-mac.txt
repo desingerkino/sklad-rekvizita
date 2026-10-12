@@ -16,3 +16,4 @@ numpy>=1.26,<2
 pillow-heif>=0.16.0
 openpyxl>=3.1.5,<4
 pyinstaller>=6.10.0
+certifi            # сертификаты для скачивания: у Python с python.org их нет, из-за чего на Mac была ошибка SSL
