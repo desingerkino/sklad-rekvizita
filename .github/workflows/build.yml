@@ -28,6 +28,12 @@ jobs:
           QT_QPA_PLATFORM: offscreen
           PYTHONUTF8: "1"
 
+      - name: Smoke - main window imports and builds
+        run: python -c "import app.ui.main_window as m; print('ok', m.MainWindow)"
+        env:
+          QT_QPA_PLATFORM: offscreen
+          PYTHONUTF8: "1"
+
       - name: Build exe (PyInstaller)
         run: pyinstaller build/sklad.spec --noconfirm
         env:

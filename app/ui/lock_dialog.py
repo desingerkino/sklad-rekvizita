@@ -64,7 +64,7 @@ class LockDialog(QDialog):
         root.addLayout(form)
 
         self.error = QLabel("")
-        self.error.setStyleSheet(f"color: {Color.DANGER};")
+        self.error.setObjectName("ErrorText")
         self.error.setVisible(False)
         root.addWidget(self.error)
 

@@ -418,6 +418,12 @@ QCalendarWidget QAbstractItemView:enabled {{
 #SavedLabel {{ color: {c.SUCCESS}; font-size: {f.SMALL}pt; }}
 #StatTileValue {{ font-size: {f.H1}pt; font-weight: 700; color: {c.TEXT}; }}
 #StatTileValue[alert="true"] {{ color: {c.DANGER}; }}
+#StatTileValue[alert="warn"] {{ color: {c.WARNING}; }}
+#ErrorText {{ color: {c.DANGER}; }}
+#WarningText {{ color: {c.WARNING}; }}
+#EmptyNote {{ color: {c.TEXT_SECONDARY}; padding: 40px; }}
+#SubTitle {{ font-size: {f.H3}pt; font-weight: 600; }}
+#ValueStrong {{ font-weight: 600; }}
 #Card[tile="true"]:hover {{ border: 1px solid {c.TEXT_MUTED}; }}
 #Card[tile="true"][selected="true"] {{
     background: {c.PRIMARY_SOFT}; border: 1px solid {c.PRIMARY};

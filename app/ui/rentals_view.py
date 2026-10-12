@@ -286,7 +286,7 @@ class RentalCardDialog(QDialog):
     def _build(self) -> None:
         root, footer = scrollable_body(self)
         self.header = QLabel()
-        self.header.setStyleSheet("font-size:15pt; font-weight:600;")
+        self.header.setObjectName("SectionTitle")
         root.addWidget(self.header)
 
         info_row = QHBoxLayout()

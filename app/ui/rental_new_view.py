@@ -6,7 +6,7 @@ from typing import Optional
 
 from datetime import date
 
-from PySide6.QtCore import Qt, QTimer, Signal
+from PySide6.QtCore import QSize, Qt, QTimer, Signal
 from PySide6.QtWidgets import (QComboBox, QDoubleSpinBox, QFormLayout, QGridLayout, QGroupBox,
                                QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMessageBox,
                                QPushButton, QSpinBox, QTableWidget, QTableWidgetItem,
@@ -94,6 +94,13 @@ class ResponsiveBoxes(QWidget):
                 self._grid.addWidget(box, index, 0)
                 self._grid.setColumnStretch(0, 1)
         self.updateGeometry()
+
+    def minimumSizeHint(self):                # noqa: N802 — интерфейс Qt
+        # Минимум по ширине — самый узкий блок, а не текущая раскладка: иначе
+        # страница не сможет сузиться и блоки никогда не перестроятся.
+        base = super().minimumSizeHint()
+        widest = max((b.minimumSizeHint().width() for b, _ in self._boxes), default=0)
+        return QSize(widest, base.height())
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -298,7 +305,7 @@ class NewRentalView(QWidget):
         preview_text = QVBoxLayout()
         preview_text.setSpacing(2)
         self.preview_name = QLabel("")
-        self.preview_name.setStyleSheet("font-size:13pt; font-weight:600;")
+        self.preview_name.setObjectName("SubTitle")
         self.preview_name.setWordWrap(True)
         self.preview_info = QLabel("")
         self.preview_info.setObjectName("Muted")

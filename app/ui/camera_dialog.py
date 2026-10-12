@@ -102,7 +102,7 @@ class CameraDialog(QDialog):
     def _no_camera(self, message: str) -> None:
         label = QLabel(message)
         label.setAlignment(Qt.AlignCenter)
-        label.setStyleSheet(f"color:{Color.TEXT_SECONDARY}; padding:40px;")
+        label.setObjectName("EmptyNote")
         self.viewfinder_holder.addWidget(label)
         self.shot_btn.setEnabled(False)
         self.device_box.setVisible(False)
