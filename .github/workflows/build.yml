@@ -28,6 +28,18 @@ jobs:
           QT_QPA_PLATFORM: offscreen
           PYTHONUTF8: "1"
 
+      - name: Smoke - main window imports and builds
+        run: python -c "import app.ui.main_window as m; print('ok', m.MainWindow)"
+        env:
+          QT_QPA_PLATFORM: offscreen
+          PYTHONUTF8: "1"
+
+      - name: Нейросеть в поставку (скачать, проверить, положить в assets/models)
+        run: python tools/fetch_model.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+          PYTHONUTF8: "1"
+
       - name: Build exe (PyInstaller)
         run: pyinstaller build/sklad.spec --noconfirm
         env:
@@ -37,6 +49,7 @@ jobs:
         shell: pwsh
         run: |
           if (-not (Test-Path dist/SkladRekvizita/SkladRekvizita.exe)) { throw "exe not built" }
+          if (-not (Test-Path dist/SkladRekvizita/_internal/assets/models/clip_image.onnx)) { throw "model is not inside the build" }
           Get-ChildItem dist/SkladRekvizita | Select-Object -First 10
 
       - name: Build installer (Inno Setup)

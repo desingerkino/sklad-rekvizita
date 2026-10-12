@@ -1,0 +1,95 @@
+name: Render and tests
+
+# Тесты и снимки экранов на Windows. Снимки кладутся в ветку ci-renders,
+# папка renders/<номер-запуска>, чтобы их можно было смотреть без скачивания артефактов.
+on:
+  push:
+    branches: [ui-redesign]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: windows-latest
+    env:
+      QT_QPA_PLATFORM: offscreen
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Contrast check
+        shell: bash
+        run: python tools/check_contrast.py | tee contrast.txt || true
+
+      - name: Tests
+        timeout-minutes: 20
+        shell: bash
+        run: |
+          set +e      # проваленный набор не должен прерывать цикл: иначе остальные не запускаются
+          mkdir -p out
+          : > out/tests_summary.txt
+          for f in tests/test_*.py tests/check_imports.py; do
+            mod=$(echo "${f%.py}" | tr '/' '.')
+            echo "=== $mod ===" >> out/tests_summary.txt
+            python -m "$mod" > "out/$(basename ${f%.py}).log" 2>&1
+            code=$?
+            ok=$(grep -c "^  ok " "out/$(basename ${f%.py}).log" || true)
+            fail=$(grep -c "^  FAIL" "out/$(basename ${f%.py}).log" || true)
+            echo "$mod exit=$code ok=$ok fail=$fail" | tee -a out/tests_summary.txt
+          done
+        continue-on-error: true
+
+      - name: Render screens
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          mkdir -p out/renders
+          timeout 240 python -u -m tools.render_ui --out out/renders --scale 1.0 > out/render_x1_0.log 2>&1 || echo "exit=$?" >> out/render_x1_0.log
+          timeout 240 python -u -m tools.render_ui --out out/renders --scale 1.5 > out/render_x1_5.log 2>&1 || echo "exit=$?" >> out/render_x1_5.log
+
+      - name: Catalog benchmark (branch vs main)
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          mkdir -p out
+          echo "branch:" > out/bench.txt
+          timeout 400 python -u -m tools.bench_catalog >> out/bench.txt 2>&1 || echo "exit=$?" >> out/bench.txt
+          git fetch origin main --depth 1
+          git worktree add ../base FETCH_HEAD
+          cp tools/bench_catalog.py ../base/tools/bench_catalog.py
+          echo "main:" >> out/bench.txt
+          (cd ../base && timeout 400 python -u -m tools.bench_catalog >> "$GITHUB_WORKSPACE/out/bench.txt" 2>&1) || echo "exit=$?" >> out/bench.txt
+          cat out/bench.txt
+
+      - name: Publish results to ci-renders branch
+        if: always()
+        shell: bash
+        run: |
+          cp contrast.txt out/ 2>/dev/null || true
+          run_dir="run-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
+          git config --global user.name "ci"
+          git config --global user.email "ci@users.noreply.github.com"
+          rm -rf /tmp/pub && mkdir /tmp/pub && cd /tmp/pub
+          if git ls-remote --exit-code --heads "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" ci-renders >/dev/null 2>&1; then
+            git clone --depth 1 --branch ci-renders "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" .
+          else
+            git init -q -b ci-renders
+            git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          fi
+          mkdir -p "$run_dir"
+          cp -r "$GITHUB_WORKSPACE/out/." "$run_dir/"
+          git add -A
+          git commit -qm "renders $run_dir"
+          git push -q origin ci-renders

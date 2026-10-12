@@ -14,6 +14,7 @@ from ..services.auth_service import ROLE_LABELS, auth_service
 from ..version import DISPLAY_NAME, VERSION
 from .errors import show_error
 from .theme import Color, Space
+from .brand import mark_pixmap
 from .widgets.common import Card, icon
 
 
@@ -24,7 +25,7 @@ class LoginDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle(DISPLAY_NAME)
         self.setModal(True)
-        self.setFixedWidth(460)
+        self.setMinimumWidth(460)        # не фиксируем: с другим шрифтом подписи не должны обрезаться
         self.user = None
         self._build()
 
@@ -37,7 +38,7 @@ class LoginDialog(QDialog):
         root.setSpacing(Space.MD)
 
         mark = QLabel()
-        mark.setPixmap(icon("box", "active").pixmap(40, 40))
+        mark.setPixmap(mark_pixmap(56) or icon("box", "active").pixmap(40, 40))
         mark.setAlignment(Qt.AlignCenter)
         root.addWidget(mark)
 
@@ -71,7 +72,7 @@ class LoginDialog(QDialog):
         root.addLayout(form)
 
         self.error = QLabel("")
-        self.error.setStyleSheet(f"color:{Color.DANGER};")
+        self.error.setObjectName("ErrorText")
         self.error.setWordWrap(True)
         self.error.setVisible(False)
         root.addWidget(self.error)
@@ -148,7 +149,7 @@ class FirstRunDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle(f"{DISPLAY_NAME} — первый запуск")
         self.setModal(True)
-        self.setFixedWidth(500)
+        self.setMinimumWidth(500)
         self.created = False
         self._build()
 
@@ -186,7 +187,7 @@ class FirstRunDialog(QDialog):
         root.addLayout(form)
 
         self.error = QLabel("")
-        self.error.setStyleSheet(f"color:{Color.DANGER};")
+        self.error.setObjectName("ErrorText")
         self.error.setWordWrap(True)
         self.error.setVisible(False)
         root.addWidget(self.error)

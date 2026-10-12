@@ -14,9 +14,9 @@ class Color:
     """Цветовые токены. Значения соответствуют референсу версии 2.1."""
 
     # поверхности
-    BG = "#F5F7FA"              # фон рабочей области
+    BG = "#F7F9FC"              # фон рабочей области
     SURFACE = "#FFFFFF"         # карточки, панели, таблицы
-    SURFACE_ALT = "#F9FAFB"     # чередование строк, вложенные блоки
+    SURFACE_ALT = "#F1F5F9"     # чередование строк, вложенные блоки
     SIDEBAR = "#FFFFFF"         # боковое меню
     TOPBAR = "#FFFFFF"          # верхняя панель
     OVERLAY = "#0F172A"         # затемнение под модальными окнами
@@ -25,28 +25,32 @@ class Color:
     PRIMARY = "#2563EB"
     PRIMARY_HOVER = "#1D4ED8"
     PRIMARY_PRESSED = "#1E40AF"
-    PRIMARY_SOFT = "#EFF6FF"    # фон активного пункта меню и выделения
-    SECONDARY = "#0EA5E9"       # вторичный акцент (информация, ссылки)
+    PRIMARY_SOFT = "#EEF4FF"    # фон выделения под текстом акцентного цвета (контраст >= 4.5)
+    BRAND_TINT = "#DBEAFE"      # светло-голубой бренда: плитки значков, подложки без текста
+    SECONDARY = "#60A5FA"       # голубой акцент бренда (градиент #2563EB → #60A5FA)
 
     # текст
-    TEXT = "#111827"
-    TEXT_SECONDARY = "#6B7280"
-    TEXT_MUTED = "#9CA3AF"
+    TEXT = "#172B4D"
+    TEXT_SECONDARY = "#475569"       # 7.6:1 на белом
+    TEXT_MUTED = "#5B6B82"           # 5.4:1 на белом, 5.0 на фоне — подсказки, подписи
     TEXT_ON_PRIMARY = "#FFFFFF"
 
     # границы
-    BORDER = "#E5E7EB"
-    BORDER_STRONG = "#D1D5DB"
-    FOCUS = "#93C5FD"
+    BORDER = "#E2E8F0"
+    BORDER_STRONG = "#CBD5E1"   # разделители, наведение
+    INPUT_BORDER = "#8A94A6"    # граница полей ввода: >= 3:1 к поверхности
+    FOCUS = "#2563EB"           # кольцо фокуса: заметное, >= 3:1
+    DISABLED_BG = "#E8EBF0"     # отключённая кнопка
+    TEXT_ON_DISABLED = "#5B6472"
 
     # состояния
     SUCCESS = "#15803D"
     SUCCESS_SOFT = "#ECFDF5"
     SUCCESS_BORDER = "#A7F3D0"
-    WARNING = "#EA580C"
+    WARNING = "#B45309"
     WARNING_SOFT = "#FFF7ED"
     WARNING_BORDER = "#FED7AA"
-    DANGER = "#DC2626"
+    DANGER = "#B91C1C"
     DANGER_SOFT = "#FEF2F2"
     DANGER_BORDER = "#FECACA"
     INFO = "#1D4ED8"
@@ -59,8 +63,8 @@ class Color:
     NEUTRAL_SOFT = "#F3F4F6"
     NEUTRAL_BORDER = "#E5E7EB"
 
-    SELECTED = "#EFF6FF"
-    HOVER = "#F3F6FA"
+    SELECTED = "#EAF2FF"
+    HOVER = "#EEF3FA"
 
 
 class Radius:
@@ -80,13 +84,13 @@ class Space:
 
 
 class Font:
-    FAMILY = "'Segoe UI', 'Inter', 'Helvetica Neue', Arial"
+    FAMILY = "'Inter', 'Segoe UI', 'Helvetica Neue', Arial"
     H1 = 20
     H2 = 15
     H3 = 13
     BODY = 10.5
     SMALL = 9.5
-    TINY = 8.5
+    TINY = 9
 
 
 class Duration:
@@ -99,6 +103,10 @@ class Duration:
 
 # ------------------------------------------------------------------ статусы
 # Пять статусов версии 2.3.1: зелёный, оранжевый, красный, серый, чёрный.
+PARTIAL_TEXT = "#0369A1"
+PARTIAL_SOFT = "#F0F9FF"
+PARTIAL_BORDER = "#BAE6FD"
+
 STATUS_TONES = {
     "in_stock": (Color.SUCCESS, Color.SUCCESS_SOFT, Color.SUCCESS_BORDER),
     "rented": (Color.WARNING, Color.WARNING_SOFT, Color.WARNING_BORDER),
@@ -112,7 +120,7 @@ STATUS_TONES = {
     "danger": (Color.DANGER, Color.DANGER_SOFT, Color.DANGER_BORDER),
     "archived": (Color.NEUTRAL, Color.NEUTRAL_SOFT, Color.NEUTRAL_BORDER),
     "returned": (Color.NEUTRAL, Color.NEUTRAL_SOFT, Color.NEUTRAL_BORDER),
-    "partial": (Color.SECONDARY, "#F0F9FF", "#BAE6FD"),
+    "partial": (PARTIAL_TEXT, PARTIAL_SOFT, PARTIAL_BORDER),
     "out": (Color.DANGER, Color.DANGER_SOFT, Color.DANGER_BORDER),
 }
 
@@ -146,23 +154,34 @@ QWidget {{
 }}
 QMainWindow, QDialog {{ background: {c.BG}; }}
 QToolTip {{
-    background: {c.TEXT}; color: #FFFFFF; border: none;
+    background: {c.TEXT}; color: {c.SURFACE}; border: none;
     padding: 6px 9px; border-radius: {r.SM}px; font-size: {f.SMALL}pt;
 }}
 
+/* прозрачные области прокрутки: иначе вылезает системный серый */
+QScrollArea {{ background: transparent; border: none; }}
+QScrollArea > QWidget > QWidget {{ background: transparent; }}
+
 /* ------------------------------------------------------------ сайдбар */
 #Sidebar {{ background: {c.SIDEBAR}; border-right: 1px solid {c.BORDER}; }}
-#SidebarLogo {{ font-size: {f.H2}pt; font-weight: 700; color: {c.TEXT}; }}
+#SidebarLogo {{ font-size: {f.H1}pt; font-weight: 700; color: {c.TEXT}; }}
+#SidebarLogoWord {{ font-size: {f.SMALL}pt; font-weight: 600; color: {c.TEXT_SECONDARY}; }}
 #SidebarLogoSub {{ font-size: {f.SMALL}pt; color: {c.TEXT_SECONDARY}; }}
 #NavButton {{
     background: transparent; border: none; text-align: left;
-    padding: 10px 14px; margin: 2px 12px; border-radius: {r.MD}px;
+    padding: 8px 12px; margin: 1px 12px; border-radius: {r.MD}px;
     color: {c.TEXT_SECONDARY}; font-size: {f.BODY}pt;
 }}
 #NavButton:hover {{ background: {c.HOVER}; color: {c.TEXT}; }}
 #NavButton:checked {{
-    background: {c.PRIMARY_SOFT}; color: {c.PRIMARY}; font-weight: 600;
+    background: {c.PRIMARY}; color: {c.TEXT_ON_PRIMARY}; font-weight: 600;
 }}
+#NavButtonSmall {{
+    background: transparent; border: none; text-align: left;
+    padding: 6px 12px; margin: 0 12px; border-radius: {r.SM}px;
+    color: {c.TEXT_SECONDARY}; font-size: {f.SMALL}pt;
+}}
+#NavButtonSmall:hover {{ background: {c.HOVER}; color: {c.TEXT}; }}
 #NavSubButton {{
     background: transparent; border: none; text-align: left;
     padding: 6px 10px; border-radius: {r.SM}px;
@@ -179,11 +198,11 @@ QToolTip {{
 #NavSubClose:hover {{ color: {c.DANGER}; }}
 #NavGroup {{
     color: {c.TEXT_MUTED}; font-size: {f.TINY}pt; font-weight: 700;
-    letter-spacing: 0.6px; text-transform: uppercase;
+    letter-spacing: 0.6px;
 }}
 #NotifyBadge {{
     background: {c.DANGER}; color: #FFFFFF; border-radius: 9px;
-    font-size: 7.5pt; font-weight: 700;
+    font-size: {f.TINY}pt; font-weight: 700;
 }}
 #UserCard, #StatCard {{
     background: {c.SURFACE}; border: 1px solid {c.BORDER};
@@ -192,7 +211,8 @@ QToolTip {{
 #UserName {{ font-weight: 600; font-size: {f.BODY}pt; }}
 #UserRole {{ color: {c.TEXT_SECONDARY}; font-size: {f.SMALL}pt; }}
 #StatCaption {{ color: {c.TEXT_SECONDARY}; font-size: {f.SMALL}pt; }}
-#StatValue {{ color: {c.PRIMARY}; font-size: 22pt; font-weight: 700; }}
+#StatValue {{ color: {c.TEXT}; font-size: {f.H2}pt; font-weight: 700; }}
+#StatValueOk {{ color: {c.SUCCESS}; font-size: {f.H2}pt; font-weight: 700; }}
 #StatHint {{ color: {c.TEXT_MUTED}; font-size: {f.TINY}pt; }}
 #VersionLabel {{ color: {c.TEXT_MUTED}; font-size: {f.TINY}pt; }}
 
@@ -207,29 +227,30 @@ QToolTip {{
 /* ------------------------------------------------------------- поля ввода */
 QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QDateEdit, QTextEdit, QPlainTextEdit {{
     background: {c.SURFACE};
-    border: 1px solid {c.BORDER};
+    border: 1px solid {c.INPUT_BORDER};
     border-radius: {r.MD}px;
     padding: 8px 10px;
     selection-background-color: {c.PRIMARY};
     selection-color: #FFFFFF;
 }}
 QLineEdit:hover, QComboBox:hover, QDateEdit:hover,
-QSpinBox:hover, QDoubleSpinBox:hover {{ border-color: {c.BORDER_STRONG}; }}
+QSpinBox:hover, QDoubleSpinBox:hover {{ border-color: {c.TEXT_SECONDARY}; }}
 QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QDoubleSpinBox:focus,
 QDateEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {{
-    border: 1px solid {c.PRIMARY};
+    border: 2px solid {c.FOCUS};
+    padding: 7px 9px;
     background: {c.SURFACE};
 }}
 QLineEdit:read-only {{ background: {c.SURFACE_ALT}; color: {c.TEXT_SECONDARY}; }}
 QLineEdit:disabled, QComboBox:disabled, QSpinBox:disabled,
 QDoubleSpinBox:disabled, QDateEdit:disabled {{
-    background: {c.NEUTRAL_SOFT}; color: {c.TEXT_MUTED}; border-color: {c.BORDER};
+    background: {c.DISABLED_BG}; color: {c.TEXT_ON_DISABLED}; border-color: {c.BORDER};
 }}
 #SearchBox {{
     font-size: {f.H3}pt; padding: 10px 14px; border-radius: {r.MD}px;
     background: {c.SURFACE_ALT}; border: 1px solid {c.BORDER};
 }}
-#SearchBox:focus {{ background: {c.SURFACE}; border: 1px solid {c.PRIMARY}; }}
+#SearchBox:focus {{ background: {c.SURFACE}; border: 2px solid {c.FOCUS}; padding: 9px 13px; }}
 QComboBox::drop-down {{ border: none; width: 22px; }}
 QComboBox QAbstractItemView {{
     background: {c.SURFACE}; border: 1px solid {c.BORDER};
@@ -238,7 +259,7 @@ QComboBox QAbstractItemView {{
 }}
 QCheckBox {{ spacing: 8px; }}
 QCheckBox::indicator {{
-    width: 17px; height: 17px; border: 1px solid {c.BORDER_STRONG};
+    width: 17px; height: 17px; border: 1px solid {c.INPUT_BORDER};
     border-radius: 5px; background: {c.SURFACE};
 }}
 QCheckBox::indicator:hover {{ border-color: {c.PRIMARY}; }}
@@ -254,8 +275,9 @@ QPushButton {{
 }}
 QPushButton:hover {{ background: {c.HOVER}; border-color: {c.BORDER_STRONG}; }}
 QPushButton:pressed {{ background: {c.NEUTRAL_SOFT}; }}
+QPushButton:focus {{ border: 2px solid {c.FOCUS}; padding: 8px 15px; }}
 QPushButton:disabled {{
-    background: {c.SURFACE_ALT}; color: {c.TEXT_MUTED}; border-color: {c.BORDER};
+    background: {c.DISABLED_BG}; color: {c.TEXT_ON_DISABLED}; border-color: {c.BORDER};
 }}
 QPushButton#Primary {{
     background: {c.PRIMARY}; color: {c.TEXT_ON_PRIMARY};
@@ -264,13 +286,13 @@ QPushButton#Primary {{
 QPushButton#Primary:hover {{ background: {c.PRIMARY_HOVER}; border-color: {c.PRIMARY_HOVER}; }}
 QPushButton#Primary:pressed {{ background: {c.PRIMARY_PRESSED}; }}
 QPushButton#Primary:disabled {{
-    background: #BFD4F6; border-color: #BFD4F6; color: #FFFFFF;
+    background: {c.DISABLED_BG}; border-color: {c.DISABLED_BG}; color: {c.TEXT_ON_DISABLED};
 }}
 QPushButton#Danger {{
     background: {c.SURFACE}; color: {c.DANGER}; border: 1px solid {c.DANGER_BORDER};
 }}
 QPushButton#Danger:hover {{ background: {c.DANGER_SOFT}; }}
-QPushButton#Danger:disabled {{ color: {c.TEXT_MUTED}; border-color: {c.BORDER}; }}
+QPushButton#Danger:disabled {{ color: {c.TEXT_ON_DISABLED}; border-color: {c.BORDER}; }}
 QPushButton#Ghost {{ background: transparent; border: none; color: {c.TEXT_SECONDARY}; }}
 QPushButton#Ghost:hover {{ background: {c.HOVER}; color: {c.TEXT}; }}
 QPushButton#IconButton {{
@@ -311,9 +333,10 @@ QHeaderView::section {{
 }}
 QTableView::item {{ padding: 10px 8px; border-bottom: 1px solid {c.BORDER}; }}
 QTableView::item:selected {{ background: {c.SELECTED}; color: {c.TEXT}; }}
-QTreeWidget::item {{ padding: 7px 4px; border-radius: {r.SM}px; }}
+QTreeWidget::item {{ padding: 7px 4px; }}
 QTreeWidget::item:selected {{ background: {c.PRIMARY_SOFT}; color: {c.PRIMARY}; }}
 QTreeWidget::item:hover {{ background: {c.HOVER}; }}
+QTreeWidget {{ selection-background-color: transparent; }}
 QListWidget::item {{ padding: 6px; border-radius: {r.SM}px; }}
 QListWidget::item:selected {{ background: {c.PRIMARY_SOFT}; color: {c.TEXT}; }}
 
@@ -396,7 +419,25 @@ QCalendarWidget QAbstractItemView:enabled {{
     border-radius: {r.MD}px; padding: 10px 14px; color: {c.WARNING}; font-weight: 600;
 }}
 #SavedLabel {{ color: {c.SUCCESS}; font-size: {f.SMALL}pt; }}
-#BigNumber {{ font-size: 19pt; font-weight: 700; color: {c.PRIMARY}; }}
+#StatTileValue {{ font-size: {f.H1}pt; font-weight: 700; color: {c.TEXT}; }}
+#StatTileValue[alert="true"] {{ color: {c.DANGER}; }}
+#StatTileValue[alert="warn"] {{ color: {c.WARNING}; }}
+#ErrorText {{ color: {c.DANGER}; }}
+#WarningText {{ color: {c.WARNING}; }}
+#EmptyNote {{ color: {c.TEXT_SECONDARY}; padding: 40px; }}
+#SubTitle {{ font-size: {f.H3}pt; font-weight: 600; }}
+#ValueStrong {{ font-weight: 600; }}
+#Card[tile="true"]:hover {{ border: 1px solid {c.TEXT_MUTED}; }}
+#Card[tile="true"][selected="true"] {{
+    background: {c.PRIMARY_SOFT}; border: 1px solid {c.PRIMARY};
+}}
+#TileTitle {{ font-weight: 600; }}
+#TilePrice {{ font-weight: 700; color: {c.TEXT}; }}
+#IconTile {{ background: {c.BRAND_TINT}; border-radius: {r.MD}px; }}
+#IconTile[alert="true"] {{ background: {c.DANGER_SOFT}; }}
+#CardTitle {{ font-weight: 600; }}
+#Card[interactive="true"]:hover {{ border: 1px solid {c.PRIMARY}; }}
+#BigNumber {{ font-size: {f.H1}pt; font-weight: 700; color: {c.PRIMARY}; }}
 """
 
 

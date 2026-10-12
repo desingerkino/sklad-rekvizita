@@ -75,7 +75,7 @@ class ImportDialog(QDialog):
 
         self.skipped = QLabel("")
         self.skipped.setWordWrap(True)
-        self.skipped.setStyleSheet(f"color:{Color.WARNING};")
+        self.skipped.setObjectName("WarningText")
         self.skipped.setVisible(False)
         root.addWidget(self.skipped)
 

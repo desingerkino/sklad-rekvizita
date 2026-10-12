@@ -50,6 +50,10 @@ def main() -> int:
         from PySide6.QtGui import QIcon
         app.setWindowIcon(QIcon(str(icon_path)))
 
+    from app.ui.brand import default_font, load_fonts
+    if load_fonts():
+        app.setFont(default_font())
+
     from app.ui.theme import QSS
     app.setStyleSheet(QSS)
 

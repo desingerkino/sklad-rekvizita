@@ -143,7 +143,7 @@ class ClientCardDialog(QDialog):
 
         root = QVBoxLayout(self)
         header = QLabel(client.get("full_name", ""))
-        header.setStyleSheet("font-size:15pt; font-weight:600;")
+        header.setObjectName("SectionTitle")
         root.addWidget(header)
 
         box = QGroupBox("Данные")
@@ -272,7 +272,7 @@ class ProductionCardDialog(QDialog):
 
         root = QVBoxLayout(self)
         header = QLabel(f"{production.get('legal_form','')} {production.get('name','')}".strip())
-        header.setStyleSheet("font-size:15pt; font-weight:600;")
+        header.setObjectName("SectionTitle")
         root.addWidget(header)
 
         info_row = QHBoxLayout()
@@ -401,7 +401,7 @@ class ProjectCardDialog(QDialog):
 
         root = QVBoxLayout(self)
         header = QLabel(project.get("name", ""))
-        header.setStyleSheet("font-size:15pt; font-weight:600;")
+        header.setObjectName("SectionTitle")
         root.addWidget(header)
 
         box = QGroupBox("О проекте")

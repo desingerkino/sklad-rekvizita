@@ -293,7 +293,7 @@ class ItemCardView(QWidget):
             value_label.setWordWrap(True)
             key.setWordWrap(True)
             if label_text.startswith("Цена") or label_text.startswith("Оценочная"):
-                value_label.setStyleSheet("font-weight: 600;")
+                value_label.setObjectName("ValueStrong")
             self.info_grid.addWidget(key, row, 0, Qt.AlignTop)
             self.info_grid.addWidget(value_label, row, 1)
 

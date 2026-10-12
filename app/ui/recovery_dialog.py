@@ -91,7 +91,7 @@ class RecoveryCodeDialog(QDialog):
             "восстановление доступа может быть невозможно.")
         warning.setWordWrap(True)
         warning.setAlignment(Qt.AlignCenter)
-        warning.setStyleSheet(f"color:{Color.DANGER};")
+        warning.setObjectName("ErrorText")
         root.addWidget(warning)
 
         root.addWidget(muted(
@@ -225,7 +225,7 @@ class RecoveryLoginDialog(QDialog):
         root.addLayout(form)
 
         self.error = QLabel("")
-        self.error.setStyleSheet(f"color:{Color.DANGER};")
+        self.error.setObjectName("ErrorText")
         self.error.setWordWrap(True)
         self.error.setVisible(False)
         root.addWidget(self.error)

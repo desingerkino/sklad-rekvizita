@@ -77,8 +77,8 @@ class CatalogView(QWidget):
         search_row.addWidget(self.photo_btn)
 
         self.new_btn = QPushButton("  Добавить реквизит")
-        self.new_btn.setObjectName("Primary")
-        self.new_btn.setIcon(icon("plus", "white"))
+        # главное действие экрана одно — «Новая аренда» в верхней панели
+        self.new_btn.setIcon(icon("plus"))
         self.new_btn.setIconSize(QSize(18, 18))
         self.new_btn.setMinimumHeight(46)
         self.new_btn.setCursor(Qt.PointingHandCursor)
@@ -176,7 +176,8 @@ class CatalogView(QWidget):
         self.empty_label.setVisible(False)
         results_layout.addWidget(self.empty_label)
 
-        actions = QHBoxLayout()
+        # FlowLayout: при нехватке ширины кнопки переносятся, а не обрезаются
+        actions = FlowLayout(spacing=Space.SM)
         self.open_btn = QPushButton("  Открыть карточку")
         self.open_btn.setIcon(icon("eye"))
         self.open_btn.setIconSize(QSize(18, 18))
@@ -209,7 +210,6 @@ class CatalogView(QWidget):
             "подпапки станут категориями, имена файлов — названиями")
         self.import_btn.clicked.connect(self._import_from_folder)
         actions.addWidget(self.import_btn)
-        actions.addStretch()
         results_layout.addLayout(actions)
 
         splitter.addWidget(results)

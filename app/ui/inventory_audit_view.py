@@ -129,7 +129,7 @@ class InventoryAuditView(QWidget):
             caption_label = QLabel(caption)
             caption_label.setObjectName("Muted")
             value = QLabel("—")
-            value.setStyleSheet("font-size:18pt; font-weight:700;")
+            value.setObjectName("StatTileValue")
             column.addWidget(caption_label)
             column.addWidget(value)
             self.stat_labels[key] = value
@@ -309,12 +309,12 @@ class InventoryAuditView(QWidget):
         self.stat_labels["missing"].setText(str(summary["missing_units"]))
         self.stat_labels["extra"].setText(str(summary["extra_units"]))
         self.stat_labels["percent"].setText(f"{summary['match_percent']} %")
-        self.stat_labels["missing"].setStyleSheet(
-            "font-size:18pt; font-weight:700;"
-            + (f"color:{Color.DANGER};" if summary["missing_units"] else ""))
-        self.stat_labels["extra"].setStyleSheet(
-            "font-size:18pt; font-weight:700;"
-            + (f"color:{Color.WARNING};" if summary["extra_units"] else ""))
+        for key, alert in (("missing", "true" if summary["missing_units"] else "false"),
+                           ("extra", "warn" if summary["extra_units"] else "false")):
+            label = self.stat_labels[key]
+            label.setProperty("alert", alert)       # цвет задаёт theme.py
+            label.style().unpolish(label)
+            label.style().polish(label)
 
     # ------------------------------------------------------------- действия
     def _create(self) -> None:
