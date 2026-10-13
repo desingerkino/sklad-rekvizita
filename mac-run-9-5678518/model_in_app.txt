@@ -1,0 +1,1 @@
+dist/SkladRekvizita.app/Contents/Resources/assets/models/clip_image.onnx
