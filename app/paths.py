@@ -25,7 +25,11 @@ def _base_data_dir() -> Path:
         if root:
             return Path(root) / APP_ID
         return Path.home() / "AppData" / "Local" / APP_ID
-    # Linux/macOS — только для разработки и тестов
+    if sys.platform == "darwin":
+        # macOS: данные пользователя лежат в «Библиотеке», а не внутри .app —
+        # переустановка программы их не затрагивает
+        return Path.home() / "Library" / "Application Support" / APP_ID
+    # Linux — только для разработки и тестов
     return Path.home() / ".local" / "share" / APP_ID
 
 

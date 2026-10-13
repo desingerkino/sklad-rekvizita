@@ -10,6 +10,7 @@
 """
 from __future__ import annotations
 
+import os
 import sys
 
 
@@ -26,6 +27,14 @@ def main() -> int:
     from app.version import APP_ID, DISPLAY_NAME, VERSION
 
     paths.ensure_dirs()
+    if sys.platform == "darwin":
+        # у Python на macOS нет системных сертификатов: без этого любая загрузка
+        # по https (например, смена модели поиска по фото) падает с CERTIFICATE_VERIFY_FAILED
+        try:
+            import certifi
+            os.environ.setdefault("SSL_CERT_FILE", certifi.where())
+        except Exception:                                    # noqa: BLE001
+            pass
     log = setup_logging()
     log.info("Запуск %s (версия %s)", DISPLAY_NAME, VERSION)
 

@@ -1,0 +1,19 @@
+# Склад Реквизита — зависимости для macOS 10.15 (Catalina), Intel x86_64.
+# Подобраны по реально существующим колёсам для macOS 10.15 (проверено в CI):
+#   • PySide6 6.4.3 — последняя ветка Qt, где заявлена macOS 10.14/10.15 (Qt 6.5 и новее требуют macOS 11);
+#     она работает только с Python 3.10–3.11, поэтому mac-сборка идёт на Python 3.11;
+#   • onnxruntime 1.16.3 — последняя версия с колесом под macOS 10.15 x86_64;
+#   • numpy 1.26.x — для того же onnxruntime.
+# Для Windows используется requirements.txt, он этим файлом не затрагивается.
+PySide6==6.4.3
+Pillow>=10.4.0,<12
+reportlab>=4.2.2,<5
+cryptography==48.0.1     # колесо macosx_10_9 (OpenSSL внутри). Более новые на раннере macOS 15 подтягивают
+                         # динамический OpenSSL из Homebrew, требующий macOS 15 — на Catalina не запустится
+argon2-cffi>=23.1.0
+onnxruntime==1.16.3
+numpy>=1.26,<2
+pillow-heif>=0.16.0
+openpyxl>=3.1.5,<4
+pyinstaller>=6.10.0
+certifi            # сертификаты для скачивания: у Python с python.org их нет, из-за чего на Mac была ошибка SSL
