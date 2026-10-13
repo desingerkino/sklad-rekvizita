@@ -1,0 +1,4 @@
+branch:
+BENCH items=4800 window=0.72s open_catalog=0.47s reopen_catalog=0.48s
+main:
+BENCH items=4800 window=0.90s open_catalog=0.63s reopen_catalog=0.65s
