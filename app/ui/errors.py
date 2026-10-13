@@ -28,16 +28,10 @@ def show_error(parent, exc: Exception, context: str = "") -> None:
 
 def show_fatal(exc: Exception) -> None:
     try:
-        import traceback
-        box = QMessageBox()
-        box.setIcon(QMessageBox.Critical)
-        box.setWindowTitle("Ошибка приложения")
-        box.setText("Произошла непредвиденная ошибка. Данные не потеряны.")
-        box.setInformativeText(f"Подробности записаны в журнал:\n{LOGS_DIR / 'app.log'}")
-        # техническая часть: кнопка «Показать подробности» — её можно скопировать и прислать
-        box.setDetailedText("".join(traceback.format_exception(
-            type(exc), exc, exc.__traceback__)))
-        box.exec()
+        QMessageBox.critical(
+            None, "Ошибка приложения",
+            "Произошла непредвиденная ошибка. Данные не потеряны.\n"
+            f"Подробности записаны в журнал:\n{LOGS_DIR / 'app.log'}")
     except Exception:
         pass
 
