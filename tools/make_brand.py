@@ -4,7 +4,7 @@
 
 Запуск:  python -m tools.make_brand
 Нужны: Pillow и fontTools (только для генерации, в программу не входят),
-шрифт Inter (SIL OFL) в assets/fonts.
+шрифт Onest (SIL OFL) в assets/fonts.
 
 Идея знака: открытый складской контейнер в изометрии. Правая грань прорезана
 тремя вертикальными пазами, как ячейки стеллажа: «хранение + каталог».
@@ -27,8 +27,8 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parent.parent
 BRAND = ROOT / "assets" / "brand"
 FONTS = ROOT / "assets" / "fonts"
-BOLD = FONTS / "Inter-Bold.otf"
-SEMI = FONTS / "Inter-SemiBold.otf"
+BOLD = FONTS / "Onest-Bold.ttf"
+SEMI = FONTS / "Onest-Medium.ttf"
 
 # палитра бренда (совпадает с theme.py)
 BLUE = "#2563EB"

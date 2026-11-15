@@ -20,7 +20,8 @@ from ..services.categories_service import categories_service
 from ..services.reports_service import STATUS_LABELS, period_bounds, reports_service
 from ..utils import fmt_date, fmt_dt, money, money_plain
 from .theme import Color, Font, Space, status_tone
-from .widgets.common import (Card, DatePicker, StatusBadge, cell, hint, icon, make_table,
+from .widgets.common import (Card, DatePicker, ElidedButton, StatusBadge, cell, hint, icon,
+                             make_table,
                              muted, scrollable_body, section_title)
 
 # статусы аренды в отчётах — по единой системе 2.3.1
@@ -105,12 +106,12 @@ class DayCell(QFrame):
         elif not day["in_month"]:
             number.setStyleSheet(f"color: {Color.TEXT_MUTED};")
         else:
-            number.setStyleSheet(f"color: {Color.TEXT_SECONDARY}; font-weight: 600;")
+            number.setStyleSheet(f"color: {Color.TEXT_SECONDARY}; font-weight: 500;")
         layout.addWidget(number)
 
         for entry in day["rentals"][:3]:
             color, background, border = status_tone(STATUS_TONES.get(entry["status"], "info"))
-            bar = QPushButton(f"{entry['number']} · {entry['client']}")
+            bar = ElidedButton(f"{entry['number']} · {entry['client']}")
             bar.setCursor(Qt.PointingHandCursor)
             # длинная подпись не должна раздвигать колонку календаря: колонки равные
             bar.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Fixed)

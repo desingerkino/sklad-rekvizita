@@ -107,7 +107,7 @@ $suites = @(
     @{ m = "tests.test_v23";        t = "Тесты версии 2.3";         blocking = $true },
     @{ m = "tests.test_v24";        t = "Тесты версии 2.4";         blocking = $true },
     @{ m = "tests.test_v24_audit";  t = "Тесты инвентаризации";     blocking = $true },
-    @{ m = "tests.test_v24_packing"; t = "Тесты комплектации и Excel"; blocking = $true },
+    @{ m = "tests.test_v24_excel"; t = "Тесты выгрузки в Excel"; blocking = $true },
     @{ m = "tests.test_v24_backup"; t = "Тесты резервных копий";     blocking = $true },
     @{ m = "tests.test_v24_import"; t = "Тесты импорта из папки";    blocking = $true },
     @{ m = "tests.test_v24_imagesearch"; t = "Тесты поиска по фото";  blocking = $true },

@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (QFileDialog, QFrame, QGridLayout, QHBoxLayout,
 
 from ..errors import AppError
 from ..services.inventory_service import inventory_service
-from ..services.photo_service import PHOTO_KINDS as SERVICE_PHOTO_KINDS, photo_service
+from ..services.photo_service import PHOTO_KINDS as SERVICE_PHOTO_KINDS, photo_service, photo_filter
 from ..services.repairs_service import repairs_service
 from ..utils import fmt_date, money
 from ..version import RENTAL_PERIOD_DAYS
@@ -41,10 +41,14 @@ class ItemCardView(QWidget):
     add_to_rental = Signal(int)
     open_rental = Signal(int)
     back = Signal()
+    changed = Signal()          # фото или данные изменились — каталог обновит карточку
+    find_similar = Signal(int)  # «Похожие предметы» по главной фотографии
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.item_id: int | None = None
+        self._favorite = False
+        self.setAcceptDrops(True)      # фотографии можно перетащить из папки
         self._photos: list[dict] = []
         self._photo_index = 0
         self._build()
@@ -78,7 +82,7 @@ class ItemCardView(QWidget):
 
         # ---------------------------------------------------- фотографии
         photo_card = Card(padding=Space.MD)
-        photo_card.setFixedWidth(360)
+        photo_card.setFixedWidth(392)
 
         # Крупный снимок со стрелками. Перелистывание работает и с клавиатуры:
         # оператор смотрит фотографии одной рукой, второй держит предмет.
@@ -120,10 +124,13 @@ class ItemCardView(QWidget):
         photo_actions = QHBoxLayout()
         photo_actions.setSpacing(Space.SM)
         self.add_photo_btn = QPushButton("Добавить")
-        self.add_photo_btn.setToolTip("Загрузить ещё одну фотографию этого предмета")
+        self.add_photo_btn.setToolTip(
+            "Загрузить фотографии этого предмета: JPG, JPEG, HEIC (айфон), PNG, WEBP.\n"
+            "Файлы можно и просто перетащить в карточку из папки.")
         self.add_photo_btn.clicked.connect(lambda: self._add_photo())
         photo_actions.addWidget(self.add_photo_btn)
-        self.primary_btn = QPushButton("Сделать основной")
+        self.primary_btn = QPushButton("Главная")
+        self.primary_btn.setToolTip("Сделать эту фотографию главной: она показывается в каталоге")
         self.primary_btn.clicked.connect(self._make_primary)
         photo_actions.addWidget(self.primary_btn)
         self.delete_photo_btn = QPushButton("Удалить")
@@ -131,6 +138,14 @@ class ItemCardView(QWidget):
         self.delete_photo_btn.clicked.connect(self._delete_photo)
         photo_actions.addWidget(self.delete_photo_btn)
         photo_card.body.addLayout(photo_actions)
+
+        self.original_btn = QPushButton("Показать исходный файл")
+        self.original_btn.setObjectName("LinkButton")
+        self.original_btn.setCursor(Qt.PointingHandCursor)
+        self.original_btn.setToolTip(
+            "Исходный снимок хранится без пересжатия. Кнопка открывает папку с файлом.")
+        self.original_btn.clicked.connect(self._show_original)
+        photo_card.body.addWidget(self.original_btn, 0, Qt.AlignHCenter)
         header.addWidget(photo_card)
 
         # ------------------------------------------------------- сведения
@@ -140,6 +155,23 @@ class ItemCardView(QWidget):
         self.name_label.setWordWrap(True)
         self.name_label.setMinimumWidth(320)
         info_card.body.addWidget(self.name_label)
+        number_row = QHBoxLayout()
+        number_row.setSpacing(Space.MD)
+        self.number_label = QLabel("")
+        self.number_label.setObjectName("ValueStrong")
+        self.number_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        number_row.addWidget(self.number_label)
+        number_row.addStretch()
+        self.favorite_btn = QPushButton("")
+        self.favorite_btn.setCursor(Qt.PointingHandCursor)
+        self.favorite_btn.setToolTip("Избранное у каждого сотрудника своё (Ctrl+D)")
+        self.favorite_btn.clicked.connect(self.toggle_favorite)
+        number_row.addWidget(self.favorite_btn)
+        self.similar_btn = QPushButton("Похожие предметы")
+        self.similar_btn.setToolTip("Найти на складе предметы, похожие на главную фотографию")
+        self.similar_btn.clicked.connect(lambda: self.find_similar.emit(self.item_id))
+        number_row.addWidget(self.similar_btn)
+        info_card.body.addLayout(number_row)
 
         self.badges_row = QHBoxLayout()
         self.badges_row.setSpacing(Space.SM)
@@ -259,10 +291,14 @@ class ItemCardView(QWidget):
         if not item:
             return
 
-        self.name_label.setText(
-            f"{item['name']}   ·   Инв. № <span style='color:{Color.PRIMARY}'>"
-            f"{item['inv_number']}</span>")
-        self.name_label.setTextFormat(Qt.RichText)
+        # Название и номер — разными строками: длинное название переносится
+        # по словам, а номер всегда виден целиком.
+        self.name_label.setTextFormat(Qt.PlainText)
+        self.name_label.setText(item["name"])
+        self.number_label.setText(f"Инв. № {item['inv_number']}")
+        self._favorite = inventory_service.is_favorite(item_id)
+        self._sync_favorite()
+        inventory_service.mark_viewed(item_id)
 
         self._clear_layout(self.badges_row)
         code, label = availability_status(item)
@@ -333,6 +369,7 @@ class ItemCardView(QWidget):
         self._render_photos()
 
     def _render_photos(self) -> None:
+        self._sync_original_button()
         """Перерисовывает миниатюры, крупный снимок и подпись под ним."""
         self._clear_layout(self.thumbs_row)
         for index, photo in enumerate(self._photos[:8]):
@@ -374,6 +411,10 @@ class ItemCardView(QWidget):
             button.setToolTip("Показать эту фотографию" if has
                               else "Фотографии этого ракурса нет — нажмите, чтобы добавить")
 
+    def _sync_original_button(self) -> None:
+        photo = self._current_photo()
+        self.original_btn.setVisible(bool(photo and photo_service.original_path(photo)))
+
     def _show_photo(self, index: int) -> None:
         if 0 <= index < len(self._photos):
             self._photo_index = index
@@ -401,12 +442,39 @@ class ItemCardView(QWidget):
         if not self.item_id:
             return
         paths_selected, _ = QFileDialog.getOpenFileNames(
-            self, "Фотографии реквизита", "",
-            "Изображения (*.jpg *.jpeg *.png *.webp *.bmp *.heic *.heif)")
-        if not paths_selected:
+            self, "Фотографии реквизита — JPG, JPEG, HEIC и другие", "", photo_filter())
+        if paths_selected:
+            self.add_photo_files(paths_selected, kind)
+
+    def dragEnterEvent(self, event) -> None:                 # noqa: N802 — интерфейс Qt
+        from ..services.photo_service import is_photo_file
+        mime = event.mimeData()
+        if self.item_id and mime.hasUrls() and any(
+                is_photo_file(url.toLocalFile()) for url in mime.urls()):
+            event.acceptProposedAction()
+
+    def dropEvent(self, event) -> None:                      # noqa: N802
+        from ..services.photo_service import is_photo_file
+        files = [url.toLocalFile() for url in event.mimeData().urls()
+                 if is_photo_file(url.toLocalFile())]
+        if files:
+            event.acceptProposedAction()
+            self.add_photo_files(files)
+
+    def add_photo_files(self, paths_selected: list, kind: str = "other") -> None:
+        """Добавляет фотографии из файлов (окно выбора или перетаскивание в карточку)."""
+        if not self.item_id:
             return
         added, errors = 0, []
         for source in paths_selected:
+            # тот же файл уже прикреплён к другому предмету — возможно, дубль карточки
+            same = photo_service.find_same_file(source, exclude_item_id=self.item_id)
+            if same and not confirm(
+                    self, f"Файл «{Path(source).name}» уже загружен у предмета "
+                          f"№ {same[0]['inv_number']} «{same[0]['name']}».\n\n"
+                          "Возможно, это дубль карточки. Всё равно добавить фотографию?",
+                    "Такой файл уже есть"):
+                continue
             try:
                 photo_service.add_photo(self.item_id, source, kind=kind,
                                         make_primary=not self._photos and added == 0)
@@ -414,9 +482,41 @@ class ItemCardView(QWidget):
             except Exception as exc:                               # noqa: BLE001
                 errors.append(f"{Path(source).name}: {exc}")
         self._load_photos(self.item_id)
+        if added:
+            self.changed.emit()
         if errors:
             info(self, "Загружено: {0}\n\nНе удалось:\n• {1}".format(
                 added, "\n• ".join(errors)), "Фотографии")
+
+    def toggle_favorite(self) -> None:
+        if not self.item_id:
+            return
+        try:
+            inventory_service.set_favorite(self.item_id, not self._favorite)
+        except AppError as exc:
+            show_error(self, exc)
+            return
+        self._favorite = not self._favorite
+        self._sync_favorite()
+        self.changed.emit()
+
+    def _sync_favorite(self) -> None:
+        self.favorite_btn.setText("  В избранном" if self._favorite else "  В избранное")
+        self.favorite_btn.setIcon(icon("star_on" if self._favorite else "star"))
+        self.favorite_btn.setIconSize(QSize(18, 18))
+
+    def _show_original(self) -> None:
+        photo = self._current_photo()
+        if not photo:
+            return
+        original = photo_service.original_path(photo)
+        if original is None:
+            info(self, "У этой фотографии исходный файл не сохранён: она загружена "
+                       "в прежней версии программы, где хранилась только рабочая копия.\n\n"
+                       "Новые фотографии сохраняются вместе с исходником.", "Исходный файл")
+            return
+        from .settings_view import open_folder
+        open_folder(original.parent)
 
     def _current_photo(self) -> Optional[dict]:
         if not self._photos:

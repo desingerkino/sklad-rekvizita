@@ -561,29 +561,30 @@ class InventoryService:
         Одинаковые названия не запрещены — на складе бывает десять одинаковых
         стульев отдельными карточками, — поэтому это предупреждение, а не отказ.
         """
-        key = " ".join((name or "").lower().split())
+        key = self._name_key(name)
         if not key:
             return []
         rows = get_db().query(
             "SELECT id, inv_number, name, quantity_total FROM inventory_items "
-            "WHERE is_archived=0 AND rulower(trim(name)) = ? AND id <> ? LIMIT ?",
-            (key, exclude_id or 0, limit))
-        return [dict(row) for row in rows]
+            "WHERE is_archived=0 AND id <> ?", (exclude_id or 0,))
+        return [dict(row) for row in rows if self._name_key(row["name"]) == key][:limit]
+
+    @staticmethod
+    def _name_key(name: str) -> str:
+        """Название для сравнения: без регистра, лишних пробелов и «ё/е»."""
+        return " ".join((name or "").lower().replace("ё", "е").split())
 
     def duplicate_groups(self, limit: int = 200) -> list[dict]:
         """Группы карточек с одинаковым названием — для проверки дублей."""
-        db = get_db()
-        groups = []
-        for row in db.query(
-                "SELECT rulower(trim(name)) k, COUNT(*) c FROM inventory_items "
-                "WHERE is_archived=0 GROUP BY k HAVING c > 1 ORDER BY c DESC, k LIMIT ?",
-                (limit,)):
-            items = [dict(r) for r in db.query(
-                "SELECT id, inv_number, name, quantity_total, category_id FROM inventory_items "
-                "WHERE is_archived=0 AND rulower(trim(name)) = ? ORDER BY inv_number",
-                (row["k"],))]
-            groups.append({"reason": "Одинаковое название", "items": items})
-        return groups
+        groups: dict[str, list[dict]] = {}
+        for row in get_db().query(
+                "SELECT id, inv_number, name, quantity_total, category_id "
+                "FROM inventory_items WHERE is_archived=0 ORDER BY inv_number"):
+            groups.setdefault(self._name_key(row["name"]), []).append(dict(row))
+        found = [{"reason": "Одинаковое название", "items": items}
+                 for key, items in groups.items() if key and len(items) > 1]
+        found.sort(key=lambda group: len(group["items"]), reverse=True)
+        return found[:limit]
 
     def available_units(self) -> tuple[int, int]:
         """(всего экземпляров, свободно сейчас) — для сводки на главном экране."""

@@ -35,7 +35,8 @@ def source(name: str) -> str:
 def has_scroll(text: str) -> bool:
     """Есть ли в экране собственная прокрутка или прокручиваемая таблица."""
     return ("scroll_area(" in text or "scrollable_body(" in text
-            or "QScrollArea" in text or "make_table(" in text)
+            or "QScrollArea" in text or "make_table(" in text
+            or "QListView" in text or "QTableView" in text)   # 4.0: списки на модели
 
 
 def main() -> int:  # noqa: C901
@@ -74,7 +75,7 @@ def main() -> int:  # noqa: C901
     check("Карточка аренды прокручивается", "scrollable_body(" in source("rentals_view.py"))
     check("Подробности аренды прокручиваются", "scrollable_body(" in source("reports_view.py"))
     check("Список результатов поиска по фото прокручивается",
-          "ScrollPerPixel" in source("photo_search_dialog.py"))
+          "QScrollArea()" in source("photo_search_dialog.py"))
 
     print("\n=== Вложенная и горизонтальная прокрутка (пп. 10, 11) ===")
     common = source("widgets/common.py")

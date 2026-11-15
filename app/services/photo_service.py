@@ -35,6 +35,23 @@ THUMB_SIZE = (480, 480)      # миниатюра каталога: хватае
 MAX_SIDE = 1920              # рабочая копия для просмотра в программе
 ORIGINAL_SUFFIX = "_orig"    # исходный файл лежит рядом и не пересжимается
 
+# Форматы фотографий, которые принимает программа. Один список на все окна
+# выбора файла, перетаскивание и импорт из папки. Регистр расширения не важен:
+# айфон пишет IMG_0001.HEIC, камера — DSC_0001.JPG.
+PHOTO_SUFFIXES = (".jpg", ".jpeg", ".heic", ".heif", ".png", ".webp", ".bmp")
+
+
+def photo_filter() -> str:
+    """Фильтр для окна выбора файла: расширения в обоих регистрах."""
+    patterns = []
+    for suffix in PHOTO_SUFFIXES:
+        patterns += [f"*{suffix}", f"*{suffix.upper()}"]
+    return f"Фотографии — JPG, JPEG, HEIC, PNG, WEBP, BMP ({' '.join(patterns)});;Все файлы (*)"
+
+
+def is_photo_file(path) -> bool:
+    return Path(path).suffix.lower() in PHOTO_SUFFIXES
+
 
 _HEIF_READY: Optional[bool] = None
 

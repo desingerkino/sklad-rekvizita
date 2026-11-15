@@ -93,8 +93,6 @@ class ExcelService:
         auth_service.require_login()
         openpyxl = _openpyxl()
         from .inventory_service import inventory_service
-        from .packing_service import packing_service
-
         db = get_db()
         sql = ("SELECT i.id, i.inv_number, i.barcode, i.name, i.description, i.status, "
                "       i.quantity_total, i.rental_price, i.valuation, i.is_archived, "
@@ -116,27 +114,34 @@ class ExcelService:
             workbook, "Склад",
             ["Инв. №", "Штрихкод", "Наименование", "Категория", "Статус", "Всего",
              "Доступно", "В аренде", "В ремонте", "Цена аренды", "Оценка",
-             "Место упаковки", "Текущая аренда", "Описание"],
-            [12, 14, 38, 24, 14, 8, 10, 10, 11, 13, 13, 28, 34, 45])
+             "Текущая аренда", "Описание"],
+            [12, 14, 38, 24, 14, 8, 10, 10, 11, 13, 13, 34, 45])
+
+        # Занятость, ремонт и текущие аренды читаются тремя запросами на всю
+        # выгрузку, а не тремя на каждую строку: на складе в 10 000 позиций
+        # это разница между секундами и минутами.
+        busy = inventory_service.busy_map()
+        repairs = inventory_service.repair_map()
+        current: dict[int, str] = {}
+        for rental in db.query(
+                "SELECT ri.item_id, r.number, ifnull(cl.full_name,'') AS client "
+                "FROM rental_items ri JOIN rentals r ON r.id=ri.rental_id "
+                "LEFT JOIN clients cl ON cl.id=r.client_id "
+                "WHERE ri.item_id IS NOT NULL AND ri.quantity > ri.returned_qty "
+                "  AND r.status IN ('active','overdue') ORDER BY ri.id"):
+            current.setdefault(rental["item_id"], f"{rental['number']} · {rental['client']}")
 
         rows = 0
         for row in db.query(sql, params):
-            rented = inventory_service.reserved_now(row["id"])
-            repair = inventory_service.in_repair(row["id"])
+            rented = busy.get(row["id"], 0)
+            repair = repairs.get(row["id"], 0)
             available = max(0, int(row["quantity_total"]) - rented - repair)
-            rental = db.query_one(
-                "SELECT r.number, ifnull(cl.full_name,'') AS client "
-                "FROM rental_items ri JOIN rentals r ON r.id=ri.rental_id "
-                "LEFT JOIN clients cl ON cl.id=r.client_id "
-                "WHERE ri.item_id=? AND ri.quantity > ri.returned_qty "
-                "  AND r.status IN ('active','overdue') ORDER BY ri.id LIMIT 1", (row["id"],))
             sheet.append([
                 row["inv_number"], row["barcode"], row["name"], row["category"],
                 "в архиве" if row["is_archived"] else row["status"],
                 int(row["quantity_total"]), available, rented, repair,
                 float(row["rental_price"] or 0), float(row["valuation"] or 0),
-                packing_service.where_is_text(row["id"]),
-                f"{rental['number']} · {rental['client']}" if rental else "",
+                current.get(row["id"], ""),
                 row["description"],
             ])
             rows += 1
@@ -286,37 +291,5 @@ class ExcelService:
 
         self._title_row(detail, f"Инвентаризация {audit['number']}")
         return self._finish(workbook, target, f"Инвентаризация {audit['number']}", len(lines))
-
-    # ---------------------------------------------------------- комплектация
-    def export_packing(self, target: Path, set_id: int) -> Path:
-        """Выгрузка комплекта: коробки и их содержимое."""
-        auth_service.require_login()
-        openpyxl = _openpyxl()
-        from .packing_service import packing_service
-
-        data = packing_service.get(set_id)
-        boxes = packing_service.contents(set_id)
-
-        workbook = openpyxl.Workbook()
-        sheet = self._sheet(
-            workbook, "Комплектация",
-            ["Коробка", "Инв. №", "Наименование", "Количество", "Примечание"],
-            [24, 12, 40, 12, 30])
-        rows = 0
-        for box in boxes:
-            if not box["items"]:
-                sheet.append([box["label"], "", "(пусто)", 0, box["note"]])
-                continue
-            for item in box["items"]:
-                sheet.append([box["label"], item["inv_number"], item["name_snap"],
-                              int(item["quantity"]), item["note"]])
-                rows += 1
-
-        self._title_row(
-            sheet,
-            f"Комплект {data['number']} · {data['vehicle_name'] or 'машина не указана'} · "
-            f"{fmt_date(data['date_ship']) if data['date_ship'] else 'дата не указана'}")
-        return self._finish(workbook, target, f"Комплектация {data['number']}", rows)
-
 
 excel_service = ExcelService()

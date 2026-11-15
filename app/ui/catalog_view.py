@@ -23,6 +23,7 @@ from __future__ import annotations
 from PySide6.QtCore import QEvent, QSettings, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QAction, QColor, QKeySequence
 from PySide6.QtWidgets import (QAbstractItemView, QButtonGroup, QComboBox, QDoubleSpinBox,
+                               QSizePolicy,
                                QFrame, QHBoxLayout, QHeaderView, QInputDialog, QLabel,
                                QLineEdit, QListView, QMenu, QPushButton, QSplitter,
                                QStackedWidget, QTableView, QTreeWidget, QTreeWidgetItem,
@@ -241,13 +242,34 @@ class CatalogView(QWidget):
             scope_row.addWidget(button)
         self.scope_buttons.button(0).setChecked(True)
         scope_row.addStretch()
+        self.reset_btn = QPushButton("Сбросить фильтры")
+        self.reset_btn.setObjectName("LinkButton")
+        self.reset_btn.setCursor(Qt.PointingHandCursor)
+        self.reset_btn.clicked.connect(self.reset_filters)
+        self.reset_btn.setVisible(False)
+        scope_row.addWidget(self.reset_btn)
+        self.filter_btn = self._button("Фильтры", "settings", None)
+        self.filter_btn.setToolTip("Фильтр по наличию фотографии и по цене")
+        self._build_filter_menu()
+        scope_row.addWidget(self.filter_btn)
+        results_layout.addLayout(scope_row)
+
+        # вторая строка: счётчик слева, доступность / сортировка / вид справа.
+        # Две строки вместо одной: на узком окне кнопки не сжимаются и не
+        # обрезаются.
+        toolbar = QHBoxLayout()
+        toolbar.setSpacing(Space.SM)
+        self.count_label = QLabel("")
+        self.count_label.setObjectName("Muted")
+        self.count_label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
+        toolbar.addWidget(self.count_label, 1)
 
         self.availability = QComboBox()
         for key, label in inventory_service.AVAILABILITY.items():
             self.availability.addItem(label, key)
         self.availability.setToolTip("Фильтр по доступности на сегодня")
         self.availability.currentIndexChanged.connect(self.reload_items)
-        scope_row.addWidget(self.availability)
+        toolbar.addWidget(self.availability)
 
         self.sort = QComboBox()
         for key, (label, _sql) in inventory_service.SORTS.items():
@@ -256,26 +278,7 @@ class CatalogView(QWidget):
         saved_sort = self._prefs.value("catalog/sort", "name")
         self.sort.setCurrentIndex(max(0, self.sort.findData(saved_sort)))
         self.sort.currentIndexChanged.connect(self._sort_changed)
-        scope_row.addWidget(self.sort)
-
-        self.filter_btn = self._button("Фильтры", "settings", None)
-        self.filter_btn.setToolTip("Фильтр по наличию фотографии и по цене")
-        self._build_filter_menu()
-        scope_row.addWidget(self.filter_btn)
-        results_layout.addLayout(scope_row)
-
-        # счётчик и вид
-        toolbar = QHBoxLayout()
-        toolbar.setSpacing(Space.SM)
-        self.count_label = QLabel("")
-        self.count_label.setObjectName("Muted")
-        toolbar.addWidget(self.count_label, 1)
-        self.reset_btn = QPushButton("Сбросить фильтры")
-        self.reset_btn.setObjectName("LinkButton")
-        self.reset_btn.setCursor(Qt.PointingHandCursor)
-        self.reset_btn.clicked.connect(self.reset_filters)
-        self.reset_btn.setVisible(False)
-        toolbar.addWidget(self.reset_btn)
+        toolbar.addWidget(self.sort)
 
         self.view_buttons = QButtonGroup(self)
         self.view_buttons.setExclusive(True)
@@ -290,9 +293,7 @@ class CatalogView(QWidget):
             button.setCursor(Qt.PointingHandCursor)
             button.clicked.connect(lambda _=False, i=index: self.set_view_mode(i))
             self.view_buttons.addButton(button, index)
-        toolbar.addWidget(self.view_buttons.button(0))
-        toolbar.addWidget(self.view_buttons.button(1))
-        self.view_buttons.button(0).setToolTip("Плитка с фотографиями")
+            toolbar.addWidget(button)
         results_layout.addLayout(toolbar)
 
         # ------------------------------------------------------------ виды
@@ -775,7 +776,7 @@ class CatalogView(QWidget):
             return
         text = f"Найдено: {total}"
         if loaded < total:
-            text += f"   ·   показано {loaded}, остальные подгружаются при прокрутке"
+            text += f" · показано {loaded}, остальные подгрузятся при прокрутке"
         self.count_label.setText(text)
 
     # -------------------------------------------------------------- выделение

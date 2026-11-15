@@ -181,11 +181,10 @@ def main() -> int:
           and "role_label" in main_window)
     check("Аватар открывается из сайдбара", "open_profile" in main_window)
     check("Статус склада в сайдбаре", "_build_stock_card" in main_window)
-    check("Круговой индикатор доступности",
-          "CircularProgress" in main_window
-          and (UI / "widgets" / "circular.py").exists())
+    # 4.0: вместо круга — компактная полоса, чтобы меню помещалось без прокрутки
+    check("Индикатор доступности склада в меню", "StockBar" in main_window)
     check("Показатели склада считаются из данных",
-          "available_units" in main_window and "animate_to" in main_window)
+          "available_units" in main_window and "setValue(percent)" in main_window)
     check("Камера встроена в строку поиска",
           "camera_action" in main_window and "TrailingPosition" in main_window)
     check("Поиск по фото переиспользует существующий диалог",

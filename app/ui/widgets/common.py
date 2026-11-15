@@ -21,7 +21,6 @@ DATE_FORMAT = "dd.MM.yyyy"
 
 # ------------------------------------------------------------------ иконки
 _ICON_CACHE: dict[tuple, QIcon] = {}
-_ICON_SOURCE_COLORS = {"": "#6B7280", "active": "#2563EB", "danger": "#DC2626"}
 
 
 def icon(name: str, variant: str = "") -> QIcon:
@@ -43,7 +42,7 @@ def icon(name: str, variant: str = "") -> QIcon:
     result = QIcon()
     if path.exists():
         target = path
-        if theme.is_dark() and variant in _ICON_SOURCE_COLORS:
+        if theme.is_dark() and variant in theme.ICON_SOURCE_COLORS:
             color = {"": Color.ICON, "active": Color.PRIMARY_TEXT,
                      "danger": Color.DANGER}[variant]
             try:
@@ -52,7 +51,7 @@ def icon(name: str, variant: str = "") -> QIcon:
                 target = folder / f"{name}{suffix}_{color.lstrip('#')}.svg"
                 if not target.exists():
                     text = path.read_text(encoding="utf-8")
-                    target.write_text(text.replace(_ICON_SOURCE_COLORS[variant], color),
+                    target.write_text(text.replace(theme.ICON_SOURCE_COLORS[variant], color),
                                       encoding="utf-8")
             except OSError:
                 target = path             # папка недоступна — остаётся обычный значок
@@ -158,6 +157,58 @@ class Card(QFrame):
         self.body.setSpacing(Space.MD)
         if with_shadow:
             shadow(self)
+
+
+class ElidedButton(QPushButton):
+    """
+    Кнопка, которая сокращает длинную подпись многоточием под свою ширину.
+
+    Обычная кнопка в узкой ячейке (день календаря) просто обрезает текст по
+    краю, иногда посреди буквы. Эта хранит полный текст, показывает столько,
+    сколько помещается, и пересчитывает подпись при изменении размера.
+    Полный текст остаётся доступен через full_text() и подсказку.
+    """
+
+    def __init__(self, text: str = "", parent=None, padding: int = 18):
+        super().__init__(parent)
+        self._full = text
+        self._padding = padding
+        self._fit()
+
+    def full_text(self) -> str:
+        return self._full
+
+    def set_full_text(self, text: str) -> None:
+        self._full = text
+        self._fit()
+
+    def _fit(self) -> None:
+        width = max(0, self.width() - self._padding)
+        QPushButton.setText(self, self.fontMetrics().elidedText(
+            self._full, Qt.ElideRight, width) if width else self._full)
+
+    def resizeEvent(self, event) -> None:                    # noqa: N802 — интерфейс Qt
+        super().resizeEvent(event)
+        self._fit()
+
+
+class ClickableCard(Card):
+    """
+    Карточка, по которой можно щёлкнуть.
+
+    Обработчик нельзя «подвесить» присваиванием card.mousePressEvent = ...:
+    для виртуальных методов Qt это не срабатывает, и щелчок молча терялся
+    (так не открывался профиль из бокового меню). Здесь событие
+    переопределено как положено и превращено в сигнал.
+    """
+
+    clicked = Signal()
+
+    def mouseReleaseEvent(self, event) -> None:              # noqa: N802 — интерфейс Qt
+        if event.button() == Qt.LeftButton and self.rect().contains(
+                event.position().toPoint() if hasattr(event, "position") else event.pos()):
+            self.clicked.emit()
+        super().mouseReleaseEvent(event)
 
 
 class StatusBadge(QLabel):

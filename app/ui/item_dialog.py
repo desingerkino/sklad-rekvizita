@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (QComboBox, QDialog, QDialogButtonBox, QDoubleSpin
 from ..errors import AppError
 from ..services.categories_service import categories_service
 from ..services.inventory_service import inventory_service
-from ..services.photo_service import photo_service
+from ..services.photo_service import photo_service, photo_filter
 from ..version import RENTAL_PERIOD_DAYS
 from .errors import confirm, show_error
 from .widgets.common import scrollable_body
@@ -171,7 +171,7 @@ class ItemDialog(QDialog):
         if not self._ensure_saved():
             return
         files, _ = QFileDialog.getOpenFileNames(
-            self, "Выберите фотографии", "", "Изображения (*.jpg *.jpeg *.png *.bmp *.webp *.heic *.heif)")
+            self, "Выберите фотографии", "", photo_filter())
         for path in files:
             try:
                 photo_service.add_photo(self.item_id, Path(path))

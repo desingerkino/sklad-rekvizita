@@ -44,13 +44,13 @@ def main() -> int:
     check("Иконка Windows содержит размеры 16–256", sizes == [(s, s) for s in (16, 24, 32, 48, 64, 128, 256)],
           str(sizes))
 
-    print("\n=== Шрифт Inter ===")
+    print("\n=== Шрифт Onest ===")
     fonts = ROOT / "assets" / "fonts"
-    for name in ("Inter-Regular.otf", "Inter-Medium.otf", "Inter-SemiBold.otf", "Inter-Bold.otf"):
+    for name in ("Onest-Regular.ttf", "Onest-Medium.ttf", "Onest-Bold.ttf"):
         check(f"{name} лежит в assets/fonts", (fonts / name).exists())
-    check("Лицензия шрифта приложена", (fonts / "Inter-LICENSE.txt").exists())
+    check("Лицензия шрифта приложена", (fonts / "Onest-LICENSE.txt").exists())
     from app.ui import theme
-    check("Inter первый в стеке шрифтов", theme.Font.FAMILY.startswith("'Inter'"))
+    check("Onest первый в стеке шрифтов", theme.Font.FAMILY.startswith("'Onest'"))
     spec = (ROOT / "build" / "sklad.spec").read_text(encoding="utf-8")
     check("Папка assets (шрифты, логотип) попадает в сборку", '(str(ROOT / "assets"), "assets")' in spec)
 

@@ -142,7 +142,7 @@ def main() -> int:
     from PySide6.QtWidgets import QApplication
     app = QApplication(sys.argv)
     # В offscreen-режиме на сервере нет системных шрифтов с кириллицей (текст
-    # превращается в квадраты). Подключаем Inter из assets так же, как это делает
+    # превращается в квадраты). Подключаем Onest из assets так же, как это делает
     # сама программа, поэтому снимки близки к реальному виду.
     from app.ui import theme
     from app.ui.brand import default_font, load_fonts
@@ -190,7 +190,7 @@ def main() -> int:
             print(f"  ОШИБКА: {name}")
 
     names = ["dashboard", "catalog", "new_rental", "rentals", "returns", "history",
-             "clients", "productions", "projects", "reports", "audit", "packing", "settings"]
+             "clients", "productions", "projects", "reports", "audit", "settings"]
     only = {part.strip() for part in args.only.split(",") if part.strip()}
     for index, name in enumerate(names):
         if index >= len(MENU):

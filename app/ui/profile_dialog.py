@@ -14,6 +14,9 @@ from .widgets.common import (Card, PhotoLabel, StatusBadge, hint, icon,
                              scrollable_body, section_title)
 
 
+from ..services.photo_service import photo_filter  # noqa: E402
+
+
 class ProfileDialog(QDialog):
     """Своя карточка сотрудника. Роль здесь не меняется — это права, а не должность."""
 
@@ -139,7 +142,7 @@ class ProfileDialog(QDialog):
 
     def _upload(self) -> None:
         path, _ = QFileDialog.getOpenFileName(
-            self, "Выберите фотографию", "", "Изображения (*.jpg *.jpeg *.png *.bmp *.webp *.heic *.heif)")
+            self, "Выберите фотографию", "", photo_filter())
         if not path:
             return
         try:

@@ -137,7 +137,7 @@ class CatalogModel(QAbstractTableModel):
             if column == 0:
                 return item["inv_number"]
             if column == 1:
-                return ("★ " if item.get("is_favorite") else "") + item["name"]
+                return item["name"]
             if column == 2:
                 return item.get("category_path") or "без категории"
             if column == 3:
@@ -152,6 +152,9 @@ class CatalogModel(QAbstractTableModel):
                 return money_plain(item["valuation"])
             if column == 8:
                 return item_status(item)[1]
+        if role == Qt.DecorationRole and column == 1 and item.get("is_favorite"):
+            from .common import icon
+            return icon("star_on")
         if role == Qt.ToolTipRole:
             if column in (1, 2):
                 return item["name"] if column == 1 else item.get("category_path") or ""
@@ -207,18 +210,13 @@ class ItemCardDelegate(QStyledItemDelegate):
         self._fonts()
 
     def _fonts(self) -> None:
-        base = QFont("Inter")
-        self.f_name = QFont(base)
-        self.f_name.setPixelSize(px(10.5))
-        self.f_name.setWeight(QFont.DemiBold)
-        self.f_small = QFont(base)
-        self.f_small.setPixelSize(px(9))
-        self.f_badge = QFont(base)
-        self.f_badge.setPixelSize(px(9))
-        self.f_badge.setWeight(QFont.DemiBold)
-        self.f_price = QFont(base)
-        self.f_price.setPixelSize(px(10.5))
-        self.f_price.setWeight(QFont.Bold)
+        from ..brand import ui_font
+        from ..theme import Font
+
+        self.f_name = ui_font(Font.BODY + 0.75, Font.W_MEDIUM)    # название — 15 px, Medium
+        self.f_small = ui_font(Font.TINY)                         # подписи — 12 px
+        self.f_badge = ui_font(Font.TINY, Font.W_MEDIUM)
+        self.f_price = ui_font(Font.BODY, Font.W_BOLD)            # цена — акцент
 
     def set_density(self, density: str) -> None:
         if density in DENSITIES:
@@ -316,7 +314,7 @@ class ItemCardDelegate(QStyledItemDelegate):
             painter.setPen(Qt.NoPen)
             painter.setBrush(QColor(0, 0, 0, 150))
             painter.drawRoundedRect(QRectF(chip), 6, 6)
-            painter.setPen(QColor("#FFFFFF"))
+            painter.setPen(QColor(Color.ON_PHOTO))
             painter.drawText(chip, Qt.AlignCenter, label)
 
         # ---------------------------------------------------------- избранное
@@ -423,7 +421,7 @@ class ItemCardDelegate(QStyledItemDelegate):
             angle = -math.pi / 2 + step * math.pi / 5
             points.append(QPointF(center.x() + radius * math.cos(angle),
                                   center.y() + radius * math.sin(angle)))
-        painter.setPen(QPen(QColor(Color.STAR if filled else "#FFFFFF"), 1.4))
+        painter.setPen(QPen(QColor(Color.STAR if filled else Color.ON_PHOTO), 1.4))
         painter.setBrush(QColor(Color.STAR) if filled else Qt.NoBrush)
         painter.drawPolygon(QPolygonF(points))
         painter.restore()

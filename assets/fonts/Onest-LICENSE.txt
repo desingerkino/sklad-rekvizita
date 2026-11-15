@@ -1,0 +1,8 @@
+Шрифт Onest
+Copyright 2021-2023, Dmitri Voloshin, Andrey Kudryavtsev
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL
+https://scripts.sil.org/OFL
+
+В программу включены начертания Regular (400), Medium (500) и Bold (700) —
+файлы предоставлены владельцем проекта и используются без изменений.

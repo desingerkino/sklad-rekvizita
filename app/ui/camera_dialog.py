@@ -21,6 +21,9 @@ from ..utils import now
 log = logging.getLogger(__name__)
 
 
+from ..services.photo_service import photo_filter  # noqa: E402
+
+
 class CameraDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -122,7 +125,7 @@ class CameraDialog(QDialog):
 
     def _pick_file(self) -> None:
         path, _ = QFileDialog.getOpenFileName(
-            self, "Выберите изображение", "", "Изображения (*.jpg *.jpeg *.png *.bmp *.webp *.heic *.heif)")
+            self, "Выберите изображение", "", photo_filter())
         if path:
             self.captured_path = Path(path)
             self.accept()

@@ -43,7 +43,7 @@ class NotificationItem(Card):
         title = QLabel(data["title"])
         title.setWordWrap(True)
         title.setStyleSheet(
-            f"font-weight: {'600' if not data['is_read'] else '400'}; color: {Color.TEXT};")
+            f"font-weight: {'500' if not data['is_read'] else '400'}; color: {Color.TEXT};")
         body = QLabel(data["body"])
         body.setWordWrap(True)
         body.setObjectName("Hint")

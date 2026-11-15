@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Фирменные ресурсы: шрифт Inter и знак «СКЛАД РЕКВИЗИТА»."""
+"""Фирменные ресурсы: шрифт Onest и знак «СКЛАД РЕКВИЗИТА»."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -8,27 +8,43 @@ from PySide6.QtGui import QFont, QFontDatabase, QIcon, QPixmap
 
 from ..paths import assets_dir
 
-INTER_FILES = ("Inter-Regular.otf", "Inter-Medium.otf", "Inter-SemiBold.otf", "Inter-Bold.otf")
-
-
 def load_fonts() -> bool:
-    """Подключает Inter из assets/fonts (лицензия SIL OFL, есть кириллица).
-
-    Шрифт идёт вместе с программой, поэтому вид одинаков на любом компьютере.
-    Если файлов нет, интерфейс остаётся на системном шрифте из стека в theme.py.
     """
-    loaded = 0
-    for name in INTER_FILES:
+    Подключает Onest из assets/fonts — единственную гарнитуру интерфейса.
+
+    Шрифт идёт вместе с программой: установленный в системе Onest не нужен, а
+    вид одинаков на Windows и macOS. Если файлов нет (повреждённая установка),
+    интерфейс остаётся на системном шрифте из стека в theme.py — программа
+    при этом работает.
+    """
+    from . import theme
+
+    loaded = set()
+    for name in theme.Font.FILES:
         path = assets_dir() / "fonts" / name
         if path.exists() and QFontDatabase.addApplicationFont(str(path)) >= 0:
-            loaded += 1
-    return loaded > 0
+            loaded.add(name)
+    theme.Font.use_semibold("Onest-SemiBold.ttf" in loaded)
+    return "Onest-Regular.ttf" in loaded
 
 
 def default_font() -> QFont:
-    font = QFont("Inter")
+    from . import theme
+
+    font = QFont(theme.Font.NAME)
     # размер в пикселях: в пунктах он на macOS получается на четверть мельче
-    font.setPixelSize(14)
+    font.setPixelSize(theme.px(theme.Font.BODY))
+    font.setStyleStrategy(QFont.PreferAntialias)
+    return font
+
+
+def ui_font(points: float, weight: int = 400) -> QFont:
+    """Шрифт интерфейса заданного размера (в пунктах дизайн-системы) и начертания."""
+    from . import theme
+
+    font = QFont(theme.Font.NAME)
+    font.setPixelSize(theme.px(points))
+    font.setWeight(QFont.Weight(weight))
     font.setStyleStrategy(QFont.PreferAntialias)
     return font
 

@@ -77,6 +77,7 @@ class Color:
     PHOTO_BG = "#EEF1F5"        # подложка под фотографией (поля вокруг снимка)
     STAR = "#D97706"            # отметка «в избранном»
     SHADOW = "#0F172A"
+    ON_PHOTO = "#FFFFFF"        # подписи и рамки поверх фотографии
 
 
 class Radius:
@@ -96,13 +97,44 @@ class Space:
 
 
 class Font:
-    FAMILY = "'Inter', 'Segoe UI', 'Helvetica Neue', Arial"
-    H1 = 20
-    H2 = 15
-    H3 = 13
+    """
+    Типографика. Единственная гарнитура интерфейса — Onest; файлы шрифта лежат
+    в assets/fonts и идут вместе с программой, поэтому вид одинаков на Windows
+    и macOS и не зависит от шрифтов, установленных в системе.
+
+    Размеры заданы в пунктах Windows и переводятся в пиксели функцией px()
+    (1 pt = 4/3 px), итог в пикселях:
+        H1 23 — заголовок раздела;   H2 18 — подзаголовок;
+        H3 16 — название предмета;   BODY 14 — основной текст и кнопки;
+        SMALL 13 и TINY 12 — вспомогательные подписи.
+
+    Начертания: Regular 400 — текст; Medium 500 — кнопки, названия, элементы
+    управления; Bold 700 — только акценты (цена, крупные числа). В присланном
+    наборе Onest нет файла SemiBold (600), поэтому заголовки набираются Bold,
+    а «полужирные» элементы управления — Medium. Если положить в assets/fonts
+    файл Onest-SemiBold.ttf, оба значения сами переключатся на 600.
+    """
+
+    NAME = "Onest"
+    FAMILY = "'Onest', 'Segoe UI', 'Helvetica Neue', Arial"
+    FILES = ("Onest-Regular.ttf", "Onest-Medium.ttf", "Onest-SemiBold.ttf", "Onest-Bold.ttf")
+    H1 = 17.25
+    H2 = 13.5
+    H3 = 12
     BODY = 10.5
-    SMALL = 9.5
+    SMALL = 9.75
     TINY = 9
+
+    W_REGULAR = 400
+    W_MEDIUM = 500
+    W_SEMI = 500        # элементы управления и названия (600, если есть SemiBold)
+    W_HEADING = 700     # заголовки (600, если есть SemiBold)
+    W_BOLD = 700
+
+    @classmethod
+    def use_semibold(cls, available: bool) -> None:
+        cls.W_SEMI = 600 if available else 500
+        cls.W_HEADING = 600 if available else 700
 
 
 class Duration:
@@ -209,6 +241,10 @@ LIGHT["PRIMARY_TEXT"] = LIGHT["PRIMARY"]
 DARK["PRIMARY_TEXT"] = "#8DB4F8"
 Color.PRIMARY_TEXT = LIGHT["PRIMARY_TEXT"]
 
+# Цвета линий в файлах значков (assets/icons): по ним значки перекрашиваются
+# под тёмную тему.
+ICON_SOURCE_COLORS = {"": "#6B7280", "active": "#2563EB", "danger": "#DC2626"}
+
 THEMES = {"light": ("Светлая", LIGHT), "dark": ("Тёмная", DARK)}
 _current = "light"
 QSS = ""
@@ -303,8 +339,8 @@ QScrollArea > QWidget > QWidget {{ background: transparent; }}
 
 /* ------------------------------------------------------------ сайдбар */
 #Sidebar {{ background: {c.SIDEBAR}; border-right: 1px solid {c.BORDER}; }}
-#SidebarLogo {{ font-size: {f.H1}pt; font-weight: 700; color: {c.TEXT}; }}
-#SidebarLogoWord {{ font-size: {f.SMALL}pt; font-weight: 600; color: {c.TEXT_SECONDARY}; }}
+#SidebarLogo {{ font-size: {f.H1}pt; font-weight: {f.W_HEADING}; color: {c.TEXT}; }}
+#SidebarLogoWord {{ font-size: {f.SMALL}pt; font-weight: {f.W_SEMI}; color: {c.TEXT_SECONDARY}; }}
 #SidebarLogoSub {{ font-size: {f.SMALL}pt; color: {c.TEXT_SECONDARY}; }}
 #NavButton {{
     background: transparent; border: none; text-align: left;
@@ -313,7 +349,7 @@ QScrollArea > QWidget > QWidget {{ background: transparent; }}
 }}
 #NavButton:hover {{ background: {c.HOVER}; color: {c.TEXT}; }}
 #NavButton:checked {{
-    background: {c.PRIMARY}; color: {c.TEXT_ON_PRIMARY}; font-weight: 600;
+    background: {c.PRIMARY}; color: {c.TEXT_ON_PRIMARY}; font-weight: {f.W_SEMI};
 }}
 #NavButtonSmall {{
     background: transparent; border: none; text-align: left;
@@ -328,7 +364,7 @@ QScrollArea > QWidget > QWidget {{ background: transparent; }}
 }}
 #NavSubButton:hover {{ background: {c.HOVER}; color: {c.TEXT}; }}
 #NavSubButton:checked {{
-    background: {c.PRIMARY_SOFT}; color: {c.PRIMARY_TEXT}; font-weight: 600;
+    background: {c.PRIMARY_SOFT}; color: {c.PRIMARY_TEXT}; font-weight: {f.W_SEMI};
 }}
 #NavSubClose {{
     background: transparent; border: none; color: {c.TEXT_MUTED};
@@ -347,7 +383,7 @@ QScrollArea > QWidget > QWidget {{ background: transparent; }}
     background: {c.SURFACE}; border: 1px solid {c.BORDER};
     border-radius: {r.MD}px;
 }}
-#UserName {{ font-weight: 600; font-size: {f.BODY}pt; }}
+#UserName {{ font-weight: {f.W_SEMI}; font-size: {f.BODY}pt; }}
 #UserRole {{ color: {c.TEXT_SECONDARY}; font-size: {f.SMALL}pt; }}
 #StatCaption {{ color: {c.TEXT_SECONDARY}; font-size: {f.SMALL}pt; }}
 #StatValue {{ color: {c.TEXT}; font-size: {f.H2}pt; font-weight: 700; }}
@@ -357,11 +393,11 @@ QScrollArea > QWidget > QWidget {{ background: transparent; }}
 
 /* --------------------------------------------------------- верхняя панель */
 #TopBar {{ background: {c.TOPBAR}; border-bottom: 1px solid {c.BORDER}; }}
-#PageTitle {{ font-size: {f.H1}pt; font-weight: 700; letter-spacing: -0.2px; }}
+#PageTitle {{ font-size: {f.H1}pt; font-weight: {f.W_HEADING}; letter-spacing: -0.2px; }}
 #PageSubtitle {{ color: {c.TEXT_SECONDARY}; font-size: {f.SMALL}pt; }}
 #Muted {{ color: {c.TEXT_SECONDARY}; }}
 #Hint {{ color: {c.TEXT_MUTED}; font-size: {f.SMALL}pt; }}
-#SectionTitle {{ font-size: {f.H2}pt; font-weight: 600; }}
+#SectionTitle {{ font-size: {f.H2}pt; font-weight: {f.W_SEMI}; }}
 
 /* ------------------------------------------------------------- поля ввода */
 QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QDateEdit, QTextEdit, QPlainTextEdit {{
@@ -420,7 +456,7 @@ QPushButton:disabled {{
 }}
 QPushButton#Primary {{
     background: {c.PRIMARY}; color: {c.TEXT_ON_PRIMARY};
-    border: 1px solid {c.PRIMARY}; font-weight: 600; padding: 10px 18px;
+    border: 1px solid {c.PRIMARY}; font-weight: {f.W_SEMI}; padding: 10px 18px;
 }}
 QPushButton#Primary:hover {{ background: {c.PRIMARY_HOVER}; border-color: {c.PRIMARY_HOVER}; }}
 QPushButton#Primary:pressed {{ background: {c.PRIMARY_PRESSED}; }}
@@ -486,7 +522,7 @@ QGroupBox {{
 }}
 QGroupBox::title {{
     subcontrol-origin: margin; left: 14px; padding: 0 6px;
-    font-weight: 600; color: {c.TEXT};
+    font-weight: {f.W_SEMI}; color: {c.TEXT};
 }}
 #Card {{ background: {c.SURFACE}; border: 1px solid {c.BORDER}; border-radius: {r.LG}px; }}
 #CardAlt {{ background: {c.SURFACE_ALT}; border: 1px solid {c.BORDER}; border-radius: {r.LG}px; }}
@@ -516,7 +552,7 @@ QTabBar::tab {{
 }}
 QTabBar::tab:hover {{ color: {c.TEXT}; background: {c.HOVER}; }}
 QTabBar::tab:selected {{
-    background: {c.SURFACE}; color: {c.PRIMARY_TEXT}; font-weight: 600;
+    background: {c.SURFACE}; color: {c.PRIMARY_TEXT}; font-weight: {f.W_SEMI};
     border: 1px solid {c.BORDER}; border-bottom-color: {c.SURFACE};
 }}
 
@@ -552,31 +588,31 @@ QCalendarWidget QAbstractItemView:enabled {{
     background: {c.SURFACE}; selection-background-color: {c.PRIMARY};
     selection-color: #FFFFFF;
 }}
-#Badge {{ border-radius: {r.SM}px; padding: 5px 10px; font-size: {f.SMALL}pt; font-weight: 600; }}
+#Badge {{ border-radius: {r.SM}px; padding: 5px 10px; font-size: {f.SMALL}pt; font-weight: {f.W_SEMI}; }}
 #Notice {{
     background: {c.WARNING_SOFT}; border: 1px solid {c.WARNING_BORDER};
-    border-radius: {r.MD}px; padding: 10px 14px; color: {c.WARNING}; font-weight: 600;
+    border-radius: {r.MD}px; padding: 10px 14px; color: {c.WARNING}; font-weight: {f.W_SEMI};
 }}
 #SavedLabel {{ color: {c.SUCCESS}; font-size: {f.SMALL}pt; }}
-#StatTileValue {{ font-size: {f.H1}pt; font-weight: 700; color: {c.TEXT}; }}
+#StatTileValue {{ font-size: {f.H1}pt; font-weight: {f.W_HEADING}; color: {c.TEXT}; }}
 #StatTileValue[alert="true"] {{ color: {c.DANGER}; }}
 #StatTileValue[alert="warn"] {{ color: {c.WARNING}; }}
 #ErrorText {{ color: {c.DANGER}; }}
 #WarningText {{ color: {c.WARNING}; }}
 #EmptyNote {{ color: {c.TEXT_SECONDARY}; padding: 40px; }}
-#SubTitle {{ font-size: {f.H3}pt; font-weight: 600; }}
-#ValueStrong {{ font-weight: 600; }}
+#SubTitle {{ font-size: {f.H3}pt; font-weight: {f.W_SEMI}; }}
+#ValueStrong {{ font-weight: {f.W_SEMI}; }}
 #Card[tile="true"]:hover {{ border: 1px solid {c.TEXT_MUTED}; }}
 #Card[tile="true"][selected="true"] {{
     background: {c.PRIMARY_SOFT}; border: 1px solid {c.PRIMARY};
 }}
-#TileTitle {{ font-weight: 600; }}
+#TileTitle {{ font-weight: {f.W_SEMI}; }}
 #TilePrice {{ font-weight: 700; color: {c.TEXT}; }}
 #IconTile {{ background: {c.BRAND_TINT}; border-radius: {r.MD}px; }}
 #IconTile[alert="true"] {{ background: {c.DANGER_SOFT}; }}
-#CardTitle {{ font-weight: 600; }}
+#CardTitle {{ font-weight: {f.W_SEMI}; }}
 #Card[interactive="true"]:hover {{ border: 1px solid {c.PRIMARY}; }}
-#BigNumber {{ font-size: {f.H1}pt; font-weight: 700; color: {c.PRIMARY_TEXT}; }}
+#BigNumber {{ font-size: {f.H1}pt; font-weight: {f.W_HEADING}; color: {c.PRIMARY_TEXT}; }}
 
 /* ------------------------------------------------------- версия 4.0 */
 #SegmentButton {{
@@ -585,7 +621,7 @@ QCalendarWidget QAbstractItemView:enabled {{
 }}
 #SegmentButton:hover {{ background: {c.HOVER}; color: {c.TEXT}; }}
 #SegmentButton:checked {{
-    background: {c.PRIMARY_SOFT}; color: {c.PRIMARY_TEXT}; font-weight: 600;
+    background: {c.PRIMARY_SOFT}; color: {c.PRIMARY_TEXT}; font-weight: {f.W_SEMI};
     border: 1px solid {c.BORDER};
 }}
 #SegmentButton:disabled {{ color: {c.TEXT_ON_DISABLED}; }}
@@ -594,10 +630,10 @@ QCalendarWidget QAbstractItemView:enabled {{
 }}
 #Toast {{
     background: {c.TEXT}; color: {c.SURFACE}; border-radius: {r.MD}px;
-    padding: 12px 18px; font-weight: 600;
+    padding: 12px 18px; font-weight: {f.W_SEMI};
 }}
 #Toast[kind="warn"] {{ background: {c.WARNING}; color: {c.SURFACE}; }}
-#EmptyTitle {{ font-size: {f.H2}pt; font-weight: 600; color: {c.TEXT}; }}
+#EmptyTitle {{ font-size: {f.H2}pt; font-weight: {f.W_SEMI}; color: {c.TEXT}; }}
 QListView#CatalogGrid {{ background: transparent; border: none; outline: none; }}
 QListView#CatalogGrid::item {{ background: transparent; border: none; }}
 QTableView#CatalogTable {{ border: none; }}

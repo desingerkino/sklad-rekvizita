@@ -87,20 +87,35 @@ def main() -> int:
     from app.ui.main_window import MainWindow
 
     # Цикл «вход → работа → выход»: после выхода снова показывается экран входа.
+    # Смена темы пересобирает главное окно в том же цикле, но без повторного
+    # входа: сеанс сотрудника и открытая база сохраняются.
+    logged_in = False
     while True:
-        if not run_login():
+        if not logged_in and not run_login():
             log.info("Вход не выполнен, выход из программы")
             return 0
+        logged_in = True
 
         window = MainWindow()
-        state = {"relogin": False}
+        state = {"relogin": False, "theme": ""}
         window.logout_requested.connect(lambda: state.update(relogin=True))
+
+        def change_theme(name: str, _window=window, _state=state) -> None:
+            _state["theme"] = name
+            _window.rebuild_for_theme()
+
+        window.theme_requested.connect(change_theme)
         window.show()
         app.exec()
 
+        if state["theme"]:
+            theme.save_name(state["theme"])
+            app.setStyleSheet(theme.apply(state["theme"]))
+            continue
         if not state["relogin"]:
             break
         auth_service.logout()
+        logged_in = False
 
     try:
         from app.db.database import get_db as close_db

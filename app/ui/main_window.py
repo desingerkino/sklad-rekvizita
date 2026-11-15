@@ -40,15 +40,14 @@ from .notifications_panel import NotificationsPanel
 from .rental_hub import NewRentalHub
 from .rentals_view import RentalsView
 from .inventory_audit_view import InventoryAuditView
-from .packing_view import PackingView
 from .reports_view import ReportsView
 from .returns_view import ReturnsView
 from .settings_view import SettingsView
 from .theme import Color, Space
-from .widgets.circular import CircularProgress
 from .widgets.suggest import SuggestList
 from .brand import mark_pixmap
-from .widgets.common import Card, PhotoLabel, StatusBadge, fade_in, icon, icon_button
+from .widgets.common import (Card, ClickableCard, PhotoLabel, StatusBadge, fade_in, icon,
+                             icon_button)
 
 log = logging.getLogger(__name__)
 
@@ -76,8 +75,6 @@ MENU = [
      "История аренд: календарь, поиск, фильтры и статистика"),
     ("АНАЛИТИКА", "audit", "Инвентаризация", "check",
      "Физическая сверка склада со сканером: числится, найдено, расхождения"),
-    ("АНАЛИТИКА", "packing", "Машины", "box",
-     "Комплектация по машинам и коробкам, упаковочные листы для группы"),
     ("УПРАВЛЕНИЕ", "settings", "Настройки", "settings",
      "Склад, категории, почта, копии, пользователи и журнал"),
 ]
@@ -86,7 +83,7 @@ PAGE_TITLES = {index: entry[2] for index, entry in enumerate(MENU)}
 PAGE_DASHBOARD, PAGE_CATALOG, PAGE_NEW_RENTAL, PAGE_RENTALS = 0, 1, 2, 3
 PAGE_RETURNS, PAGE_HISTORY, PAGE_CLIENTS, PAGE_PRODUCTIONS = 4, 5, 6, 7
 PAGE_PROJECTS, PAGE_REPORTS, PAGE_AUDIT = 8, 9, 10
-PAGE_PACKING, PAGE_SETTINGS = 11, 12
+PAGE_SETTINGS = 11
 
 
 SIDEBAR_WIDTH = 248
@@ -96,6 +93,7 @@ class MainWindow(QMainWindow):
     """Логика доступна только после входа: current_user уже установлен."""
 
     logout_requested = Signal()
+    theme_requested = Signal(str)
 
     def __init__(self):
         super().__init__()
@@ -154,12 +152,11 @@ class MainWindow(QMainWindow):
         self.projects = ProjectsView()
         self.reports = ReportsView()
         self.audit = InventoryAuditView()
-        self.packing = PackingView()
         self.settings = SettingsView()
         self.item_card = ItemCardView()
         for widget in (self.dashboard, self.catalog, self.new_rental, self.rentals,
                        self.returns, self.history, self.clients, self.productions,
-                       self.projects, self.reports, self.audit, self.packing,
+                       self.projects, self.reports, self.audit,
                        self.settings, self.item_card):
             self.stack.addWidget(widget)
         right_layout.addWidget(self.stack, 1)
@@ -172,6 +169,8 @@ class MainWindow(QMainWindow):
         self.catalog.add_many_to_rental.connect(self.add_many_to_rental)
         self.item_card.add_to_rental.connect(self.add_to_rental)
         self.item_card.open_rental.connect(self.open_rental)
+        self.item_card.changed.connect(self._item_changed)
+        self.item_card.find_similar.connect(self._find_similar)
         # «Назад к каталогу» возвращает именно в каталог (раньше — на главную)
         self.item_card.back.connect(lambda: self.show_page(PAGE_CATALOG))
         self.rentals.open_item.connect(self.open_item)
@@ -189,7 +188,6 @@ class MainWindow(QMainWindow):
         self.history.open_item.connect(self.open_item)
         self.reports.open_rental.connect(self.open_rental)
         self.audit.changed.connect(self._data_changed)
-        self.packing.changed.connect(self._data_changed)
 
         self._build_statusbar()
         self._build_shortcuts()
@@ -276,94 +274,118 @@ class MainWindow(QMainWindow):
         outer.addWidget(self._build_profile_card())
         outer.addWidget(self._build_stock_card())
 
-        self.save_all_btn = QPushButton("   Сохранить всё")
-        self.save_all_btn.setObjectName("NavButtonSmall")
-        self.save_all_btn.setIcon(icon("save"))
-        self.save_all_btn.setIconSize(QSize(16, 16))
-        self.save_all_btn.setCursor(Qt.PointingHandCursor)
-        self.save_all_btn.setToolTip(
-            "Данные записываются в базу сразу после каждого действия.\n"
-            "Эта кнопка дополнительно сводит журнал базы в файл (Ctrl+S).")
-        self.save_all_btn.clicked.connect(self.save_all)
-        outer.addWidget(self.save_all_btn)
-
-        self.logout_btn = QPushButton("   Выйти")
-        self.logout_btn.setObjectName("NavButtonSmall")
-        self.logout_btn.setIcon(icon("logout"))
-        self.logout_btn.setIconSize(QSize(16, 16))
-        self.logout_btn.setCursor(Qt.PointingHandCursor)
-        self.logout_btn.clicked.connect(self._logout)
-        outer.addWidget(self.logout_btn)
+        # Служебные кнопки — одной строкой: меню должно помещаться без прокрутки.
+        service = QHBoxLayout()
+        service.setContentsMargins(Space.MD, 0, Space.MD, 0)
+        service.setSpacing(2)
+        self.save_all_btn = self._service_button(
+            "save", "Сохранить всё",
+            "Принудительно записать все изменения на диск (Ctrl+S). Программа "
+            "сохраняет данные сама — кнопка нужна для уверенности перед выключением.",
+            self.save_all)
+        self.theme_btn = self._service_button(
+            "eye", "Тема", "", self.toggle_theme)
+        self.keys_btn = self._service_button(
+            "details", "Клавиши", "Список горячих клавиш (F1)", self.show_shortcuts)
+        self.logout_btn = self._service_button(
+            "logout", "Выйти", "Завершить работу сотрудника и вернуться к экрану входа",
+            self._logout)
+        for button in (self.save_all_btn, self.theme_btn, self.keys_btn, self.logout_btn):
+            service.addWidget(button, 1)
+        outer.addLayout(service)
+        self._sync_theme_button()
         return sidebar
 
+    @staticmethod
+    def _service_button(icon_name: str, text: str, tip: str, slot) -> QPushButton:
+        button = QPushButton()
+        button.setObjectName("IconButton")
+        button.setIcon(icon(icon_name))
+        button.setIconSize(QSize(18, 18))
+        button.setCursor(Qt.PointingHandCursor)
+        button.setAccessibleName(text)
+        button.setToolTip(tip or text)
+        button.clicked.connect(slot)
+        return button
+
+    def _sync_theme_button(self) -> None:
+        from . import theme
+        dark = theme.is_dark()
+        self.theme_btn.setToolTip(
+            "Включить светлую тему" if dark else "Включить тёмную тему — для работы вечером "
+            "и в затемнённом помещении")
+        self.theme_btn.setAccessibleName("Светлая тема" if dark else "Тёмная тема")
+
+    def toggle_theme(self) -> None:
+        """Переключает светлую и тёмную тему. Выбор запоминается на этом компьютере."""
+        from . import theme
+        self.theme_requested.emit("light" if theme.is_dark() else "dark")
+
+    def show_shortcuts(self) -> None:
+        from .shortcuts_dialog import ShortcutsDialog
+        ShortcutsDialog(self).exec()
+
     def _build_profile_card(self) -> QWidget:
-        """Профиль сотрудника внизу меню: аватар, имя, должность и роль."""
-        card = Card(padding=Space.SM + Space.XS)
+        """Профиль сотрудника внизу меню: аватар, имя и должность. Щелчок — профиль."""
+        card = ClickableCard(padding=Space.SM)
         card.setObjectName("UserCard")
         card.setCursor(Qt.PointingHandCursor)
-        card.mousePressEvent = lambda _e: self.open_profile()
+        card.clicked.connect(self.open_profile)
         card.setToolTip("Открыть профиль: имя, должность, аватар и пароль")
 
         row = QHBoxLayout()
-        row.setSpacing(Space.MD)
-        self.avatar = PhotoLabel(38, radius=19)
-        self.avatar.setToolTip("Фотография профиля")
+        row.setSpacing(Space.SM + 2)
+        self.avatar = PhotoLabel(34, radius=17)
+        self.avatar.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         row.addWidget(self.avatar)
 
         info_column = QVBoxLayout()
-        info_column.setSpacing(1)
+        info_column.setSpacing(0)
         self.user_name = QLabel("—")
         self.user_name.setObjectName("UserName")
         self.user_position = QLabel("")
         self.user_position.setObjectName("UserRole")
-        self.user_position.setWordWrap(True)
         info_column.addWidget(self.user_name)
         info_column.addWidget(self.user_position)
+        # строка роли оставлена для совместимости: роль теперь в подписи под именем
         self.role_row = QHBoxLayout()
-        self.role_row.setContentsMargins(0, 2, 0, 0)
-        self.role_row.addStretch()
-        info_column.addLayout(self.role_row)
         row.addLayout(info_column, 1)
         card.body.addLayout(row)
         self._pad(card)
         return card
 
     def _build_stock_card(self) -> QWidget:
-        """Состояние склада: всего, доступно и круговой индикатор доступности."""
-        card = Card(padding=Space.SM + Space.XS)
-        card.setObjectName("StatCard")
-        caption = QLabel("СОСТОЯНИЕ СКЛАДА")
-        caption.setObjectName("NavGroup")
-        card.body.addWidget(caption)
+        """Состояние склада одной строкой: сколько свободно и полоса доступности."""
+        from PySide6.QtWidgets import QProgressBar
 
-        numbers = QHBoxLayout()
-        numbers.setSpacing(Space.MD)
-        left = QVBoxLayout()
-        left.setSpacing(0)
-        total_caption = QLabel("Всего на складе")
-        total_caption.setObjectName("StatCaption")
-        self.stat_total = QLabel("—")
-        self.stat_total.setObjectName("StatValue")
-        available_caption = QLabel("Доступно")
-        available_caption.setObjectName("StatCaption")
+        card = Card(padding=Space.SM)
+        card.setObjectName("StatCard")
+        line = QHBoxLayout()
+        line.setSpacing(Space.XS)
+        caption = QLabel("Свободно")
+        caption.setObjectName("StatCaption")
         self.stat_available = QLabel("—")
         self.stat_available.setObjectName("StatValueOk")
-        left.addWidget(total_caption)
-        left.addWidget(self.stat_total)
-        left.addSpacing(Space.SM)
-        left.addWidget(available_caption)
-        left.addWidget(self.stat_available)
-        numbers.addLayout(left, 1)
-
-        self.availability = CircularProgress(size=76, thickness=8)
-        numbers.addWidget(self.availability, 0, Qt.AlignVCenter)
-        card.body.addLayout(numbers)
-
+        of_label = QLabel("из")
+        of_label.setObjectName("StatCaption")
+        self.stat_total = QLabel("—")
+        self.stat_total.setObjectName("UserName")
+        self.stat_percent = QLabel("")
+        self.stat_percent.setObjectName("StatCaption")
+        for widget in (caption, self.stat_available, of_label, self.stat_total):
+            line.addWidget(widget, 0, Qt.AlignBaseline)
+        line.addStretch()
+        line.addWidget(self.stat_percent, 0, Qt.AlignBaseline)
+        card.body.addLayout(line)
+        self.availability = QProgressBar()
+        self.availability.setObjectName("StockBar")
+        self.availability.setRange(0, 100)
+        self.availability.setTextVisible(False)
+        self.availability.setFixedHeight(6)
+        card.body.addWidget(self.availability)
         self.stock_hint = QLabel("")
-        self.stock_hint.setObjectName("StatHint")
-        self.stock_hint.setWordWrap(True)
-        # сводка «808 из 957» повторяет числа слева; текст остаётся в подсказке
         self.stock_hint.hide()
+        card.setToolTip("Единиц реквизита, свободных для аренды сегодня, из общего числа")
         self._pad(card)
         return card
 
@@ -490,21 +512,61 @@ class MainWindow(QMainWindow):
         self.statusBar().addPermanentWidget(self.status_label)
 
     def _build_shortcuts(self) -> None:
-        for key, index in [("Ctrl+F", PAGE_CATALOG), ("Ctrl+N", PAGE_NEW_RENTAL),
-                           ("Ctrl+R", PAGE_RENTALS), ("Ctrl+H", PAGE_DASHBOARD),
-                           ("Ctrl+P", PAGE_REPORTS)]:
+        """
+        Горячие клавиши. Записаны через Ctrl: на macOS Qt сам заменяет Ctrl на
+        Command (⌘), поэтому одна и та же таблица работает на обеих системах.
+        Полный список показывает F1 (см. shortcuts_dialog.py).
+        """
+        def bind(key, slot) -> None:
             action = QAction(self)
             action.setShortcut(QKeySequence(key))
-            action.triggered.connect(lambda _=False, i=index: self.show_page(i))
+            action.setShortcutContext(Qt.WindowShortcut)
+            action.triggered.connect(slot)
             self.addAction(action)
-        search = QAction(self)
-        search.setShortcut(QKeySequence("F3"))
-        search.triggered.connect(self.global_search.setFocus)
-        self.addAction(search)
-        save = QAction(self)
-        save.setShortcut(QKeySequence("Ctrl+S"))
-        save.triggered.connect(self.save_all)
-        self.addAction(save)
+
+        for key, index in [("Ctrl+1", PAGE_DASHBOARD), ("Ctrl+2", PAGE_CATALOG),
+                           ("Ctrl+3", PAGE_NEW_RENTAL), ("Ctrl+4", PAGE_RENTALS),
+                           ("Ctrl+5", PAGE_RETURNS), ("Ctrl+N", PAGE_NEW_RENTAL),
+                           ("Ctrl+R", PAGE_RENTALS), ("Ctrl+H", PAGE_DASHBOARD),
+                           ("Ctrl+P", PAGE_REPORTS)]:
+            bind(key, lambda _=False, i=index: self.show_page(i))
+        bind("Ctrl+F", self.focus_catalog_search)
+        bind("F3", self.global_search.setFocus)
+        bind("Ctrl+K", self.global_search.setFocus)
+        bind("Ctrl+S", self.save_all)
+        bind("Ctrl+I", self._new_item_shortcut)
+        bind("Ctrl+Shift+F", self._photo_search_shortcut)
+        bind("Ctrl+D", self._favorite_shortcut)
+        bind("F1", self.show_shortcuts)
+        bind("F5", self._refresh_current)
+
+    def focus_catalog_search(self) -> None:
+        self.show_page(PAGE_CATALOG)
+        self.catalog.search.setFocus()
+        self.catalog.search.selectAll()
+
+    def _new_item_shortcut(self) -> None:
+        self.show_page(PAGE_CATALOG)
+        self.catalog.new_item()
+
+    def _photo_search_shortcut(self) -> None:
+        self.show_page(PAGE_CATALOG)
+        self.catalog._photo_search()
+
+    def _favorite_shortcut(self) -> None:
+        if self.stack.currentIndex() == PAGE_CATALOG:
+            self.catalog.toggle_favorite_selected()
+        elif self.stack.currentWidget() is self.item_card:
+            self.item_card.toggle_favorite()
+
+    def _refresh_current(self) -> None:
+        widget = self.stack.currentWidget()
+        try:
+            if hasattr(widget, "reload"):
+                widget.reload()
+        except Exception:                                          # noqa: BLE001
+            log.exception("Не удалось обновить раздел")
+        self._update_status()
 
     # ------------------------------------------------------------- навигация
     def show_page(self, index: int) -> None:
@@ -617,7 +679,15 @@ class MainWindow(QMainWindow):
             button.setChecked(False)
         self._sync_nav_icons()
         item = inventory_service.get(item_id)
-        self.page_title.setText(self._shorten(item["name"]) if item else "Карточка реквизита")
+        # Заголовок сокращается по ширине поля, а не по числу букв: раньше длинное
+        # название обрезалось посреди буквы.
+        title_text = item["name"] if item else "Карточка реквизита"
+        self.page_title.setText(self.page_title.fontMetrics().elidedText(
+            title_text, Qt.ElideRight, self.page_title.maximumWidth() - 8))
+        catalog_button = self.buttons.button(PAGE_CATALOG)
+        if catalog_button:
+            catalog_button.setChecked(True)      # карточка — часть каталога
+            self._sync_nav_icons() if hasattr(self, "_sync_nav_icons") else None
         self.page_title.setToolTip(item["name"] if item else "")
         self.page_subtitle.setText(
             f"Инв. № {item['inv_number']} · {item['category_path'] or 'без категории'}"
@@ -634,6 +704,19 @@ class MainWindow(QMainWindow):
         """Добавляет предмет в форму новой аренды и открывает её."""
         self.new_rental.add_item(item_id)
         self.show_page(PAGE_NEW_RENTAL)
+
+    def _item_changed(self) -> None:
+        """В карточке поменяли фото или избранное — каталог покажет это при возврате."""
+        from .widgets.thumbs import thumbnails
+        thumbnails().forget()
+        self.catalog.reload_items()
+
+    def _find_similar(self, item_id: int) -> None:
+        from .photo_search_dialog import PhotoSearchDialog
+        dialog = PhotoSearchDialog(self, similar_to_item=item_id)
+        dialog.open_item.connect(self.open_item)
+        dialog.add_to_rental.connect(self.add_to_rental)
+        dialog.exec()
 
     def add_many_to_rental(self, item_ids: list) -> None:
         """Добавляет несколько выбранных в каталоге предметов в одну аренду."""
@@ -842,6 +925,11 @@ class MainWindow(QMainWindow):
         self.logout_requested.emit()
         self.close()
 
+    def rebuild_for_theme(self) -> None:
+        """Закрывает окно для пересборки в другой теме: сеанс и база остаются открытыми."""
+        self._relogin = True
+        self.close()
+
     def open_profile(self) -> None:
         from .profile_dialog import ProfileDialog
         if ProfileDialog(self).exec():
@@ -851,16 +939,13 @@ class MainWindow(QMainWindow):
         user = auth_service.refresh_current()
         if not user:
             return
-        self.user_name.setText(user.display_name)
-        self.user_position.setText(user.position_label)
-        while self.role_row.count():
-            item = self.role_row.takeAt(0)
-            widget = item.widget()
-            if widget:
-                widget.deleteLater()
-        self.role_row.addWidget(
-            StatusBadge("info" if user.is_admin else "returned", user.role_label))
-        self.role_row.addStretch()
+        self.user_name.setText(self._shorten(user.display_name, 22))
+        self.user_name.setToolTip(user.display_name)
+        position = user.position_label
+        role = user.role_label
+        self.user_position.setText(self._shorten(
+            f"{position} · {role}" if position and position != role else role, 27))
+        self.user_position.setToolTip(f"{position}\n{role}")
         avatar = auth_service.avatar_file(user.id)
         if avatar:
             self.avatar.set_photo(str(avatar))
@@ -868,8 +953,8 @@ class MainWindow(QMainWindow):
             self.avatar.clear_photo()
             self.avatar.setText(user.initials)
             self.avatar.setStyleSheet(
-                f"background: {Color.PRIMARY_SOFT}; color: {Color.PRIMARY};"
-                f" border-radius: 23px; font-size: 17px; font-weight: 700;")
+                f"background: {Color.PRIMARY_SOFT}; color: {Color.PRIMARY_TEXT};"
+                f" border-radius: 17px; font-size: 14px; font-weight: 700;")
 
     def _data_changed(self) -> None:
         """После аренды, возврата или изменения остатков обновляем сводку и отчёты."""
@@ -904,7 +989,8 @@ class MainWindow(QMainWindow):
         percent = round(free_units * 100 / total_units) if total_units else 0
         self.stat_total.setText(f"{total_units:,}".replace(",", " "))
         self.stat_available.setText(f"{free_units:,}".replace(",", " "))
-        self.availability.animate_to(percent)
+        self.availability.setValue(percent)
+        self.stat_percent.setText(f"{percent} %")
         self.stock_hint.setText(f"{free_units} из {total_units} доступно для аренды")
 
     # ------------------------------------------------------------ завершение
