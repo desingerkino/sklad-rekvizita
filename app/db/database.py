@@ -93,6 +93,15 @@ class Database:
                     self._v6_alter_tables()
                 if current < 7:
                     self._v7_rebuild_embeddings()
+                if current < 9:
+                    self._v9_alter_tables()
+
+            # Колонки фотографий версии 4.0 проверяются при каждом запуске, а не
+            # только при переходе с 8 на 9: если базу 4.0 открывали версией 2.4,
+            # та сбрасывает номер схемы, и без этой проверки индексы ниже
+            # сослались бы на отсутствующие колонки. Проверка — один PRAGMA.
+            if not is_new:
+                self._v9_alter_tables()
 
             self.conn.executescript(schema)
 
@@ -181,6 +190,29 @@ class Database:
             "  FROM photo_embeddings;"
             "DROP TABLE photo_embeddings;"
             "ALTER TABLE photo_embeddings_new RENAME TO photo_embeddings;")
+
+    def _v9_alter_tables(self) -> None:
+        """
+        2.4 → 4.0: у фотографии появляются путь к исходному файлу, его
+        отпечаток и размер.
+
+        Только добавление колонок со значением по умолчанию. Уже загруженные
+        фотографии остаются на месте и работают как раньше; исходник у них не
+        сохранялся, поэтому поле пустое — программа это учитывает.
+        """
+        tables = {row[0] for row in self.conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table'")}
+        if "inventory_photos" not in tables:
+            return                       # новая база: таблицу создаст schema.sql
+        existing = self._columns("inventory_photos")
+        for column, definition in (("orig_rel_path", "TEXT NOT NULL DEFAULT ''"),
+                                   ("src_sha1", "TEXT NOT NULL DEFAULT ''"),
+                                   ("width", "INTEGER NOT NULL DEFAULT 0"),
+                                   ("height", "INTEGER NOT NULL DEFAULT 0")):
+            if column not in existing:
+                self.conn.execute(
+                    f"ALTER TABLE inventory_photos ADD COLUMN {column} {definition}")
+                log.info("Миграция 4.0: добавлена колонка inventory_photos.%s", column)
 
     def _v6_alter_tables(self) -> None:
         """

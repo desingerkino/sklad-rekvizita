@@ -1,9 +1,9 @@
-﻿; Установщик «СКЛАД РЕКВИЗИТА 2.4» для Inno Setup 6.
+﻿; Установщик «СКЛАД РЕКВИЗИТА 4.0» для Inno Setup 6.
 ; Компиляция:  ISCC.exe build\installer.iss
-; Результат:   dist\SkladRekvizita_Setup_2.4.exe
+; Результат:   dist\SkladRekvizita_Setup_4.0.exe
 
-#define AppName "СКЛАД РЕКВИЗИТА 2.4"
-#define AppVersion "2.4"
+#define AppName "СКЛАД РЕКВИЗИТА 4.0"
+#define AppVersion "4.0"
 #define AppExe "SkladRekvizita.exe"
 
 [Setup]

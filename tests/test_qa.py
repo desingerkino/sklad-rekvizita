@@ -488,7 +488,7 @@ def main() -> int:  # noqa: C901
           str([(r["name"], r["percent"]) for r in results[:3]]))
     check("Процент совпадения в диапазоне 0–100",
           results and 0 <= results[0]["percent"] <= 100, str(results[0]["percent"]) if results else "")
-    check("Работает офлайн, без внешнего сервиса", image_search.provider.name == "local-v1")
+    check("Работает офлайн, без внешнего сервиса", image_search.provider.name == "local-v2")
     check("Индекс наполнен", image_search.stats()["indexed"] > 0)
 
     class BrokenProvider:

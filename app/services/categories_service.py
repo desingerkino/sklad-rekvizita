@@ -30,8 +30,18 @@ class CategoriesService:
         for node in nodes.values():
             parent = nodes.get(node["parent_id"])
             (parent["children"] if parent else roots).append(node)
-        for node in nodes.values():
-            node["total_count"] = node["count"] + sum(c["count"] for c in node["children"])
+
+        # Итог по ветке считается на всю глубину. Раньше складывались только
+        # прямые подкатегории, и у «Мебель → Стулья → Венские» верхний уровень
+        # показывал меньше предметов, чем в нём лежит на самом деле.
+        def total(node: dict, depth: int = 0) -> int:
+            node["total_count"] = node["count"] + sum(
+                total(child, depth + 1) for child in node["children"]) if depth < 40 \
+                else node["count"]
+            return node["total_count"]
+
+        for root in roots:
+            total(root)
         roots.sort(key=lambda n: (n["sort_order"], n["name"]))
         for node in nodes.values():
             node["children"].sort(key=lambda n: (n["sort_order"], n["name"]))
@@ -51,6 +61,19 @@ class CategoriesService:
             cur = self.get(cur["parent_id"]) if cur["parent_id"] else None
             guard += 1
         return " / ".join(reversed(parts))
+
+    def path_map(self) -> dict[int, str]:
+        """Пути всех категорий одним запросом: {id: 'Мебель / Стулья'}."""
+        rows = {c["id"]: c for c in self.all()}
+        result: dict[int, str] = {}
+        for category_id in rows:
+            parts, current, guard = [], rows.get(category_id), 0
+            while current and guard < 40:
+                parts.append(current["name"])
+                current = rows.get(current["parent_id"])
+                guard += 1
+            result[category_id] = " / ".join(reversed(parts))
+        return result
 
     def descendants(self, category_id: int) -> list[int]:
         """Категория и все вложенные — для фильтра каталога."""

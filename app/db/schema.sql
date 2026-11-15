@@ -71,7 +71,11 @@ CREATE TABLE IF NOT EXISTS inventory_photos (
     is_primary  INTEGER NOT NULL DEFAULT 0,
     sort_order  INTEGER NOT NULL DEFAULT 0,
     sha1        TEXT,
-    created_at  TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
+    created_at  TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
+    orig_rel_path TEXT  NOT NULL DEFAULT '',   -- 4.0: нетронутый исходный файл
+    src_sha1    TEXT    NOT NULL DEFAULT '',   -- 4.0: отпечаток исходного файла (поиск дублей)
+    width       INTEGER NOT NULL DEFAULT 0,    -- 4.0: размер исходного снимка
+    height      INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS ix_photos_item ON inventory_photos(item_id, sort_order);
 
@@ -524,3 +528,35 @@ CREATE TABLE IF NOT EXISTS rental_drafts (
     updated_at TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
 );
 CREATE INDEX IF NOT EXISTS ix_rental_drafts ON rental_drafts(user_id, status, id);
+
+
+-- ============================ версия 4.0 =====================================
+-- Только добавления: новые таблицы и индексы. Существующие записи, номера и
+-- связи не меняются, поэтому базу 4.0 по-прежнему открывает и версия 2.4.
+
+-- Избранное: у каждого сотрудника свой список.
+CREATE TABLE IF NOT EXISTS item_favorites (
+    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    item_id    INTEGER NOT NULL REFERENCES inventory_items(id) ON DELETE CASCADE,
+    created_at TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
+    PRIMARY KEY (user_id, item_id)
+);
+CREATE INDEX IF NOT EXISTS ix_favorites_item ON item_favorites(item_id);
+
+-- Недавно открытые карточки: одна строка на пару «сотрудник — предмет».
+CREATE TABLE IF NOT EXISTS item_views (
+    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    item_id    INTEGER NOT NULL REFERENCES inventory_items(id) ON DELETE CASCADE,
+    viewed_at  TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
+    PRIMARY KEY (user_id, item_id)
+);
+CREATE INDEX IF NOT EXISTS ix_views_recent ON item_views(user_id, viewed_at);
+
+-- Индексы под сортировки и фильтры каталога на тысячах позиций.
+CREATE INDEX IF NOT EXISTS ix_items_archived_name ON inventory_items(is_archived, name);
+CREATE INDEX IF NOT EXISTS ix_items_created  ON inventory_items(is_archived, created_at);
+CREATE INDEX IF NOT EXISTS ix_items_updated  ON inventory_items(is_archived, updated_at);
+CREATE INDEX IF NOT EXISTS ix_items_price    ON inventory_items(is_archived, rental_price);
+CREATE INDEX IF NOT EXISTS ix_photos_primary ON inventory_photos(item_id, is_primary);
+CREATE INDEX IF NOT EXISTS ix_emb_provider   ON photo_embeddings(provider);
+CREATE INDEX IF NOT EXISTS ix_repairs_open   ON repairs(status, item_id);

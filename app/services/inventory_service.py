@@ -145,69 +145,445 @@ class InventoryService:
         return self.get(row["id"]) if row else None
 
     # ----------------------------------------------------------------- поиск
-    def search(self, text: str = "", category_id: Optional[int] = None,
-               only_available: bool = False, limit: int = 300, offset: int = 0) -> list[dict]:
-        """Поиск по названию, номеру, описанию, примечанию и ключевым словам."""
+    # Варианты сортировки каталога. Ключ хранится в настройках интерфейса,
+    # поэтому переименовывать ключи нельзя — только добавлять новые.
+    SORTS = {
+        "name": ("По названию (А → Я)", "i.name COLLATE NOCASE, i.id"),
+        "name_desc": ("По названию (Я → А)", "i.name COLLATE NOCASE DESC, i.id DESC"),
+        "number": ("По инвентарному номеру", "CAST(i.inv_number AS INTEGER), i.inv_number"),
+        "newest": ("Сначала новые", "i.created_at DESC, i.id DESC"),
+        "updated": ("Недавно изменённые", "i.updated_at DESC, i.id DESC"),
+        "price": ("Сначала дешёвые", "i.rental_price, i.name"),
+        "price_desc": ("Сначала дорогие", "i.rental_price DESC, i.name"),
+    }
+    AVAILABILITY = {"": "Любая доступность", "available": "Есть свободные",
+                    "rented": "Есть в аренде", "repair": "В ремонте",
+                    "unavailable": "Нет свободных"}
+
+    def busy_map(self) -> dict[int, int]:
+        """
+        Сколько единиц каждого предмета занято арендами сегодня — одним запросом.
+
+        Раньше занятость считалась отдельным запросом на каждую карточку
+        каталога. Правила те же, что в peak_reserved(): учитывается собственная
+        дата выдачи позиции и фактические возвраты.
+        """
+        rows = get_db().query(
+            "SELECT ri.item_id, ri.date_start, ri.date_returned, ri.quantity, ri.returned_qty, "
+            "ri.status, r.date_start rental_start, r.date_end, r.id rental_id, r.number "
+            "FROM rental_items ri JOIN rentals r ON r.id = ri.rental_id "
+            "WHERE r.status = 'active' AND ri.item_id IS NOT NULL")
+        grouped: dict[int, list] = {}
+        for row in rows:
+            grouped.setdefault(row["item_id"], []).append(row)
+        day = today()
+        return {item_id: self._peak(self._intervals(item_rows), day, day)
+                for item_id, item_rows in grouped.items()}
+
+    def repair_map(self) -> dict[int, int]:
+        """Сколько единиц каждого предмета сейчас в ремонте — одним запросом."""
+        return {row["item_id"]: int(row["q"]) for row in get_db().query(
+            "SELECT item_id, SUM(quantity) q FROM repairs WHERE status='open' GROUP BY item_id")}
+
+    def _enrich(self, rows, busy: Optional[dict] = None, repair: Optional[dict] = None,
+                with_extras: bool = True) -> list[dict]:
+        """Дополняет строки каталога остатками, категорией, фото и отметками."""
+        busy = self.busy_map() if busy is None else busy
+        repair = self.repair_map() if repair is None else repair
+        items = []
+        for row in rows:
+            item = dict(row)
+            item["status_label"] = STATUS_LABELS.get(item["status"], item["status"])
+            item["reserved_now"] = busy.get(item["id"], 0)
+            item["in_repair"] = repair.get(item["id"], 0)
+            item["available_now"] = max(
+                0, item["quantity_total"] - item["reserved_now"] - item["in_repair"])
+            items.append(item)
+        if with_extras and items:
+            self._attach_extras(items)
+        return items
+
+    def _attach_extras(self, items: list[dict]) -> None:
+        """Путь категории, главная фотография, «в избранном» — пачкой, без запроса на карточку."""
+        from .auth_service import auth_service
+        from .categories_service import categories_service
+        from .photo_service import thumb_path
+
         db = get_db()
-        where = ["i.is_archived = 0"]
-        params: list = []
+        paths_by_id = categories_service.path_map()
+        ids = [item["id"] for item in items]
+        photos: dict[int, str] = {}
+        counts: dict[int, int] = {}
+        favorites: set[int] = set()
+        user_id = auth_service.current_id()
+        for start in range(0, len(ids), 500):
+            chunk = ids[start:start + 500]
+            marks = ",".join("?" * len(chunk))
+            for row in db.query(
+                    f"SELECT item_id, rel_path, COUNT(*) c FROM (SELECT item_id, rel_path "
+                    f"FROM inventory_photos WHERE item_id IN ({marks}) "
+                    f"ORDER BY is_primary DESC, sort_order) GROUP BY item_id", chunk):
+                photos[row["item_id"]] = row["rel_path"]
+                counts[row["item_id"]] = row["c"]
+            if user_id:
+                favorites.update(row["item_id"] for row in db.query(
+                    f"SELECT item_id FROM item_favorites WHERE user_id=? "
+                    f"AND item_id IN ({marks})", [user_id] + chunk))
+        for item in items:
+            item["category_path"] = paths_by_id.get(item["category_id"], "")
+            rel = photos.get(item["id"])
+            item["thumb_path"] = str(thumb_path(rel)) if rel else ""
+            item["photo_rel_path"] = rel or ""
+            item["photo_count"] = counts.get(item["id"], 0)
+            item["is_favorite"] = item["id"] in favorites
+
+    def search_page(self, text: str = "", category_id: Optional[int] = None,
+                    availability: str = "", sort: str = "name", limit: int = 200,
+                    offset: int = 0, favorites_only: bool = False,
+                    has_photo: Optional[bool] = None, price_min: Optional[float] = None,
+                    price_max: Optional[float] = None, archived: bool = False,
+                    recent_only: bool = False) -> tuple[list[dict], int]:
+        """
+        Страница каталога и общее число найденного.
+
+        Возвращает (предметы, сколько всего подходит под запрос). Каталог
+        подгружает страницы по мере прокрутки, поэтому на складе в десять
+        тысяч позиций в память попадает только то, что на экране.
+        """
+        from .auth_service import auth_service
+
+        db = get_db()
+        where = ["i.is_archived = ?"]
+        params: list = [1 if archived else 0]
+        joins = ""
+        user_id = auth_service.current_id() or 0
 
         if category_id:
             from .categories_service import categories_service
             ids = categories_service.descendants(category_id)
             where.append(f"i.category_id IN ({','.join('?' * len(ids))})")
             params += ids
+        if favorites_only:
+            where.append("i.id IN (SELECT item_id FROM item_favorites WHERE user_id=?)")
+            params.append(user_id)
+        if has_photo is True:
+            where.append("EXISTS (SELECT 1 FROM inventory_photos p WHERE p.item_id = i.id)")
+        elif has_photo is False:
+            where.append("NOT EXISTS (SELECT 1 FROM inventory_photos p WHERE p.item_id = i.id)")
+        if price_min is not None:
+            where.append("i.rental_price >= ?")
+            params.append(float(price_min))
+        if price_max is not None:
+            where.append("i.rental_price <= ?")
+            params.append(float(price_max))
 
         text = (text or "").strip()
-
-        # Версия 2.4: отсканированный штрихкод или инвентарный номер должны
-        # находить предмет мгновенно и точно, а не «похожие по словам».
-        # Проверка идёт до полнотекстового поиска: сканер отдаёт код и сразу
-        # нажимает Enter, оператору некогда разбираться в списке из десяти
-        # позиций. Если точного совпадения нет — работает обычный поиск.
-        if text:
+        if text and not archived:
+            # отсканированный штрихкод или точный инвентарный номер — сразу предмет
             from .barcode_service import barcode_service
             exact = barcode_service.find_item(text)
             if exact and not exact.get("is_archived"):
-                if not category_id or exact.get("category_id") in set(params):
-                    found = self.get(exact["id"])
-                    if found and not (only_available and found["available_now"] <= 0):
-                        return [found]
+                row = db.query_one(
+                    f"SELECT i.* FROM inventory_items i WHERE i.id=? AND {' AND '.join(where)}",
+                    [exact["id"]] + params)
+                if row:
+                    found = self._enrich([row])
+                    if self._availability_ok(found[0], availability):
+                        return found, 1
 
+        order = self.SORTS.get(sort, self.SORTS["name"])[1]
+        if recent_only:
+            joins += " JOIN item_views v ON v.item_id = i.id AND v.user_id = ?"
+            params = [user_id] + params
+            order = "v.viewed_at DESC"
+
+        base = f"FROM inventory_items i{joins} WHERE {' AND '.join(where)}"
         if text:
-            q = _fts_query(text)
-            try:
-                rows = db.query(
-                    f"SELECT i.* FROM items_fts f JOIN inventory_items i ON i.id = f.rowid "
-                    f"WHERE items_fts MATCH ? AND {' AND '.join(where)} "
-                    f"ORDER BY bm25(items_fts), i.name LIMIT ? OFFSET ?",
-                    [q] + params + [limit, offset],
-                )
-            except Exception:
-                like = f"%{text}%"
-                rows = db.query(
-                    f"SELECT i.* FROM inventory_items i WHERE {' AND '.join(where)} AND ("
-                    "i.name LIKE ? OR i.inv_number LIKE ? OR i.description LIKE ? OR "
-                    "i.keywords LIKE ? OR i.note LIKE ?) ORDER BY i.name LIMIT ? OFFSET ?",
-                    params + [like] * 5 + [limit, offset],
-                )
+            fts = _fts_query(text)
+            like = f"%{text.lower()}%"
+            # Полнотекстовый индекс ищет по началу слов; подстрока внутри слова
+            # («машинка» по «шинк») добирается обычным сравнением без учёта
+            # регистра кириллицы. Сначала идут совпадения по индексу.
+            matched = set()
+            if fts:
+                try:
+                    matched = {row["rowid"] for row in db.query(
+                        "SELECT rowid FROM items_fts WHERE items_fts MATCH ?", (fts,))}
+                except Exception:                                  # noqa: BLE001
+                    log.warning("Полнотекстовый запрос не разобран: %r", text)
+            candidates = db.query(
+                f"SELECT i.id, i.quantity_total, i.status, rulower(i.name) n, "
+                f"rulower(i.inv_number) num, rulower(i.keywords) k, rulower(i.description) d, "
+                f"rulower(i.note) nt {base} ORDER BY {order}", params)
+            ranked = []
+            for position, row in enumerate(candidates):
+                if row["id"] in matched:
+                    rank = 0 if like.strip("%") in (row["n"] or "") else 1
+                elif like.strip("%") in (row["n"] or "") or like.strip("%") in (row["num"] or ""):
+                    rank = 2
+                elif any(like.strip("%") in (row[key] or "") for key in ("k", "d", "nt")):
+                    rank = 3
+                else:
+                    continue
+                ranked.append((rank, position, row))
+            if sort in ("", "relevance", "name"):
+                ranked.sort(key=lambda entry: (entry[0], entry[1]))
+            else:
+                ranked.sort(key=lambda entry: entry[1])
+            light = [entry[2] for entry in ranked]
+        elif availability:
+            light = db.query(f"SELECT i.id, i.quantity_total, i.status {base} ORDER BY {order}",
+                             params)
         else:
-            rows = db.query(
-                f"SELECT i.* FROM inventory_items i WHERE {' AND '.join(where)} "
-                f"ORDER BY i.name LIMIT ? OFFSET ?", params + [limit, offset])
+            total = db.query_one(f"SELECT COUNT(*) c {base}", params)["c"]
+            rows = db.query(f"SELECT i.* {base} ORDER BY {order} LIMIT ? OFFSET ?",
+                            params + [limit, offset])
+            return self._enrich(rows), int(total)
 
-        result = []
-        for row in rows:
-            item = dict(row)
-            item["status_label"] = STATUS_LABELS.get(item["status"], item["status"])
-            item["reserved_now"] = self.reserved_now(item["id"])
-            item["in_repair"] = self.in_repair(item["id"])
-            item["available_now"] = max(
-                0, item["quantity_total"] - item["reserved_now"] - item["in_repair"])
-            if only_available and item["available_now"] <= 0:
-                continue
-            result.append(item)
-        return result
+        busy = repair = None
+        if availability:
+            busy, repair = self.busy_map(), self.repair_map()
+            light = [row for row in light if self._availability_ok({
+                "quantity_total": row["quantity_total"], "status": row["status"],
+                "reserved_now": busy.get(row["id"], 0), "in_repair": repair.get(row["id"], 0),
+                "available_now": max(0, row["quantity_total"] - busy.get(row["id"], 0)
+                                     - repair.get(row["id"], 0))}, availability)]
+        total = len(light)
+        page_ids = [row["id"] for row in light[offset:offset + limit]]
+        if not page_ids:
+            return [], total
+        full = {row["id"]: row for row in db.query(
+            f"SELECT * FROM inventory_items WHERE id IN ({','.join('?' * len(page_ids))})",
+            page_ids)}
+        return self._enrich([full[i] for i in page_ids if i in full], busy, repair), total
+
+    @staticmethod
+    def _availability_ok(item: dict, availability: str) -> bool:
+        if not availability:
+            return True
+        if availability == "available":
+            return item["available_now"] > 0
+        if availability == "unavailable":
+            return item["available_now"] <= 0
+        if availability == "rented":
+            return item["reserved_now"] > 0
+        if availability == "repair":
+            return item["in_repair"] > 0 or item.get("status") == "repair"
+        return True
+
+    def search(self, text: str = "", category_id: Optional[int] = None,
+               only_available: bool = False, limit: int = 300, offset: int = 0) -> list[dict]:
+        """Поиск по названию, номеру, описанию, примечанию и ключевым словам."""
+        items, _total = self.search_page(
+            text, category_id, "available" if only_available else "",
+            sort="name", limit=limit, offset=offset)
+        return items
+
+    def matching_ids(self, **filters) -> list[int]:
+        """Все id под текущий запрос каталога — для «выделить всё» и выгрузки."""
+        filters.pop("limit", None)
+        filters.pop("offset", None)
+        ids: list[int] = []
+        offset = 0
+        while True:
+            items, total = self.search_page(limit=2000, offset=offset, **filters)
+            ids += [item["id"] for item in items]
+            offset += 2000
+            if offset >= total or not items:
+                return ids
+
+    # --------------------------------------------------- избранное и недавние
+    def set_favorite(self, item_id: int, favorite: bool) -> None:
+        from .auth_service import auth_service
+        user = auth_service.require_login()
+        db = get_db()
+        if favorite:
+            db.execute("INSERT OR IGNORE INTO item_favorites(user_id, item_id) VALUES (?,?)",
+                       (user.id, item_id))
+        else:
+            db.execute("DELETE FROM item_favorites WHERE user_id=? AND item_id=?",
+                       (user.id, item_id))
+
+    def is_favorite(self, item_id: int) -> bool:
+        from .auth_service import auth_service
+        user_id = auth_service.current_id()
+        if not user_id:
+            return False
+        return bool(get_db().query_one(
+            "SELECT 1 FROM item_favorites WHERE user_id=? AND item_id=?", (user_id, item_id)))
+
+    def favorites_count(self) -> int:
+        from .auth_service import auth_service
+        return get_db().query_one(
+            "SELECT COUNT(*) c FROM item_favorites f JOIN inventory_items i ON i.id=f.item_id "
+            "WHERE f.user_id=? AND i.is_archived=0", (auth_service.current_id() or 0,))["c"]
+
+    RECENT_LIMIT = 60
+
+    def mark_viewed(self, item_id: int) -> None:
+        """Запоминает, что сотрудник открывал карточку. Хранятся последние 60."""
+        from .auth_service import auth_service
+        user_id = auth_service.current_id()
+        if not user_id:
+            return
+        db = get_db()
+        try:
+            db.execute(
+                "INSERT INTO item_views(user_id, item_id, viewed_at) "
+                "VALUES (?,?,datetime('now','localtime')) "
+                "ON CONFLICT(user_id, item_id) DO UPDATE SET viewed_at=excluded.viewed_at",
+                (user_id, item_id))
+            db.execute(
+                "DELETE FROM item_views WHERE user_id=? AND item_id NOT IN ("
+                "SELECT item_id FROM item_views WHERE user_id=? "
+                "ORDER BY viewed_at DESC LIMIT ?)", (user_id, user_id, self.RECENT_LIMIT))
+        except Exception:                                          # noqa: BLE001
+            log.exception("Не удалось записать просмотр карточки")
+
+    def recent(self, limit: int = 12) -> list[dict]:
+        items, _ = self.search_page(recent_only=True, limit=limit)
+        return items
+
+    # ------------------------------------------------------ массовые действия
+    def bulk_move(self, item_ids: list[int], category_id: Optional[int]) -> int:
+        """Переносит предметы в другую категорию одной операцией."""
+        from .audit_service import audit_service
+        from .auth_service import auth_service
+        from .categories_service import categories_service
+
+        auth_service.require_login()
+        ids = [int(i) for i in item_ids]
+        if not ids:
+            return 0
+        if category_id and not categories_service.get(category_id):
+            raise NotFoundError("Категория не найдена.")
+        db = get_db()
+        with db.transaction() as conn:
+            for start in range(0, len(ids), 500):
+                chunk = ids[start:start + 500]
+                conn.execute(
+                    f"UPDATE inventory_items SET category_id=?, "
+                    f"updated_at=datetime('now','localtime') "
+                    f"WHERE id IN ({','.join('?' * len(chunk))})", [category_id] + chunk)
+        target = categories_service.path(category_id) or "без категории"
+        audit_service.log("Массовый перенос реквизита", entity="item",
+                          details=f"{len(ids)} поз. → {target}")
+        return len(ids)
+
+    def bulk_update(self, item_ids: list[int], rental_price: Optional[float] = None,
+                    valuation: Optional[float] = None, add_keywords: str = "") -> int:
+        """Массовая правка: цена, оценка, добавление ключевых слов."""
+        from .audit_service import audit_service
+        from .auth_service import auth_service
+
+        auth_service.require_login()
+        ids = [int(i) for i in item_ids]
+        if not ids:
+            return 0
+        if rental_price is not None and rental_price < 0:
+            raise ValidationError("Цена не может быть отрицательной.")
+        if valuation is not None and valuation < 0:
+            raise ValidationError("Оценочная стоимость не может быть отрицательной.")
+        extra = " ".join((add_keywords or "").split())
+        db = get_db()
+        with db.transaction() as conn:
+            for item_id in ids:
+                row = conn.execute("SELECT keywords FROM inventory_items WHERE id=?",
+                                   (item_id,)).fetchone()
+                if not row:
+                    continue
+                keywords = row["keywords"] or ""
+                if extra:
+                    have = keywords.split()
+                    known = {word.lower() for word in have}
+                    keywords = " ".join(
+                        have + [w for w in extra.split() if w.lower() not in known])
+                # незаданные поля остаются прежними: COALESCE берёт старое значение
+                conn.execute(
+                    "UPDATE inventory_items SET rental_price=COALESCE(?, rental_price), "
+                    "valuation=COALESCE(?, valuation), keywords=?, "
+                    "updated_at=datetime('now','localtime') WHERE id=?",
+                    (None if rental_price is None else float(rental_price),
+                     None if valuation is None else float(valuation), keywords, item_id))
+        changes = [name for name, value in (("цена", rental_price), ("оценка", valuation),
+                                            ("ключевые слова", extra)) if value not in (None, "")]
+        audit_service.log("Массовая правка реквизита", entity="item",
+                          details=f"{len(ids)} поз.: {', '.join(changes)}")
+        return len(ids)
+
+    def bulk_archive(self, item_ids: list[int]) -> tuple[int, list[str]]:
+        """Списывает несколько предметов. Занятые в аренде пропускаются с объяснением."""
+        done, skipped = 0, []
+        for item_id in item_ids:
+            try:
+                self.archive(item_id)
+                done += 1
+            except AppError as exc:
+                item = get_db().query_one(
+                    "SELECT inv_number, name FROM inventory_items WHERE id=?", (item_id,))
+                skipped.append(f"{item['inv_number']} {item['name']}: {exc}" if item else str(exc))
+        return done, skipped
+
+    def restore(self, item_id: int) -> None:
+        """Возвращает списанный предмет в каталог."""
+        from .audit_service import audit_service
+        from .auth_service import auth_service
+
+        auth_service.require_login()
+        db = get_db()
+        row = db.query_one("SELECT inv_number, name, is_archived FROM inventory_items WHERE id=?",
+                           (item_id,))
+        if not row:
+            raise NotFoundError("Предмет не найден.")
+        if not row["is_archived"]:
+            return
+        with db.transaction() as conn:
+            conn.execute(
+                "UPDATE inventory_items SET is_archived=0, status='in_stock', "
+                "updated_at=datetime('now','localtime') WHERE id=?", (item_id,))
+            conn.execute(
+                "INSERT INTO history_log(entity, entity_id, action) "
+                "VALUES ('item',?,'Возвращён из списанных')", (item_id,))
+        audit_service.log("Реквизит возвращён из списанных", entity="item", entity_id=item_id,
+                          details=f"{row['inv_number']} — {row['name']}")
+
+    def archived_count(self) -> int:
+        return get_db().query_one(
+            "SELECT COUNT(*) c FROM inventory_items WHERE is_archived=1")["c"]
+
+    # ----------------------------------------------------------------- дубли
+    def similar_by_name(self, name: str, exclude_id: Optional[int] = None,
+                        limit: int = 5) -> list[dict]:
+        """
+        Предметы с таким же названием (без учёта регистра и лишних пробелов).
+
+        Нужна, чтобы при добавлении реквизита предупредить: «такой уже есть».
+        Одинаковые названия не запрещены — на складе бывает десять одинаковых
+        стульев отдельными карточками, — поэтому это предупреждение, а не отказ.
+        """
+        key = " ".join((name or "").lower().split())
+        if not key:
+            return []
+        rows = get_db().query(
+            "SELECT id, inv_number, name, quantity_total FROM inventory_items "
+            "WHERE is_archived=0 AND rulower(trim(name)) = ? AND id <> ? LIMIT ?",
+            (key, exclude_id or 0, limit))
+        return [dict(row) for row in rows]
+
+    def duplicate_groups(self, limit: int = 200) -> list[dict]:
+        """Группы карточек с одинаковым названием — для проверки дублей."""
+        db = get_db()
+        groups = []
+        for row in db.query(
+                "SELECT rulower(trim(name)) k, COUNT(*) c FROM inventory_items "
+                "WHERE is_archived=0 GROUP BY k HAVING c > 1 ORDER BY c DESC, k LIMIT ?",
+                (limit,)):
+            items = [dict(r) for r in db.query(
+                "SELECT id, inv_number, name, quantity_total, category_id FROM inventory_items "
+                "WHERE is_archived=0 AND rulower(trim(name)) = ? ORDER BY inv_number",
+                (row["k"],))]
+            groups.append({"reason": "Одинаковое название", "items": items})
+        return groups
 
     def available_units(self) -> tuple[int, int]:
         """(всего экземпляров, свободно сейчас) — для сводки на главном экране."""
@@ -251,8 +627,13 @@ class InventoryService:
         if exclude_rental_id:
             sql += " AND r.id <> ?"
             params.append(exclude_rental_id)
+        return self._intervals(get_db().query(sql, params))
+
+    @staticmethod
+    def _intervals(rows) -> list[tuple]:
+        """Строки позиций аренды → интервалы (начало, конец, количество, аренда, номер)."""
         out = []
-        for row in get_db().query(sql, params):
+        for row in rows:
             start = parse_date(row["date_start"]) or parse_date(row["rental_start"])
             planned_end = parse_date(row["date_end"]) or FAR_FUTURE
             remaining = max(0, row["quantity"] - row["returned_qty"])
@@ -273,11 +654,15 @@ class InventoryService:
         Считается методом заметающей прямой по дням: если две аренды не пересекаются
         между собой, они не складываются — блокируется только реальный пик.
         """
+        return self._peak(self.busy_intervals(item_id, exclude_rental_id), date_start, date_end)
+
+    @staticmethod
+    def _peak(intervals: list[tuple], date_start: date, date_end: Optional[date]) -> int:
         from ..utils import add_days
 
         end = date_end or FAR_FUTURE
         deltas: dict[date, int] = {}
-        for s, e, qty, _rid, _num in self.busy_intervals(item_id, exclude_rental_id):
+        for s, e, qty, _rid, _num in intervals:
             s2, e2 = max(s, date_start), min(e, end)
             if s2 > e2:
                 continue

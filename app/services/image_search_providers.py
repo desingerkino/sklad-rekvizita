@@ -216,7 +216,7 @@ class ClipOnnxProvider:
 
         try:
             request = urllib.request.Request(
-                source["url"], headers={"User-Agent": "SkladRekvizita/2.4"})
+                source["url"], headers={"User-Agent": "SkladRekvizita/4.0"})
             with urllib.request.urlopen(request, timeout=60) as response:
                 total = int(response.headers.get("Content-Length") or 0)
                 received = 0
@@ -291,16 +291,20 @@ class ClipOnnxProvider:
         log.info("Модель визуального поиска загружена: %s", model)
         return self._session
 
-    def _preprocess(self, image_path: Path):
-        """Кадр → тензор 1×3×224×224 по правилам CLIP."""
+    def _preprocess(self, image_path: Path, box=None):
+        """Кадр (или его часть box в долях) → тензор 1×3×224×224 по правилам CLIP."""
         import numpy as np
         from PIL import Image
 
         from .photo_service import enable_heic
 
         enable_heic()
-        with Image.open(image_path) as image:
-            image = image.convert("RGB")
+        from .image_search import _open_rgb
+
+        if True:
+            # _open_rgb учитывает поворот снимка из EXIF: вертикальный кадр с
+            # телефона иначе попадал в модель лежащим на боку
+            image = _open_rgb(image_path, box)
             width, height = image.size
             scale = self.SIZE / min(width, height)
             image = image.resize((max(self.SIZE, round(width * scale)),
@@ -316,11 +320,11 @@ class ClipOnnxProvider:
             np.array(self._STD, dtype=np.float32)
         return data.transpose(2, 0, 1)[None, ...].astype(np.float32)
 
-    def embed(self, image_path: Path) -> list[float]:
+    def embed(self, image_path: Path, box=None) -> list[float]:
         import numpy as np
 
         session = self._load()
-        tensor = self._preprocess(Path(image_path))
+        tensor = self._preprocess(Path(image_path), box)
         input_name = session.get_inputs()[0].name
         try:
             outputs = session.run(None, {input_name: tensor})

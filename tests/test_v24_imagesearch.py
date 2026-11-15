@@ -206,13 +206,13 @@ def main() -> int:
     rows = get_db().query(
         "SELECT provider, COUNT(*) c FROM photo_embeddings GROUP BY provider")
     providers_in_index = {r["provider"]: r["c"] for r in rows}
-    check("local-v1" in providers_in_index,
+    check("local-v2" in providers_in_index,
           "Встроенные векторы на месте")
     if any(p.startswith("clip-onnx") for p in providers_in_index):
         # эта часть имеет смысл только там, где нейросеть реально считала
         check(len(providers_in_index) >= 2,
               f"Векторы разных способов лежат рядом: {providers_in_index}")
-        check("local-v1" in providers_in_index,
+        check("local-v2" in providers_in_index,
               "Встроенные векторы не затёрты переиндексацией нейросетью")
     else:
         print("   ПРОПУЩЕНО: сосуществование с нейросетью — нейросеть на этом компьютере не запускалась")
@@ -426,7 +426,7 @@ def _check_bundled(check, make_photo, tmp: Path) -> None:
             item, make_photo(tmp / "bundled_vase.png", (120, 180, 60)), make_primary=True)
         kinds = {r["provider"] for r in get_db().query(
             "SELECT provider FROM photo_embeddings WHERE photo_id=?", (photo_id,))}
-        check(any(k.startswith("clip-onnx") for k in kinds) and "local-v1" in kinds,
+        check(any(k.startswith("clip-onnx") for k in kinds) and "local-v2" in kinds,
               f"Новая фотография проиндексирована обоими способами: {sorted(kinds)}")
         found = image_search.search(tmp / "bundled_vase.png", limit=3, min_score=0.0)
         check(found and found[0]["item_id"] == item,

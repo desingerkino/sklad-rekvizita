@@ -193,7 +193,7 @@ $iscc = @(
 if ($iscc) {
     & $iscc "build\installer.iss"
     if ($LASTEXITCODE -ne 0) { Fail "Inno Setup не смог собрать установщик." }
-    Write-Host "    Установщик: dist\SkladRekvizita_Setup_2.4.exe" -ForegroundColor Green
+    Write-Host "    Установщик: dist\SkladRekvizita_Setup_4.0.exe" -ForegroundColor Green
 } else {
     Write-Host "    Inno Setup не найден. Установите его с https://jrsoftware.org/isdl.php" -ForegroundColor Yellow
     Write-Host "    и повторите шаг: ISCC.exe build\installer.iss" -ForegroundColor Yellow
