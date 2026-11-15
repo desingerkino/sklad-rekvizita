@@ -56,7 +56,7 @@ class NotificationItem(Card):
 
         if not data["is_read"]:
             dot = QLabel("●")
-            dot.setStyleSheet(f"color: {Color.PRIMARY}; font-size: 12pt;")
+            dot.setStyleSheet(f"color: {Color.PRIMARY}; font-size: 16px;")
             dot.setAlignment(Qt.AlignTop)
             row.addWidget(dot)
         self.body.addLayout(row)

@@ -169,9 +169,11 @@ class MainWindow(QMainWindow):
         # связи между разделами
         self.catalog.open_item.connect(self.open_item)
         self.catalog.add_to_rental.connect(self.add_to_rental)
+        self.catalog.add_many_to_rental.connect(self.add_many_to_rental)
         self.item_card.add_to_rental.connect(self.add_to_rental)
         self.item_card.open_rental.connect(self.open_rental)
-        self.item_card.back.connect(lambda: self.show_page(0))
+        # «Назад к каталогу» возвращает именно в каталог (раньше — на главную)
+        self.item_card.back.connect(lambda: self.show_page(PAGE_CATALOG))
         self.rentals.open_item.connect(self.open_item)
         self.new_rental.rental_created.connect(self._after_rental_created)
         self.new_rental.drafts_changed.connect(self._reload_draft_menu)
@@ -633,6 +635,20 @@ class MainWindow(QMainWindow):
         self.new_rental.add_item(item_id)
         self.show_page(PAGE_NEW_RENTAL)
 
+    def add_many_to_rental(self, item_ids: list) -> None:
+        """Добавляет несколько выбранных в каталоге предметов в одну аренду."""
+        added = 0
+        for item_id in item_ids:
+            try:
+                self.new_rental.add_item(item_id)
+                added += 1
+            except Exception:                                      # noqa: BLE001
+                log.exception("Не удалось добавить предмет %s в аренду", item_id)
+        self.show_page(PAGE_NEW_RENTAL)
+        if added:
+            from .widgets.toast import toast
+            toast(self, f"Добавлено в аренду предметов: {added}")
+
     def _after_rental_created(self, rental_id: int) -> None:
         self.catalog.reload_items()
         self._data_changed()
@@ -750,7 +766,9 @@ class MainWindow(QMainWindow):
         box.addButton("Позже", QMessageBox.RejectRole)
         box.exec()
         if box.clickedButton() == open_button:
-            self.show_page(2)
+            # Раньше здесь открывался раздел №2 — «Новая аренда», и вместо списка
+            # аренд оператор получал пустую форму оформления.
+            self.show_page(PAGE_RENTALS)
 
     # -------------------------------------------------------- сохранение
     def save_all(self) -> None:
@@ -851,7 +869,7 @@ class MainWindow(QMainWindow):
             self.avatar.setText(user.initials)
             self.avatar.setStyleSheet(
                 f"background: {Color.PRIMARY_SOFT}; color: {Color.PRIMARY};"
-                f" border-radius: 23px; font-size: 13pt; font-weight: 700;")
+                f" border-radius: 23px; font-size: 17px; font-weight: 700;")
 
     def _data_changed(self) -> None:
         """После аренды, возврата или изменения остатков обновляем сводку и отчёты."""
@@ -865,11 +883,7 @@ class MainWindow(QMainWindow):
 
     def _open_category(self, category_id: int) -> None:
         self.show_page(PAGE_CATALOG)
-        for index in range(self.catalog.tree.topLevelItemCount()):
-            item = self.catalog.tree.topLevelItem(index)
-            if item.data(0, Qt.UserRole) == category_id:
-                self.catalog.tree.setCurrentItem(item)
-                return
+        self.catalog.select_category(category_id)
 
     def _update_status(self) -> None:
         try:

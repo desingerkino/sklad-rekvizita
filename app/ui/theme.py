@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Дизайн-система «Склад Реквизита 2.1».
+Дизайн-система «Склад Реквизита» (светлая и тёмная темы, версия 4.0).
 
 Единственный источник цветов, скруглений, отступов и типографики: все экраны
 берут стиль отсюда, своих значений не заводят. Палитра снята с визуального
@@ -66,6 +66,18 @@ class Color:
     SELECTED = "#EAF2FF"
     HOVER = "#EEF3FA"
 
+    # «частично возвращено» — голубой
+    PARTIAL = "#0369A1"
+    PARTIAL_SOFT = "#F0F9FF"
+    PARTIAL_BORDER = "#BAE6FD"
+
+    # значки и служебное
+    DANGER_SOLID = "#B91C1C"    # сплошная красная подложка под белым текстом (счётчик)
+    ICON = "#6B7280"            # обычный значок
+    PHOTO_BG = "#EEF1F5"        # подложка под фотографией (поля вокруг снимка)
+    STAR = "#D97706"            # отметка «в избранном»
+    SHADOW = "#0F172A"
+
 
 class Radius:
     SM = 6
@@ -120,9 +132,29 @@ STATUS_TONES = {
     "danger": (Color.DANGER, Color.DANGER_SOFT, Color.DANGER_BORDER),
     "archived": (Color.NEUTRAL, Color.NEUTRAL_SOFT, Color.NEUTRAL_BORDER),
     "returned": (Color.NEUTRAL, Color.NEUTRAL_SOFT, Color.NEUTRAL_BORDER),
-    "partial": (PARTIAL_TEXT, PARTIAL_SOFT, PARTIAL_BORDER),
+    "partial": (Color.PARTIAL, Color.PARTIAL_SOFT, Color.PARTIAL_BORDER),
     "out": (Color.DANGER, Color.DANGER_SOFT, Color.DANGER_BORDER),
 }
+
+
+def _build_status_tones() -> dict:
+    """Тона статусов из текущей палитры — пересобираются при смене темы."""
+    return {
+        "in_stock": (Color.SUCCESS, Color.SUCCESS_SOFT, Color.SUCCESS_BORDER),
+        "rented": (Color.WARNING, Color.WARNING_SOFT, Color.WARNING_BORDER),
+        "prolonged": (Color.DANGER, Color.DANGER_SOFT, Color.DANGER_BORDER),
+        "open_set": (Color.NEUTRAL, Color.NEUTRAL_SOFT, Color.NEUTRAL_BORDER),
+        "finished": (Color.FINISHED, Color.FINISHED_SOFT, Color.FINISHED_BORDER),
+        "repair": (Color.WARNING, Color.WARNING_SOFT, Color.WARNING_BORDER),
+        "success": (Color.SUCCESS, Color.SUCCESS_SOFT, Color.SUCCESS_BORDER),
+        "info": (Color.INFO, Color.INFO_SOFT, Color.INFO_BORDER),
+        "soon": (Color.WARNING, Color.WARNING_SOFT, Color.WARNING_BORDER),
+        "danger": (Color.DANGER, Color.DANGER_SOFT, Color.DANGER_BORDER),
+        "archived": (Color.NEUTRAL, Color.NEUTRAL_SOFT, Color.NEUTRAL_BORDER),
+        "returned": (Color.NEUTRAL, Color.NEUTRAL_SOFT, Color.NEUTRAL_BORDER),
+        "partial": (Color.PARTIAL, Color.PARTIAL_SOFT, Color.PARTIAL_BORDER),
+        "out": (Color.DANGER, Color.DANGER_SOFT, Color.DANGER_BORDER),
+    }
 
 
 def status_tone(status: str) -> tuple[str, str, str]:
@@ -142,8 +174,115 @@ DANGER = Color.DANGER
 MUTED = Color.TEXT_SECONDARY
 
 
+# ------------------------------------------------------------------ темы
+# Светлая тема — значения класса Color выше. Тёмная задаётся таблицей ниже:
+# те же токены, другие значения. Экраны обращаются к Color.* в момент
+# построения, поэтому смена темы — это подмена значений и пересборка окна.
+LIGHT = {name: value for name, value in vars(Color).items()
+         if name.isupper() and isinstance(value, str)}
+
+DARK = {
+    # Тёмная тема для долгой работы: не чёрный фон и не белый текст, а
+    # графит и светло-серый — меньше контраст по краям, глаза устают медленнее.
+    "BG": "#15181D", "SURFACE": "#1D2128", "SURFACE_ALT": "#242933",
+    "SIDEBAR": "#191C22", "TOPBAR": "#1D2128", "OVERLAY": "#000000",
+    "PRIMARY": "#4F7FE8", "PRIMARY_HOVER": "#6390EE", "PRIMARY_PRESSED": "#4270D6",
+    "PRIMARY_SOFT": "#1F2B45", "BRAND_TINT": "#25324D", "SECONDARY": "#60A5FA",
+    "TEXT": "#E4E7EC", "TEXT_SECONDARY": "#B3BAC6", "TEXT_MUTED": "#98A1B0",
+    "TEXT_ON_PRIMARY": "#FFFFFF",
+    "BORDER": "#2D333E", "BORDER_STRONG": "#3D4553", "INPUT_BORDER": "#6B7587",
+    "FOCUS": "#7FA6F5", "DISABLED_BG": "#2A2F39", "TEXT_ON_DISABLED": "#98A1B0",
+    "SUCCESS": "#6FCF97", "SUCCESS_SOFT": "#172A20", "SUCCESS_BORDER": "#27543B",
+    "WARNING": "#F0A85B", "WARNING_SOFT": "#2D2416", "WARNING_BORDER": "#5C4522",
+    "DANGER": "#F28B82", "DANGER_SOFT": "#321D1C", "DANGER_BORDER": "#6E302C",
+    "INFO": "#8DB4F8", "INFO_SOFT": "#1B2740", "INFO_BORDER": "#2F4C82",
+    "NEUTRAL": "#B3BAC6", "FINISHED": "#D8DCE4", "FINISHED_SOFT": "#272C35",
+    "FINISHED_BORDER": "#3D4553", "NEUTRAL_SOFT": "#272C35", "NEUTRAL_BORDER": "#363D49",
+    "SELECTED": "#1F2B45", "HOVER": "#262C36",
+    "PARTIAL": "#7CC8F2", "PARTIAL_SOFT": "#152935", "PARTIAL_BORDER": "#204C66",
+    "DANGER_SOLID": "#D5453B", "ICON": "#A3ACBA", "PHOTO_BG": "#262B34", "STAR": "#F2B544", "SHADOW": "#000000",
+}
+# В тёмной теме текст-ссылка акцентного цвета должен читаться на тёмной
+# поверхности, а белый текст — на акцентной кнопке. Одного значения на оба
+# случая не хватает, поэтому у текста свой, более светлый оттенок.
+LIGHT["PRIMARY_TEXT"] = LIGHT["PRIMARY"]
+DARK["PRIMARY_TEXT"] = "#8DB4F8"
+Color.PRIMARY_TEXT = LIGHT["PRIMARY_TEXT"]
+
+THEMES = {"light": ("Светлая", LIGHT), "dark": ("Тёмная", DARK)}
+_current = "light"
+QSS = ""
+
+
+def current() -> str:
+    """Ключ действующей темы: 'light' или 'dark'."""
+    return _current
+
+
+def is_dark() -> bool:
+    return _current == "dark"
+
+
+def apply(name: str) -> str:
+    """
+    Включает тему: подменяет значения токенов и пересобирает таблицу стилей.
+
+    Возвращает таблицу стилей; её нужно передать в QApplication.setStyleSheet.
+    Уже построенные окна держат старые встроенные стили, поэтому после смены
+    темы главное окно пересоздаётся (так делает MainWindow.switch_theme).
+    """
+    global _current, QSS
+    if name not in THEMES:
+        name = "light"
+    for token, value in THEMES[name][1].items():
+        setattr(Color, token, value)
+    _current = name
+    STATUS_TONES.clear()
+    STATUS_TONES.update(_build_status_tones())
+    globals().update(ACCENT=Color.PRIMARY, OK=Color.SUCCESS, WARN=Color.WARNING,
+                     DANGER=Color.DANGER, MUTED=Color.TEXT_SECONDARY)
+    QSS = build_qss()
+    return QSS
+
+
+def saved_name() -> str:
+    """Тема, выбранная пользователем на этом компьютере (по умолчанию светлая)."""
+    try:
+        from PySide6.QtCore import QSettings
+        value = QSettings("SkladRekvizita", "Interface").value("theme", "light")
+        return value if value in THEMES else "light"
+    except Exception:                                              # noqa: BLE001
+        return "light"
+
+
+def save_name(name: str) -> None:
+    from PySide6.QtCore import QSettings
+    QSettings("SkladRekvizita", "Interface").setValue("theme", name)
+
+
+def px(points: float) -> int:
+    """
+    Размер шрифта в пикселях по значению в пунктах Windows (96 точек на дюйм).
+
+    Qt переводит пункты в пиксели по-разному: на Windows 10 pt = 13 px, на
+    macOS те же 10 pt = 10 px. Из-за этого на Маке весь текст был на четверть
+    мельче, чем задумано. В пикселях размер одинаков на обеих системах.
+    """
+    return int(round(points * 96 / 72))
+
+
+def _points_to_pixels(qss: str) -> str:
+    import re
+    return re.sub(r"font-size:\s*([0-9]+(?:\.[0-9]+)?)pt",
+                  lambda match: f"font-size: {px(float(match.group(1)))}px", qss)
+
+
 def build_qss() -> str:
     """Собирает таблицу стилей приложения из токенов."""
+    return _points_to_pixels(_build_qss_points())
+
+
+def _build_qss_points() -> str:
     c, r, s, f = Color, Radius, Space, Font
     return f"""
 /* ---------------------------------------------------------------- база */
@@ -189,7 +328,7 @@ QScrollArea > QWidget > QWidget {{ background: transparent; }}
 }}
 #NavSubButton:hover {{ background: {c.HOVER}; color: {c.TEXT}; }}
 #NavSubButton:checked {{
-    background: {c.PRIMARY_SOFT}; color: {c.PRIMARY}; font-weight: 600;
+    background: {c.PRIMARY_SOFT}; color: {c.PRIMARY_TEXT}; font-weight: 600;
 }}
 #NavSubClose {{
     background: transparent; border: none; color: {c.TEXT_MUTED};
@@ -201,7 +340,7 @@ QScrollArea > QWidget > QWidget {{ background: transparent; }}
     letter-spacing: 0.6px;
 }}
 #NotifyBadge {{
-    background: {c.DANGER}; color: #FFFFFF; border-radius: 9px;
+    background: {c.DANGER_SOLID}; color: #FFFFFF; border-radius: 9px;
     font-size: {f.TINY}pt; font-weight: 700;
 }}
 #UserCard, #StatCard {{
@@ -306,7 +445,7 @@ QPushButton#PhotoTypeButton {{
 }}
 QPushButton#PhotoTypeButton:hover {{ border-color: {c.PRIMARY}; background: {c.PRIMARY_SOFT}; }}
 QPushButton#LinkButton {{
-    background: transparent; border: none; color: {c.PRIMARY}; padding: 4px 2px;
+    background: transparent; border: none; color: {c.PRIMARY_TEXT}; padding: 4px 2px;
 }}
 QPushButton#LinkButton:hover {{ color: {c.PRIMARY_HOVER}; text-decoration: underline; }}
 
@@ -334,7 +473,7 @@ QHeaderView::section {{
 QTableView::item {{ padding: 10px 8px; border-bottom: 1px solid {c.BORDER}; }}
 QTableView::item:selected {{ background: {c.SELECTED}; color: {c.TEXT}; }}
 QTreeWidget::item {{ padding: 7px 4px; }}
-QTreeWidget::item:selected {{ background: {c.PRIMARY_SOFT}; color: {c.PRIMARY}; }}
+QTreeWidget::item:selected {{ background: {c.PRIMARY_SOFT}; color: {c.PRIMARY_TEXT}; }}
 QTreeWidget::item:hover {{ background: {c.HOVER}; }}
 QTreeWidget {{ selection-background-color: transparent; }}
 QListWidget::item {{ padding: 6px; border-radius: {r.SM}px; }}
@@ -377,7 +516,7 @@ QTabBar::tab {{
 }}
 QTabBar::tab:hover {{ color: {c.TEXT}; background: {c.HOVER}; }}
 QTabBar::tab:selected {{
-    background: {c.SURFACE}; color: {c.PRIMARY}; font-weight: 600;
+    background: {c.SURFACE}; color: {c.PRIMARY_TEXT}; font-weight: 600;
     border: 1px solid {c.BORDER}; border-bottom-color: {c.SURFACE};
 }}
 
@@ -408,7 +547,7 @@ QMenu {{
     border-radius: {r.MD}px; padding: 6px;
 }}
 QMenu::item {{ padding: 8px 16px; border-radius: {r.SM}px; }}
-QMenu::item:selected {{ background: {c.PRIMARY_SOFT}; color: {c.PRIMARY}; }}
+QMenu::item:selected {{ background: {c.PRIMARY_SOFT}; color: {c.PRIMARY_TEXT}; }}
 QCalendarWidget QAbstractItemView:enabled {{
     background: {c.SURFACE}; selection-background-color: {c.PRIMARY};
     selection-color: #FFFFFF;
@@ -437,8 +576,50 @@ QCalendarWidget QAbstractItemView:enabled {{
 #IconTile[alert="true"] {{ background: {c.DANGER_SOFT}; }}
 #CardTitle {{ font-weight: 600; }}
 #Card[interactive="true"]:hover {{ border: 1px solid {c.PRIMARY}; }}
-#BigNumber {{ font-size: {f.H1}pt; font-weight: 700; color: {c.PRIMARY}; }}
+#BigNumber {{ font-size: {f.H1}pt; font-weight: 700; color: {c.PRIMARY_TEXT}; }}
+
+/* ------------------------------------------------------- версия 4.0 */
+#SegmentButton {{
+    background: transparent; border: 1px solid transparent; border-radius: {r.MD}px;
+    padding: 7px 14px; color: {c.TEXT_SECONDARY};
+}}
+#SegmentButton:hover {{ background: {c.HOVER}; color: {c.TEXT}; }}
+#SegmentButton:checked {{
+    background: {c.PRIMARY_SOFT}; color: {c.PRIMARY_TEXT}; font-weight: 600;
+    border: 1px solid {c.BORDER};
+}}
+#SegmentButton:disabled {{ color: {c.TEXT_ON_DISABLED}; }}
+#SelectionBar {{
+    background: {c.SURFACE}; border: 1px solid {c.BORDER}; border-radius: {r.LG}px;
+}}
+#Toast {{
+    background: {c.TEXT}; color: {c.SURFACE}; border-radius: {r.MD}px;
+    padding: 12px 18px; font-weight: 600;
+}}
+#Toast[kind="warn"] {{ background: {c.WARNING}; color: {c.SURFACE}; }}
+#EmptyTitle {{ font-size: {f.H2}pt; font-weight: 600; color: {c.TEXT}; }}
+QListView#CatalogGrid {{ background: transparent; border: none; outline: none; }}
+QListView#CatalogGrid::item {{ background: transparent; border: none; }}
+QTableView#CatalogTable {{ border: none; }}
+QTableView {{ alternate-background-color: {c.SURFACE_ALT}; }}
+QTableView::item:hover {{ background: {c.HOVER}; }}
+QPushButton::menu-indicator {{ image: none; width: 0; }}
+QTreeWidget#CategoryTree {{ border: none; }}
+#PhotoStrip {{ background: transparent; border: none; }}
+#SimilarityBar {{ background: {c.NEUTRAL_SOFT}; border-radius: 3px; }}
+#Pill {{
+    background: {c.NEUTRAL_SOFT}; color: {c.TEXT_SECONDARY}; border-radius: {r.SM}px;
+    padding: 3px 8px; font-size: {f.SMALL}pt;
+}}
+#StockBar {{ background: {c.NEUTRAL_SOFT}; border: none; border-radius: 3px; }}
+#StockBar::chunk {{ background: {c.SUCCESS}; border-radius: 3px; }}
+#ResultCard {{
+    background: {c.SURFACE}; border: 1px solid {c.BORDER}; border-radius: {r.LG}px;
+}}
+#ResultCard:hover {{ border: 1px solid {c.TEXT_MUTED}; }}
+#ResultCard[selected="true"] {{ border: 2px solid {c.PRIMARY}; background: {c.PRIMARY_SOFT}; }}
 """
 
 
 QSS = build_qss()
+# Дополнения 4.0 подключаются в конце файла (см. _extra_qss).

@@ -42,6 +42,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out", required=True, help="папка для PNG")
     parser.add_argument("--scale", type=float, default=1.0, help="масштаб интерфейса")
     parser.add_argument("--items", type=int, default=120, help="сколько позиций создать")
+    parser.add_argument("--theme", default="light", choices=("light", "dark"))
+    parser.add_argument("--only", default="", help="имена экранов через запятую")
     return parser.parse_args()
 
 
@@ -76,6 +78,29 @@ def seed(items_count: int) -> dict:
             "category_id": sub, "description": "Описание позиции. " * 6,
             "keywords": "тест", "quantity_total": 5 + i % 7,
             "rental_price": 500 + i, "valuation": 5000 + i * 10}))
+    # У части предметов есть фотографии разных пропорций: так видно, что плитка
+    # не искажает снимки и одинаково держит вертикальные и горизонтальные кадры.
+    try:
+        from PIL import Image, ImageDraw
+        from app.services.photo_service import photo_service
+        shapes = ((640, 480), (480, 640), (800, 300), (500, 500))
+        for i, item_id in enumerate(items[8:48]):
+            if i % 5 == 4:
+                continue                        # каждая пятая — без фото
+            w, h = shapes[i % len(shapes)]
+            image = Image.new("RGB", (w, h), (205 - i * 3, 190, 150 + i * 2))
+            draw = ImageDraw.Draw(image)
+            draw.rectangle([w * 0.25, h * 0.3, w * 0.75, h * 0.45], fill=(120, 70, 40))
+            draw.rectangle([w * 0.3, h * 0.45, w * 0.36, h * 0.85], fill=(90, 50, 30))
+            draw.rectangle([w * 0.64, h * 0.45, w * 0.7, h * 0.85], fill=(90, 50, 30))
+            source = paths.TEMP_DIR / f"render_{i}.jpg"
+            image.save(source, "JPEG", quality=90)
+            for _ in range(1 + i % 3):
+                photo_service.add_photo(item_id, source, "main")
+            source.unlink()
+    except Exception:                                       # noqa: BLE001
+        traceback.print_exc()
+
     clients = [clients_service.create({
         "full_name": f"{LONG_CLIENT} {i}" if i % 3 == 0 else f"Клиент {i}",
         "phone": f"+7 900 {i:07d}", "passport": f"45 08 {i:06d}",
@@ -111,7 +136,7 @@ def main() -> int:
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    tag = f"x{str(args.scale).replace('.', '_')}"
+    tag = f"x{str(args.scale).replace('.', '_')}" + ("_dark" if args.theme == "dark" else "")
     errors: list[str] = []
 
     from PySide6.QtWidgets import QApplication
@@ -123,7 +148,7 @@ def main() -> int:
     from app.ui.brand import default_font, load_fonts
     if load_fonts():
         app.setFont(default_font())
-    app.setStyleSheet(theme.build_qss())
+    app.setStyleSheet(theme.apply(args.theme))
 
     data = seed(args.items)
 
@@ -142,9 +167,14 @@ def main() -> int:
     window.show()
 
     def settle() -> None:
+        from app.ui.widgets.thumbs import thumbnails
         for _ in range(6):
             app.processEvents()
             time.sleep(0.03)
+        thumbnails().wait(3000)                 # миниатюры грузятся в фоне
+        for _ in range(4):
+            app.processEvents()
+            time.sleep(0.02)
 
     def snap(widget, name: str, size: tuple[int, int]) -> None:
         widget.resize(*size)
@@ -161,9 +191,12 @@ def main() -> int:
 
     names = ["dashboard", "catalog", "new_rental", "rentals", "returns", "history",
              "clients", "productions", "projects", "reports", "audit", "packing", "settings"]
+    only = {part.strip() for part in args.only.split(",") if part.strip()}
     for index, name in enumerate(names):
         if index >= len(MENU):
             break
+        if only and name not in only:
+            continue
 
         def shot(index=index, name=name):
             window.show_page(index)

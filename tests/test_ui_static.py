@@ -143,7 +143,9 @@ def main() -> int:
 
     print("\n=== Адаптивность и анимации ===")
     catalog_src = (UI / "catalog_view.py").read_text(encoding="utf-8")
-    check("Каталог перестраивает карточки под ширину окна", "FlowLayout" in catalog_src)
+    # 4.0: плитку рисует QListView на модели, раскладка сама следует за шириной
+    check("Каталог перестраивает карточки под ширину окна",
+          "ResizeMode.Adjust" in catalog_src and "IconMode" in catalog_src)
     check("Нет лишней горизонтальной прокрутки",
           "ScrollBarAlwaysOff" in catalog_src)
     check("Главное окно имеет минимальный размер", "setMinimumSize" in main_window)

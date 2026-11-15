@@ -26,7 +26,9 @@ def load_fonts() -> bool:
 
 
 def default_font() -> QFont:
-    font = QFont("Inter", 10)
+    font = QFont("Inter")
+    # размер в пикселях: в пунктах он на macOS получается на четверть мельче
+    font.setPixelSize(14)
     font.setStyleStrategy(QFont.PreferAntialias)
     return font
 

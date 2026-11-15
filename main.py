@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-СКЛАД РЕКВИЗИТА 2.0 — точка входа приложения.
+СКЛАД РЕКВИЗИТА — точка входа приложения.
 
 Запуск в разработке:  python main.py
-Собранное приложение: SkladRekvizita.exe
+Собранное приложение: SkladRekvizita.exe (Windows), SkladRekvizita.app (macOS)
 
 Порядок запуска: подготовка папок → журнал → база и миграции → экран входа →
 главное окно. Без успешного входа в основную программу попасть нельзя.
@@ -63,8 +63,10 @@ def main() -> int:
     if load_fonts():
         app.setFont(default_font())
 
-    from app.ui.theme import QSS
-    app.setStyleSheet(QSS)
+    # Тема (светлая или тёмная) включается до построения первого окна:
+    # экраны читают цвета из палитры в момент создания.
+    from app.ui import theme
+    app.setStyleSheet(theme.apply(theme.saved_name()))
 
     try:
         from app.db.database import get_db

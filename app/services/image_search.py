@@ -210,7 +210,11 @@ def dominant_colors(image_path, box: Optional[tuple] = None, limit: int = 2) -> 
 # снимка дают 0.5–0.6, и «60 %» выглядело бы как неплохое совпадение. Поэтому
 # показывается не косинус, а положение на шкале от «случайные снимки» до
 # «тот же предмет». Границы выбраны по замерам на реальных фотографиях.
-_SCALES = {"clip": (0.55, 0.92), "local": (0.55, 0.95), "remote": (0.50, 0.95)}
+# Замер встроенного алгоритма на 191 снимке: лучший ПОСТОРОННИЙ предмет даёт
+# в среднем 0.78 (95 % случаев — ниже 0.85), тот же предмет на новом снимке —
+# в среднем 0.90. Для нейросети границы взяты по типичным значениям CLIP и
+# проверяются в CI на тех же снимках (tools/eval_photo_search.py).
+_SCALES = {"clip": (0.55, 0.92), "local": (0.74, 0.97), "remote": (0.50, 0.95)}
 LEVELS = ((80, "Очень похоже"), (55, "Похоже"), (30, "Есть сходство"), (0, "Отдалённо"))
 
 
@@ -425,6 +429,16 @@ class ImageSearchService:
         """Векторы запроса: выделенная область либо весь кадр и его центр."""
         views = (box,) if box else self.QUERY_VIEWS
         result = []
+        if hasattr(provider, "embed_image"):
+            # Встроенный алгоритм сравнивает контуры и потому не узнаёт предмет,
+            # снятый с другой стороны (зеркально). Третий вид — отражённый кадр —
+            # поднимает точность на таких снимках с 60 до 90 с лишним процентов.
+            from PIL import ImageOps
+            for view in views:
+                image = _open_rgb(image_path, view)
+                result.append(provider.embed_image(image))
+            result.append(provider.embed_image(ImageOps.mirror(_open_rgb(image_path, box))))
+            return result
         for view in views:
             if view is None:
                 result.append(provider.embed(Path(image_path)))

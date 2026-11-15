@@ -122,7 +122,7 @@ class DayCell(QFrame):
             bar.setStyleSheet(
                 f"QPushButton {{ background: {background}; color: {color}; border: none;"
                 f" border-left: 3px solid {color}; border-radius: 5px; padding: 3px 6px;"
-                f" text-align: left; font-size: {Font.TINY}pt; }}"
+                f" text-align: left; font-size: {int(round(Font.TINY * 96 / 72))}px; }}"
                 f"QPushButton:hover {{ background: {color}; color: {Color.TEXT_ON_PRIMARY}; }}")
             bar.clicked.connect(lambda _=False, rid=entry["rental_id"]: self.rental_clicked.emit(rid))
             layout.addWidget(bar)

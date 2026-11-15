@@ -80,7 +80,7 @@ class RecoveryCodeDialog(QDialog):
         value.setAlignment(Qt.AlignCenter)
         value.setTextInteractionFlags(Qt.TextSelectableByMouse)
         value.setStyleSheet(
-            f"font-size:{Font.H1 + 4}pt; font-weight:700; letter-spacing:3px; "
+            f"font-size:{int(round((Font.H1 + 4) * 96 / 72))}px; font-weight:700; letter-spacing:3px; "
             f"color:{Color.TEXT}; background:{Color.SURFACE_ALT}; "
             f"border:1px solid {Color.BORDER}; border-radius:8px; padding:14px;")
         root.addWidget(value)

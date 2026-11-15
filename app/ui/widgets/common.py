@@ -20,11 +20,45 @@ DATE_FORMAT = "dd.MM.yyyy"
 
 
 # ------------------------------------------------------------------ иконки
+_ICON_CACHE: dict[tuple, QIcon] = {}
+_ICON_SOURCE_COLORS = {"": "#6B7280", "active": "#2563EB", "danger": "#DC2626"}
+
+
 def icon(name: str, variant: str = "") -> QIcon:
-    """Иконка из единого набора: icon('search'), icon('plus', 'white')."""
+    """
+    Иконка из единого набора: icon('search'), icon('plus', 'white').
+
+    Файлы значков нарисованы под светлую тему. В тёмной серый значок на
+    графитовом фоне почти не виден, поэтому цвет линии подменяется на цвет
+    из палитры, а перекрашенный файл кладётся во временную папку данных.
+    """
+    from .. import theme
+
+    key = (name, variant, theme.current())
+    cached = _ICON_CACHE.get(key)
+    if cached is not None:
+        return cached
     suffix = f"_{variant}" if variant else ""
     path = paths.assets_dir() / "icons" / f"{name}{suffix}.svg"
-    return QIcon(str(path)) if path.exists() else QIcon()
+    result = QIcon()
+    if path.exists():
+        target = path
+        if theme.is_dark() and variant in _ICON_SOURCE_COLORS:
+            color = {"": Color.ICON, "active": Color.PRIMARY_TEXT,
+                     "danger": Color.DANGER}[variant]
+            try:
+                folder = paths.TEMP_DIR / "icons_dark"
+                folder.mkdir(parents=True, exist_ok=True)
+                target = folder / f"{name}{suffix}_{color.lstrip('#')}.svg"
+                if not target.exists():
+                    text = path.read_text(encoding="utf-8")
+                    target.write_text(text.replace(_ICON_SOURCE_COLORS[variant], color),
+                                      encoding="utf-8")
+            except OSError:
+                target = path             # папка недоступна — остаётся обычный значок
+        result = QIcon(str(target))
+    _ICON_CACHE[key] = result
+    return result
 
 
 def icon_button(name: str, tooltip: str = "", size: int = 20, variant: str = "") -> QPushButton:

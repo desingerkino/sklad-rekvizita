@@ -98,7 +98,8 @@ def main() -> int:  # noqa: C901
           "ElideRight" in common)
     check("Полное значение доступно подсказкой", "setToolTip(value)" in common)
     check("Название в плитке каталога имеет фиксированную высоту",
-          "setFixedHeight(52)" in source("widgets/item_tile.py"))
+          "NAME_LINES = 2" in source("widgets/catalog_grid.py")
+          and "elidedText" in source("widgets/catalog_grid.py"))
     check("Длинное название раздела в шапке сокращается",
           "_shorten" in source("main_window.py"))
     check("Заголовок и подзаголовок не выталкивают поиск",
@@ -134,7 +135,7 @@ def main() -> int:  # noqa: C901
     check("«Открыт набор / аренда» — серый", '"open_set": (Color.NEUTRAL' in theme)
     check("«Аренда завершена» — тёмный", '"finished": (Color.FINISHED' in theme)
     check("Статус всегда сопровождается текстом",
-          "StatusBadge(" in source("widgets/item_tile.py")
+          "status_tone(" in source("widgets/catalog_grid.py")
           and "label" in statuses and "LABELS" in statuses)
     emoji = []
     for path in UI.rglob("*.py"):
