@@ -1,0 +1,55 @@
+{
+ "provider": "clip-onnx:clip_image",
+ "items": 191,
+ "index_ms_per_photo": 98.6,
+ "search_ms_median": 185.5,
+ "exact_top1_high": "40/40",
+ "noise_percent": 29,
+ "variants": {
+  "dark": {
+   "top1": 100.0,
+   "top5": 100.0
+  },
+  "warm": {
+   "top1": 100.0,
+   "top5": 100.0
+  },
+  "angle": {
+   "top1": 100.0,
+   "top5": 100.0
+  },
+  "lowres": {
+   "top1": 94.2,
+   "top5": 99.5
+  },
+  "mirror": {
+   "top1": 100.0,
+   "top5": 100.0
+  },
+  "small": {
+   "top1": 100.0,
+   "top5": 100.0
+  },
+  "part": {
+   "top1": 99.5,
+   "top5": 100.0
+  }
+ },
+ "cosine_same_item": {
+  "p5": 0.668,
+  "p25": 0.878,
+  "p50": 0.921,
+  "p75": 0.951,
+  "p95": 0.974
+ },
+ "cosine_best_other": {
+  "p5": 0.621,
+  "p25": 0.688,
+  "p50": 0.731,
+  "p75": 0.77,
+  "p95": 0.811
+ },
+ "fusion": true,
+ "top1_all": 99.1,
+ "top5_all": 99.9
+}
