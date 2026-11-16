@@ -1,0 +1,23 @@
+=== Логотип и иконка ===
+  ok   logo-mark.svg: файл есть и это корректный SVG
+  ok   logo-mark-mono.svg: файл есть и это корректный SVG
+  ok   logo-mark-on-blue.svg: файл есть и это корректный SVG
+  ok   logo-horizontal.svg: файл есть и это корректный SVG
+  ok   logo-horizontal-on-blue.svg: файл есть и это корректный SVG
+  ok   logo-horizontal-mono.svg: файл есть и это корректный SVG
+  ok   logo-full.svg: файл есть и это корректный SVG
+  ok   app-icon.svg: файл есть и это корректный SVG
+  ok   logo-mark.png есть
+  ok   logo-horizontal.png есть
+  ok   app-icon-256.png есть
+  ok   Иконка Windows содержит размеры 16–256
+
+=== Шрифт Onest ===
+  ok   Onest-Regular.ttf лежит в assets/fonts
+  ok   Onest-Medium.ttf лежит в assets/fonts
+  ok   Onest-Bold.ttf лежит в assets/fonts
+  ok   Лицензия шрифта приложена
+  ok   Onest первый в стеке шрифтов
+  ok   Папка assets (шрифты, логотип) попадает в сборку
+
+Пройдено: 18, не пройдено: 0

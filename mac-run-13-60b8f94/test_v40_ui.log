@@ -1,0 +1,1579 @@
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+Не удалось проверить встроенную модель
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 534, in selected_key
+    ready, _ = clip.available()
+               ^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+
+ТЕСТ ПРЕРВАН:
+Traceback (most recent call last):
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/tests/test_v40_ui.py", line 603, in <module>
+    code = main()
+           ^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/tests/test_v40_ui.py", line 111, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/ui/main_window.py", line 104, in __init__
+    self._build()
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/ui/main_window.py", line 155, in _build
+    self.settings = SettingsView()
+                    ^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/ui/settings_view.py", line 64, in __init__
+    tabs.addTab(scroll_area(self._imagesearch_tab()), "Поиск по фото")
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/ui/settings_view.py", line 608, in _imagesearch_tab
+    for row in registry.status():
+               ^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 547, in status
+    ready, reason = provider.available()
+                    ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/image_search_providers.py", line 182, in available
+    ready, reason = runtime_ok()
+                    ^^^^^^^^^^^^
+  File "/Users/runner/work/sklad-rekvizita/sklad-rekvizita/app/services/onnx_probe.py", line 101, in runtime_ok
+    output = (result.stdout or "") + (result.stderr or "")
+              ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'stdout'
+
