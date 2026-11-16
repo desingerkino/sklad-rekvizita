@@ -1,0 +1,5 @@
+setup: D:\a\sklad-rekvizita\sklad-rekvizita\dist\SkladRekvizita_Setup_4.0.exe (137 MB)
+install exit=0
+installed self-test exit=0
+update exit=0; data kept=True
+uninstall exit=0; exe left=False; data kept=True
