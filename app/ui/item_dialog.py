@@ -159,7 +159,10 @@ class ItemDialog(QDialog):
         if self.item_id:
             return True
         try:
-            self.item_id = inventory_service.create(self._collect())
+            data = self._collect()
+            if not self._confirm_duplicate(data):
+                return False
+            self.item_id = inventory_service.create(data)
             self.primary_btn.setEnabled(True)
             self.del_photo_btn.setEnabled(True)
             return True
@@ -218,12 +221,35 @@ class ItemDialog(QDialog):
             "status": self.status.currentData(),
         }
 
+    def _confirm_duplicate(self, data: dict) -> bool:
+        """
+        Предупреждает, если предмет с таким названием уже есть. Одинаковые
+        названия не запрещены (десять одинаковых стульев отдельными карточками —
+        обычное дело), поэтому это вопрос, а не отказ. Спрашивается один раз.
+        """
+        if getattr(self, "_duplicate_confirmed", False):
+            return True
+        same = inventory_service.similar_by_name(data.get("name", ""), exclude_id=self.item_id)
+        if not same:
+            return True
+        from .errors import confirm
+        listing = "\n".join(f"• № {row['inv_number']}  {row['name']}" for row in same[:5])
+        if confirm(self, "Предмет с таким названием уже есть в каталоге:\n\n"
+                         f"{listing}\n\nВозможно, это дубль. Всё равно создать новую карточку?",
+                   "Похоже на дубль"):
+            self._duplicate_confirmed = True
+            return True
+        return False
+
     def _save(self) -> None:
         try:
+            data = self._collect()
             if self.item_id:
-                inventory_service.update(self.item_id, self._collect())
+                inventory_service.update(self.item_id, data)
             else:
-                self.item_id = inventory_service.create(self._collect())
+                if not self._confirm_duplicate(data):
+                    return
+                self.item_id = inventory_service.create(data)
             self.accept()
         except AppError as exc:
             show_error(self, exc)
