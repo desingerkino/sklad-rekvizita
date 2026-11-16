@@ -166,7 +166,11 @@ class CatalogView(QWidget):
         self.duplicates_action = more.addAction(icon("details"), "Проверить дубли…")
         self.duplicates_action.triggered.connect(self._check_duplicates)
         more.addSeparator()
-        self.density_menu = more.addMenu("Размер плитки")
+        # Подменю создаётся с явным родителем и хранится в поле: так им владеет
+        # меню «Ещё», и объект не исчезает, пока жив каталог.
+        self.more_menu = more
+        self.density_menu = QMenu("Размер плитки", more)
+        more.addMenu(self.density_menu)
         for key, label in DENSITY_LABELS.items():
             action = self.density_menu.addAction(label)
             action.setCheckable(True)

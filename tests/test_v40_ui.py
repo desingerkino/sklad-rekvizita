@@ -178,6 +178,23 @@ def main() -> int:
                 label = button_label(button)
                 if label in SKIP_CLICK:
                     continue
+                if hasattr(button, "menu") and button.menu() is not None:
+                    # Кнопка с выпадающим меню: нажатие открывает меню и ждёт, пока
+                    # его закроют (на macOS прогон на этом зависал). Вместо этого
+                    # выполняются сами пункты меню — это и есть действия кнопки.
+                    for action in button.menu().actions():
+                        if action.isSeparator() or action.menu() is not None \
+                                or not action.isEnabled():
+                            continue
+                        mark = len(ERRORS)
+                        action.trigger()
+                        settle(2)
+                        clicked += 1
+                        problems = errors_since(mark)
+                        if problems:
+                            failed.append(f"{label} → {action.text()}: "
+                                          f"{problems[-1].strip().splitlines()[-1]}")
+                    continue
                 if "камер" in (label + " " + button.toolTip()).lower():
                     # Включение камеры на macOS вызывает системный запрос доступа,
                     # на который некому ответить, — прогон зависает. Действие у
