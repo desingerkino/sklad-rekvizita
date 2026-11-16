@@ -1,0 +1,6 @@
+This plugin does not support propagateSizeHints()
+qt.qpa.fonts: Populating font family aliases took 134 ms. Replace uses of missing font family "Segoe UI" with one that exists to avoid this cost. 
+This plugin does not support raise()
+This plugin does not support grabbing the keyboard
+This plugin does not support propagateSizeHints()
+Готово: 13 кадров, ошибок: 0
