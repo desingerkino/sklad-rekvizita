@@ -342,9 +342,9 @@ class MainWindow(QMainWindow):
 
         info_column = QVBoxLayout()
         info_column.setSpacing(0)
-        self.user_name = QLabel("—")
+        self.user_name = ElidedLabel("—")
         self.user_name.setObjectName("UserName")
-        self.user_position = QLabel("")
+        self.user_position = ElidedLabel("")
         self.user_position.setObjectName("UserRole")
         info_column.addWidget(self.user_name)
         info_column.addWidget(self.user_position)
@@ -995,13 +995,12 @@ class MainWindow(QMainWindow):
         user = auth_service.refresh_current()
         if not user:
             return
-        self.user_name.setText(self._shorten(user.display_name, 22))
-        self.user_name.setToolTip(user.display_name)
+        # подписи сами сокращаются многоточием под ширину меню
+        self.user_name.setText(user.display_name)
         position = user.position_label
         role = user.role_label
-        self.user_position.setText(self._shorten(
-            f"{position} · {role}" if position and position != role else role, 27))
-        self.user_position.setToolTip(f"{position}\n{role}")
+        self.user_position.setText(
+            f"{position} · {role}" if position and position != role else role)
         avatar = auth_service.avatar_file(user.id)
         if avatar:
             self.avatar.set_photo(str(avatar))

@@ -227,7 +227,7 @@ class CatalogView(QWidget):
         # ----------------------------------------------------- результаты
         results = QWidget()
         results_layout = QVBoxLayout(results)
-        results_layout.setContentsMargins(0, 0, 0, 0)
+        results_layout.setContentsMargins(Space.MD, 0, 0, 0)   # отступ от дерева категорий
         results_layout.setSpacing(Space.SM)
 
         # быстрые списки
@@ -279,7 +279,7 @@ class CatalogView(QWidget):
 
         self.sort = QComboBox()
         self.sort.setSizeAdjustPolicy(QComboBox.AdjustToMinimumContentsLengthWithIcon)
-        self.sort.setMinimumContentsLength(14)
+        self.sort.setMinimumContentsLength(21)
         for key, (label, _sql) in inventory_service.SORTS.items():
             self.sort.addItem(label, key)
         self.sort.setToolTip("Порядок предметов в каталоге")
