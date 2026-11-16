@@ -1,0 +1,5 @@
+Скачиваю https://huggingface.co/Xenova/clip-vit-base-patch32/resolve/main/onnx/vision_model_quantized.onnx (попытка 1)
+Файл: 85.0 МБ, sha256 583fd1110a514667812fee7d684952aaf82a99b959760c8d7dca7e0ab9839299
+available: True 
+длина вектора: 512
+Проверка модели пройдена
