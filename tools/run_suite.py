@@ -16,7 +16,7 @@ def main() -> int:
     module, log_path, seconds = sys.argv[1], sys.argv[2], int(sys.argv[3])
     with open(log_path, "w", encoding="utf-8", errors="replace") as log:
         try:
-            return subprocess.run([sys.executable, "-m", module, *sys.argv[4:]],
+            return subprocess.run([sys.executable, "-u", "-m", module, *sys.argv[4:]],
                                   stdout=log, stderr=subprocess.STDOUT,
                                   timeout=seconds).returncode
         except subprocess.TimeoutExpired:
