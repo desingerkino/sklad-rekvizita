@@ -178,6 +178,11 @@ def main() -> int:
                 label = button_label(button)
                 if label in SKIP_CLICK:
                     continue
+                if "камер" in (label + " " + button.toolTip()).lower():
+                    # Включение камеры на macOS вызывает системный запрос доступа,
+                    # на который некому ответить, — прогон зависает. Действие у
+                    # кнопки есть (аудит выше), само окно камеры проверяется руками.
+                    continue
                 mark = len(ERRORS)
                 button.click()
                 settle(2)

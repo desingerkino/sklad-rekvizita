@@ -17,9 +17,9 @@ for f in tests/test_*.py tests/check_imports.py; do
   mod=$(echo "${f%.py}" | tr '/' '.')
   b=$(basename "${f%.py}")
   if [ "$b" = "test_v40_ui" ]; then
-    python -m "$mod" --report out/button_audit.md > "out/$b.log" 2>&1
+    python tools/run_suite.py "$mod" "out/$b.log" 900 --report out/button_audit.md
   else
-    python -m "$mod" > "out/$b.log" 2>&1
+    python tools/run_suite.py "$mod" "out/$b.log" 900
   fi
   code=$?
   ok=$(grep -c "\[OK\]\|^ *ok  " "out/$b.log" || true)
@@ -29,7 +29,7 @@ for f in tests/test_*.py tests/check_imports.py; do
 done
 [ -f "$MODEL.aside" ] && mv "$MODEL.aside" "$MODEL"
 # интерфейс проверяется ещё раз — с установленной нейросетью
-python -m tests.test_v40_ui > out/test_v40_ui_with_model.log 2>&1
+python tools/run_suite.py tests.test_v40_ui out/test_v40_ui_with_model.log 900
 code=$?
 echo "tests.test_v40_ui(with model) exit=$code ok=$(grep -c "\[OK\]" out/test_v40_ui_with_model.log) fail=$(grep -c "\[FAIL\]" out/test_v40_ui_with_model.log)" | tee -a out/tests_summary.txt
 [ "$code" != "0" ] && failed=$((failed+1))
