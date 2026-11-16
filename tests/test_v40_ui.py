@@ -159,12 +159,19 @@ def main() -> int:
                       f"{'все с действием' if not dead else 'БЕЗ ДЕЙСТВИЯ: ' + ', '.join(dead)} |")
         return len(buttons), dead
 
-    SKIP_CLICK = {"Выйти"}        # проверяется отдельно: меняет состояние сеанса
+    # Не нажимаются: «Выйти» (проверяется отдельно, меняет сеанс) и две кнопки,
+    # которые ходят в интернет, — у них есть действие (аудит выше это видит),
+    # но тест не должен зависеть от сети.
+    SKIP_CLICK = {"Выйти", "Скачать модель", "Проверить соединение", "Проверить"}
 
-    def click_all(root: QWidget, where: str) -> tuple[int, list[str]]:
+    def click_all(root: QWidget, where: str, restore=None) -> tuple[int, list[str]]:
+        """restore — как вернуть экран, если нажатие увело с него («Назад», «Открыть»)."""
         failed, clicked = [], 0
         for button in root.findChildren(QAbstractButton):
             try:
+                if restore is not None and not root.isVisible():
+                    restore()
+                    settle(2)
                 if button.objectName().startswith("qt_") or not button.isVisible() \
                         or not button.isEnabled():
                     continue
@@ -235,6 +242,19 @@ def main() -> int:
         total_buttons += count
         check(f"«{title}»: у всех кнопок ({count}) есть действие", not dead, ", ".join(dead))
         clicked, failed = click_all(page, title)
+        # у раздела с вкладками нажимаются кнопки каждой вкладки, а не только открытой
+        from PySide6.QtWidgets import QTabWidget
+        for tabs in page.findChildren(QTabWidget):
+            for tab_index in range(tabs.count()):
+                try:
+                    tabs.setCurrentIndex(tab_index)
+                    settle(2)
+                    more, more_failed = click_all(tabs.widget(tab_index),
+                                                  f"{title} / {tabs.tabText(tab_index)}")
+                    clicked += more
+                    failed += [f"[{tabs.tabText(tab_index)}] {f}" for f in more_failed]
+                except RuntimeError:
+                    break
         total_clicked += clicked
         check(f"«{title}»: нажатия ({clicked}) без ошибок", not failed, "; ".join(failed)[:600])
 
@@ -268,7 +288,9 @@ def main() -> int:
     card.toggle_favorite()
     check("Карточка попадает в «Недавние»",
           item_id in [i["id"] for i in inventory_service.recent()])
-    clicked, failed = click_all(card, "Карточка предмета")
+    def reopen_card() -> None:
+        window.open_item(item_id)
+    clicked, failed = click_all(card, "Карточка предмета", reopen_card)
     check(f"Карточка: нажатия ({clicked}) без ошибок", not failed, "; ".join(failed)[:600])
     check("Фотографии не пропали после прогона нажатий (удаление требует подтверждения)",
           len(photo_service.photos_of(item_id)) == photos_before)
@@ -367,7 +389,10 @@ def main() -> int:
     catalog._set_favorite(data["items"][30], True)
     catalog.set_scope("favorites")
     settle()
-    check("Список «Избранное»", catalog.model.total() == 1)
+    favorites_shown = [i["id"] for i in catalog.model.items()]
+    check("Список «Избранное» показывает отмеченный предмет и только избранные",
+          data["items"][30] in favorites_shown
+          and all(i["is_favorite"] for i in catalog.model.items()), str(favorites_shown))
     catalog.set_scope("recent")
     settle()
     check("Список «Недавние»", catalog.model.total() >= 1)
@@ -447,7 +472,9 @@ def main() -> int:
           not dialog.results() and "не найдено" in dialog.summary.text())
     dialog.text.setText("")
     dialog._search()
-    clicked, failed = click_all(dialog, "Поиск по фото")
+    dialog.show()
+    settle(2)
+    clicked, failed = click_all(dialog, "Поиск по фото", dialog.show)
     check(f"Поиск по фото: нажатия ({clicked}) без ошибок", not failed, "; ".join(failed)[:400])
     similar = PhotoSearchDialog(window, similar_to_item=with_photo)
     settle()
