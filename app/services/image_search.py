@@ -360,6 +360,40 @@ class ImageSearchService:
             f"({','.join('?' * len(names))})) < ? ORDER BY p.id", names + [len(names)])
         return self._index_rows(rows, progress, True, should_stop)
 
+    def index_next_missing(self, batch: int = 1, skip: Optional[set] = None) -> tuple[int, set]:
+        """
+        Индексирует несколько следующих фотографий без вектора и возвращает
+        (сколько сделано, id фотографий, которые обработать не удалось).
+
+        Этим методом главное окно доиндексирует склад маленькими шагами в
+        простое, не мешая работе: один шаг — одна-две фотографии.
+        """
+        from .photo_service import abs_path
+
+        skip = set(skip or ())
+        names = [p.name for p in self._providers_for_index()]
+        rows = get_db().query(
+            "SELECT p.id, p.item_id, p.rel_path FROM inventory_photos p WHERE (SELECT COUNT(*) "
+            f"FROM photo_embeddings e WHERE e.photo_id = p.id AND e.provider IN "
+            f"({','.join('?' * len(names))})) < ? ORDER BY p.id LIMIT ?",
+            names + [len(names), batch + len(skip)])
+        done = 0
+        for row in rows:
+            if row["id"] in skip:
+                continue
+            if done >= batch:
+                break
+            path = abs_path(row["rel_path"])
+            try:
+                if not path.exists():
+                    raise FileNotFoundError(path)
+                self.index_photo(row["id"], row["item_id"], path, only_missing=True)
+                done += 1
+            except Exception:                                      # noqa: BLE001
+                log.warning("Фотография %s пропущена при индексации", row["rel_path"])
+                skip.add(row["id"])
+        return done, skip
+
     def _index_rows(self, rows, progress, only_missing: bool, should_stop=None) -> int:
         from .photo_service import abs_path
 

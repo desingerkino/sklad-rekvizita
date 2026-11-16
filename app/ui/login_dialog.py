@@ -192,6 +192,16 @@ class FirstRunDialog(QDialog):
         self.error.setVisible(False)
         root.addWidget(self.error)
 
+        # Переезд на новый компьютер: склад поднимается из файла переноса,
+        # администратора заводить не нужно — сотрудники придут из файла.
+        self.transfer_btn = QPushButton("У меня есть файл переноса склада…")
+        self.transfer_btn.setObjectName("LinkButton")
+        self.transfer_btn.setCursor(Qt.PointingHandCursor)
+        self.transfer_btn.setToolTip(
+            "Загрузить склад, выгруженный на другом компьютере (Windows или macOS)")
+        self.transfer_btn.clicked.connect(self._load_transfer)
+        root.addWidget(self.transfer_btn, 0, Qt.AlignLeft)
+
         buttons = QHBoxLayout()
         cancel = QPushButton("Отмена")
         cancel.clicked.connect(self.reject)
@@ -204,6 +214,12 @@ class FirstRunDialog(QDialog):
         create.clicked.connect(self._create)
         buttons.addWidget(create)
         root.addLayout(buttons)
+
+    def _load_transfer(self) -> None:
+        from .transfer_dialog import import_flow
+        if import_flow(self, first_run=True):
+            self.transferred = True
+            self.accept()
 
     def _create(self) -> None:
         if self.password.text() != self.confirm.text():
@@ -241,6 +257,10 @@ def run_login(parent=None) -> bool:
     """Возвращает True, если пользователь успешно вошёл в программу."""
     if not auth_service.has_users():
         wizard = FirstRunDialog(parent)
-        return bool(wizard.exec() and wizard.created)
+        accepted = wizard.exec()
+        if accepted and getattr(wizard, "transferred", False) and auth_service.has_users():
+            dialog = LoginDialog(parent)        # склад загружен из файла — обычный вход
+            return bool(dialog.exec() and dialog.user)
+        return bool(accepted and wizard.created)
     dialog = LoginDialog(parent)
     return bool(dialog.exec() and dialog.user)

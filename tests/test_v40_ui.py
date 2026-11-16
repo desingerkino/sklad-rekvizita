@@ -452,6 +452,21 @@ def main() -> int:
     check("«Похожие предметы» из карточки не показывают сам предмет",
           with_photo not in similar.results() and not errors_since(mark))
 
+    print("\n=== Фоновая индексация фотографий ===")
+    from app.db.database import get_db
+    from app.services.image_search import image_search
+    import time as _time
+    get_db().execute("DELETE FROM photo_embeddings")
+    image_search.invalidate()
+    need = image_search.missing_count()
+    window._start_photo_indexing()
+    deadline = _time.time() + 60
+    while image_search.missing_count() and _time.time() < deadline:
+        app.processEvents()
+        _time.sleep(0.01)
+    check(f"Склад доиндексируется сам, без кнопки в настройках ({need} фото)",
+          need > 0 and image_search.missing_count() == 0, str(image_search.missing_count()))
+
     # ================================================ 5. диалоги ============
     print("\n=== Диалоги: аудит кнопок и прогон нажатий ===")
     REPORT.append("\n## Кнопки в диалогах\n")

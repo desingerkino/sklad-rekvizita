@@ -170,6 +170,7 @@ class MainWindow(QMainWindow):
         self.item_card.add_to_rental.connect(self.add_to_rental)
         self.item_card.open_rental.connect(self.open_rental)
         self.item_card.changed.connect(self._item_changed)
+        self.settings.relogin_required.connect(self._force_relogin)
         self.item_card.find_similar.connect(self._find_similar)
         # «Назад к каталогу» возвращает именно в каталог (раньше — на главную)
         self.item_card.back.connect(lambda: self.show_page(PAGE_CATALOG))
@@ -817,6 +818,51 @@ class MainWindow(QMainWindow):
 
         self.refresh_notifications()
         self._update_notifications()
+        self._start_photo_indexing()
+
+    # ------------------------------------------------ фоновая индексация фото
+    def _start_photo_indexing(self) -> None:
+        """
+        После обновления программы или смены способа поиска у фотографий нет
+        нужных отпечатков. Раньше для этого надо было найти кнопку
+        «Переиндексировать» в настройках. Теперь склад доиндексируется сам:
+        по одной фотографии в паузах между действиями, с отчётом в строке
+        состояния. Закрыли программу — продолжит при следующем запуске.
+        """
+        from ..services.image_search import image_search
+        try:
+            self._index_left = image_search.missing_count()
+        except Exception:                                          # noqa: BLE001
+            log.exception("Не удалось оценить объём индексации фотографий")
+            return
+        if not self._index_left:
+            return
+        self._index_total = self._index_left
+        self._index_skip: set = set()
+        self._index_timer = QTimer(self)
+        self._index_timer.setInterval(40)
+        self._index_timer.timeout.connect(self._index_step)
+        self._index_timer.start()
+
+    def _index_step(self) -> None:
+        from ..services.image_search import image_search
+        if QApplication.activeModalWidget() is not None:
+            return                               # открыт диалог — не мешаем
+        try:
+            done, self._index_skip = image_search.index_next_missing(1, self._index_skip)
+        except Exception:                                          # noqa: BLE001
+            log.exception("Индексация фотографий остановлена из-за ошибки")
+            self._index_timer.stop()
+            return
+        self._index_left -= done
+        if not done or self._index_left <= 0:
+            self._index_timer.stop()
+            self.statusBar().showMessage("Поиск по фото: все фотографии проиндексированы", 6000)
+            return
+        if self._index_left % 5 == 0:
+            self.statusBar().showMessage(
+                f"Поиск по фото: индексация {self._index_total - self._index_left} "
+                f"из {self._index_total}…", 3000)
 
     def _update_notifications(self) -> None:
         try:
@@ -925,6 +971,16 @@ class MainWindow(QMainWindow):
         self.logout_requested.emit()
         self.close()
 
+    def _force_relogin(self) -> None:
+        """Склад заменён загрузкой из файла: закрыть окно и показать экран входа."""
+        self._relogin = True
+        try:
+            auth_service.logout()
+        except Exception:                                          # noqa: BLE001
+            log.info("Прежний сеанс уже недействителен")
+        self.logout_requested.emit()
+        self.close()
+
     def rebuild_for_theme(self) -> None:
         """Закрывает окно для пересборки в другой теме: сеанс и база остаются открытыми."""
         self._relogin = True
@@ -1001,6 +1057,9 @@ class MainWindow(QMainWindow):
             self.restoreGeometry(geometry)
 
     def closeEvent(self, event) -> None:
+        timer = getattr(self, "_index_timer", None)
+        if timer is not None:
+            timer.stop()
         QSettings("SkladRekvizita", "MainWindow").setValue("geometry", self.saveGeometry())
         try:
             self.new_rental._save_draft()

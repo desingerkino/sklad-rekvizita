@@ -7,7 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFileDialog,
                                QFormLayout, QGroupBox,
                                QHBoxLayout, QInputDialog, QLabel, QLineEdit, QMessageBox,
@@ -45,6 +45,7 @@ def open_folder(path: Path) -> None:
 
 
 class SettingsView(QWidget):
+    relogin_required = Signal()      # склад заменён — вернуться к экрану входа
     def __init__(self, parent=None):
         super().__init__(parent)
         from .theme import Space
@@ -357,7 +358,27 @@ class SettingsView(QWidget):
         layout.addLayout(export_form)
 
         self.backups_table = make_table(["Файл", "Создана", "Размер, МБ", "С фотографиями"], 0)
+        self.backups_table.setMinimumHeight(180)
         layout.addWidget(self.backups_table, 1)
+
+        # ------------------------------------------------ перенос между компьютерами
+        from .widgets.common import section_title
+        layout.addWidget(section_title("Перенос на другой компьютер"))
+        layout.addWidget(muted(
+            "Обычные копии выше зашифрованы ключом этого компьютера и на другом не "
+            "откроются. Для переезда — с Windows на Mac, с Mac на Windows или на новый "
+            "компьютер — соберите файл переноса: в нём весь склад с фотографиями, "
+            "а защищён он паролем, который задаёте вы."))
+        transfer = QHBoxLayout()
+        self.transfer_export_btn = QPushButton("Выгрузить склад в файл…")
+        self.transfer_export_btn.setObjectName("Primary")
+        self.transfer_export_btn.clicked.connect(self._transfer_export)
+        transfer.addWidget(self.transfer_export_btn)
+        self.transfer_import_btn = QPushButton("Загрузить склад из файла…")
+        self.transfer_import_btn.clicked.connect(self._transfer_import)
+        transfer.addWidget(self.transfer_import_btn)
+        transfer.addStretch()
+        layout.addLayout(transfer)
         self._reload_backups()
         return page
 
@@ -506,6 +527,16 @@ class SettingsView(QWidget):
                                     "База восстановлена. Закройте и запустите программу заново.")
         except AppError as exc:
             show_error(self, exc)
+
+    def _transfer_export(self) -> None:
+        from .transfer_dialog import export_flow
+        export_flow(self)
+
+    def _transfer_import(self) -> None:
+        from .transfer_dialog import import_flow
+        if import_flow(self):
+            # сотрудники и сеанс теперь из другого склада — нужен новый вход
+            self.relogin_required.emit()
 
     # ---------------------------------------------------------- документы
     def _documents_tab(self) -> QWidget:
