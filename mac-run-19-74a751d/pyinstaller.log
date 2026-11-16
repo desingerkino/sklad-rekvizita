@@ -1,0 +1,115 @@
+273 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.10
+273 INFO: Python: 3.11.9
+446 INFO: Platform: macOS-15.7.9-x86_64-i386-64bit
+447 INFO: Python environment: /Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv
+509 INFO: Module search paths (PYTHONPATH):
+['/Users/runner/work/sklad-rekvizita/sklad-rekvizita',
+ '/Library/Frameworks/Python.framework/Versions/3.11/lib/python311.zip',
+ '/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11',
+ '/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/lib-dynload',
+ '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages',
+ '/Users/runner/work/sklad-rekvizita/sklad-rekvizita']
+1121 INFO: Appending 'datas' from .spec
+1130 INFO: checking Analysis
+1130 INFO: Building Analysis because Analysis-00.toc is non existent
+1131 INFO: Looking for Python shared library...
+1139 INFO: Using Python shared library: /Library/Frameworks/Python.framework/Versions/3.11/Python
+1139 INFO: Running Analysis Analysis-00.toc
+1139 INFO: Target bytecode optimization level: 0
+1140 INFO: Initializing module dependency graph...
+1141 INFO: Initializing module graph hook caches...
+1168 INFO: Analyzing modules for base_library.zip ...
+2534 INFO: Processing standard module hook 'hook-heapq.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+2717 INFO: Processing standard module hook 'hook-encodings.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+4390 INFO: Processing standard module hook 'hook-math.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+5142 INFO: Processing standard module hook 'hook-pickle.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+7677 INFO: Caching module dependency graph...
+7783 INFO: Analyzing /Users/runner/work/sklad-rekvizita/sklad-rekvizita/main.py
+7889 INFO: Processing standard module hook 'hook-platform.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+7938 INFO: Processing standard module hook 'hook-xml.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+7947 INFO: Processing standard module hook 'hook-PySide6.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+8452 INFO: Processing standard module hook 'hook-shiboken6.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+8662 INFO: Processing standard module hook 'hook-PySide6.QtNetwork.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+10790 INFO: Processing standard module hook 'hook-PySide6.QtCore.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+12563 INFO: Processing standard module hook 'hook-PySide6.QtWidgets.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+14541 INFO: Processing standard module hook 'hook-PySide6.QtGui.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+15428 INFO: Processing standard module hook 'hook-sqlite3.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+15753 INFO: Processing standard module hook 'hook-cryptography.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+16997 INFO: hook-cryptography: cryptography does not seem to be using dynamically linked OpenSSL.
+17113 INFO: Processing standard module hook 'hook-_ctypes.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+17186 INFO: Processing standard module hook 'hook-argon2.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+17485 INFO: Processing standard module hook 'hook-reportlab.lib.utils.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+17555 INFO: Processing standard module hook 'hook-PIL.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+17780 INFO: Processing standard module hook 'hook-PIL.Image.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+18145 INFO: Processing standard module hook 'hook-numpy.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+19311 INFO: Processing standard module hook 'hook-difflib.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+19837 INFO: Processing standard module hook 'hook-multiprocessing.util.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+21673 INFO: Processing standard module hook 'hook-sysconfig.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+21704 INFO: Processing standard module hook 'hook-_osx_support.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+22556 INFO: Processing standard module hook 'hook-webbrowser.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+24927 INFO: Processing pre-safe-import-module hook 'hook-typing_extensions.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks/pre_safe_import_module'
+24930 INFO: SetuptoolsInfo: initializing cached setuptools info...
+25693 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+26066 INFO: Processing standard module hook 'hook-PIL.ImageFilter.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+26599 INFO: Processing standard module hook 'hook-reportlab.pdfbase._fontdata.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+27428 INFO: Processing standard module hook 'hook-charset_normalizer.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+30197 INFO: Processing standard module hook 'hook-xml.dom.domreg.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+30620 INFO: Processing pre-safe-import-module hook 'hook-packaging.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks/pre_safe_import_module'
+31015 INFO: Processing standard module hook 'hook-onnxruntime.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+31710 INFO: Processing standard module hook 'hook-PySide6.QtMultimedia.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+32974 INFO: Processing standard module hook 'hook-PySide6.QtMultimediaWidgets.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+33619 INFO: Processing standard module hook 'hook-PySide6.QtPrintSupport.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+34110 INFO: Processing standard module hook 'hook-openpyxl.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+37266 INFO: Processing standard module hook 'hook-certifi.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+37294 INFO: Analyzing hidden import 'PySide6.QtSvg'
+37302 INFO: Processing standard module hook 'hook-PySide6.QtSvg.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+37723 INFO: Processing module hooks (post-graph stage)...
+38654 INFO: Processing standard module hook 'hook-PIL.SpiderImagePlugin.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+38788 INFO: Processing standard module hook 'hook-PySide6.QtDBus.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+39179 INFO: Performing binary vs. data reclassification (323 entries)
+39761 INFO: Looking for ctypes DLLs
+39837 INFO: Analyzing run-time hooks ...
+39844 INFO: Including run-time hook 'pyi_rth_inspect.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks/rthooks'
+39848 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks/rthooks'
+39852 INFO: Including run-time hook 'pyi_rth_multiprocessing.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks/rthooks'
+39855 INFO: Including run-time hook 'pyi_rth_pyside6.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks/rthooks'
+39859 INFO: Processing pre-find-module-path hook 'hook-_pyi_rth_utils.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks/pre_find_module_path'
+39860 INFO: Processing standard module hook 'hook-_pyi_rth_utils.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/hooks'
+39865 INFO: Including run-time hook 'pyi_rth_cryptography_openssl.py' from '/Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/_pyinstaller_hooks_contrib/rthooks'
+39902 INFO: Creating base_library.zip...
+39935 INFO: Looking for dynamic libraries
+42532 INFO: Warnings written to /Users/runner/work/sklad-rekvizita/sklad-rekvizita/build/sklad_mac/warn-sklad_mac.txt
+42664 INFO: Graph cross-reference written to /Users/runner/work/sklad-rekvizita/sklad-rekvizita/build/sklad_mac/xref-sklad_mac.html
+43547 INFO: checking PYZ
+43547 INFO: Building PYZ because PYZ-00.toc is non existent
+43547 INFO: Building PYZ (ZlibArchive) /Users/runner/work/sklad-rekvizita/sklad-rekvizita/build/sklad_mac/PYZ-00.pyz
+44634 INFO: Building PYZ (ZlibArchive) /Users/runner/work/sklad-rekvizita/sklad-rekvizita/build/sklad_mac/PYZ-00.pyz completed successfully.
+44705 INFO: EXE target arch: x86_64
+44705 INFO: Code signing identity: None
+44718 INFO: checking PKG
+44718 INFO: Building PKG because PKG-00.toc is non existent
+44718 INFO: Building PKG (CArchive) SkladRekvizita.pkg
+44759 INFO: Building PKG (CArchive) SkladRekvizita.pkg completed successfully.
+44761 INFO: Bootloader /Users/runner/work/sklad-rekvizita/sklad-rekvizita/.venv/lib/python3.11/site-packages/PyInstaller/bootloader/Darwin-64bit/runw
+44761 INFO: checking EXE
+44761 INFO: Building EXE because EXE-00.toc is non existent
+44761 INFO: Building EXE from EXE-00.toc
+44761 INFO: Copying bootloader EXE to /Users/runner/work/sklad-rekvizita/sklad-rekvizita/build/sklad_mac/SkladRekvizita
+44763 INFO: Converting EXE to target arch (x86_64)
+46761 INFO: Removing signature(s) from EXE
+46808 INFO: Modifying Mach-O image UUID(s) in EXE
+46829 INFO: Appending PKG archive to EXE
+46840 INFO: Fixing EXE headers for code signing
+46859 INFO: Rewriting the executable's macOS SDK version (26.2.0) to match the SDK version of the Python library (12.1.0) in order to avoid inconsistent behavior and potential UI issues in the frozen application.
+46862 INFO: Re-signing the EXE
+46959 INFO: Building EXE from EXE-00.toc completed successfully.
+46971 INFO: checking COLLECT
+46972 INFO: Building COLLECT because COLLECT-00.toc is non existent
+46972 INFO: Building COLLECT COLLECT-00.toc
+74031 INFO: Building COLLECT COLLECT-00.toc completed successfully.
+74065 INFO: checking BUNDLE
+74065 INFO: Building BUNDLE because BUNDLE-00.toc is non existent
+74065 INFO: Building BUNDLE BUNDLE-00.toc
+93688 INFO: Signing the BUNDLE...
+98706 INFO: Building BUNDLE BUNDLE-00.toc completed successfully.
+98726 INFO: Build complete! The results are available in: /Users/runner/work/sklad-rekvizita/sklad-rekvizita/dist

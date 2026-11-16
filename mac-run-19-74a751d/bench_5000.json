@@ -1,0 +1,21 @@
+{
+ "items": 5000,
+ "photos": 400,
+ "seed_s": 41.7,
+ "add_photo_ms": 101.0,
+ "search_empty_120_ms": 6.3,
+ "search_empty_300_ms": 11.2,
+ "search_text_ms": 52.7,
+ "search_available_ms": 22.2,
+ "search_barcode_ms": 1.2,
+ "category_tree_ms": 3.9,
+ "count_ms": 0.3,
+ "available_units_ms": 1.7,
+ "catalog_page_data_ms": 11.3,
+ "photo_search_ms": 237.5,
+ "window_ms": 1949,
+ "open_catalog_ms": 202.9,
+ "catalog_search_roundtrip_ms": 199.1,
+ "open_item_card_ms": 77.6,
+ "peak_rss_mb": 349
+}
