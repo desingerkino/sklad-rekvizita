@@ -1,0 +1,22 @@
+name: Model export (temporary)
+on:
+  push:
+    branches: ["tmp/model-export"]
+permissions:
+  contents: write
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install certifi && python tools/fetch_model.py
+      - run: |
+          url="https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          git config --global user.name ci; git config --global user.email ci@users.noreply.github.com
+          mkdir /tmp/pub && cd /tmp/pub && git init -q -b tmp/model-data && git remote add origin "$url"
+          split -b 45m "$GITHUB_WORKSPACE/assets/models/clip_image.onnx" clip_part_
+          sha256sum "$GITHUB_WORKSPACE/assets/models/clip_image.onnx" > sha.txt
+          ls -l; git add -A; git commit -qm model; git push -f -q origin tmp/model-data
