@@ -1,0 +1,56 @@
+{
+ "ok": true,
+ "checks": {
+  "Шрифт Onest загружен из поставки": {
+   "ok": true,
+   "info": "{400: 'Onest/400/Regular', 500: 'Onest/500/Medium', 700: 'Onest/700/Bold'}"
+  },
+  "База создаётся, вход работает": {
+   "ok": true,
+   "info": "схема 9"
+  },
+  "Фотографии JPG, JPEG и HEIC добавляются": {
+   "ok": true,
+   "info": "фото: 3"
+  },
+  "Поиск по фото находит предмет": {
+   "ok": true,
+   "info": "clip-onnx:clip_image, сходство 100 %"
+  },
+  "Нейросеть поиска встроена и считает": {
+   "ok": true,
+   "info": "вектор 512"
+  },
+  "Шифрование личных данных работает": {
+   "ok": true,
+   "info": ""
+  },
+  "Файл переноса собирается и загружается": {
+   "ok": true,
+   "info": ""
+  },
+  "Главное окно и все разделы открываются": {
+   "ok": true,
+   "info": "разделов: 12"
+  }
+ },
+ "platform": "Windows-2025Server-10.0.26100-SP0",
+ "python": "3.12.10",
+ "frozen": true,
+ "qt": "6.9.3",
+ "font_weights": {
+  "400": "Onest/400/Regular",
+  "500": "Onest/500/Medium",
+  "700": "Onest/700/Bold"
+ },
+ "font_styles": [
+  "Bold",
+  "Medium",
+  "Regular"
+ ],
+ "heic": true,
+ "search_selected": "clip",
+ "search_selected_ready": true,
+ "search_selected_reason": "",
+ "search_provider": "clip-onnx:clip_image"
+}
