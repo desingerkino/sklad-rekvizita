@@ -18,6 +18,13 @@ def main() -> int:
     # Служебный запуск: собранная программа вызывает саму себя с этим ключом,
     # чтобы проверить движок нейросети в отдельном процессе. Окно не нужно,
     # база не нужна — только проверка и выход.
+    if "--self-test" in sys.argv:
+        # Самопроверка сборки во временной папке; настоящие данные не трогаются.
+        index = sys.argv.index("--self-test")
+        target = sys.argv[index + 1] if len(sys.argv) > index + 1 else "selftest.json"
+        from app.selftest import run as run_self_test
+        return run_self_test(target)
+
     if "--probe-onnx" in sys.argv:
         from app.services.onnx_probe import run_probe_inline
         return run_probe_inline()

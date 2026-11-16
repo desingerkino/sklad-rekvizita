@@ -1,14 +1,26 @@
 name: Build Windows
 
+# Проверки и сборка для Windows: все тесты, точность поиска по фото, нагрузка,
+# снимки экранов, exe (PyInstaller) и установщик (Inno Setup). Собранная
+# программа проверяется самопроверкой (--self-test), установщик — тихой
+# установкой, запуском, обновлением поверх и удалением.
+# Журналы и снимки кладутся в ветку ci-renders (папка win-run-…).
 on:
   push:
-    branches: [main]
+    branches: [main, "release/**"]
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: windows-latest
+    timeout-minutes: 90
+    env:
+      QT_QPA_PLATFORM: offscreen
+      PYTHONUTF8: "1"
     steps:
       - uses: actions/checkout@v4
 
@@ -24,33 +36,34 @@ jobs:
 
       - name: Check imports
         run: python tests/check_imports.py
-        env:
-          QT_QPA_PLATFORM: offscreen
-          PYTHONUTF8: "1"
-
-      - name: Smoke - main window imports and builds
-        run: python -c "import app.ui.main_window as m; print('ok', m.MainWindow)"
-        env:
-          QT_QPA_PLATFORM: offscreen
-          PYTHONUTF8: "1"
 
       - name: Нейросеть в поставку (скачать, проверить, положить в assets/models)
         run: python tools/fetch_model.py
-        env:
-          QT_QPA_PLATFORM: offscreen
-          PYTHONUTF8: "1"
+
+      - name: Тесты, точность поиска, нагрузка, снимки экранов
+        timeout-minutes: 45
+        shell: bash
+        run: bash tools/ci_checks.sh
 
       - name: Build exe (PyInstaller)
-        run: pyinstaller build/sklad.spec --noconfirm
-        env:
-          PYTHONUTF8: "1"
+        shell: bash
+        run: pyinstaller build/sklad.spec --noconfirm 2>&1 | tee out/pyinstaller.log | tail -5
 
       - name: Check exe exists
         shell: pwsh
         run: |
           if (-not (Test-Path dist/SkladRekvizita/SkladRekvizita.exe)) { throw "exe not built" }
           if (-not (Test-Path dist/SkladRekvizita/_internal/assets/models/clip_image.onnx)) { throw "model is not inside the build" }
-          Get-ChildItem dist/SkladRekvizita | Select-Object -First 10
+          if (-not (Test-Path dist/SkladRekvizita/_internal/assets/fonts/Onest-Regular.ttf)) { throw "Onest font is not inside the build" }
+
+      - name: Самопроверка собранной программы
+        shell: pwsh
+        run: |
+          $report = Join-Path $PWD "out\selftest_exe.json"
+          $p = Start-Process -FilePath "dist\SkladRekvizita\SkladRekvizita.exe" -ArgumentList "--self-test", "`"$report`"" -Wait -PassThru
+          if (Test-Path $report) { Get-Content $report -Encoding UTF8 | Select-Object -First 60 }
+          "exe self-test exit=$($p.ExitCode)" | Tee-Object -FilePath out\selftest_exe.txt
+          if ($p.ExitCode -ne 0) { throw "self-test of the built exe failed" }
 
       - name: Build installer (Inno Setup)
         shell: pwsh
@@ -60,13 +73,64 @@ jobs:
           & $iscc build/installer.iss
           if ($LASTEXITCODE -ne 0) { throw "ISCC failed" }
 
+      - name: Установщик — установка, запуск, обновление поверх, удаление
+        shell: pwsh
+        run: |
+          $setup = (Get-ChildItem dist\SkladRekvizita_Setup_*.exe | Select-Object -First 1).FullName
+          $dir = "C:\SkladTest"
+          $log = "out\installer_test.txt"
+          "setup: $setup ($([math]::Round((Get-Item $setup).Length/1MB)) MB)" | Tee-Object $log
+          # 1. чистая установка
+          $p = Start-Process $setup -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART","/DIR=$dir" -Wait -PassThru
+          "install exit=$($p.ExitCode)" | Tee-Object $log -Append
+          if (-not (Test-Path "$dir\SkladRekvizita.exe")) { throw "not installed" }
+          # 2. запуск установленной программы
+          $report = Join-Path $PWD "out\selftest_installed.json"
+          $p = Start-Process "$dir\SkladRekvizita.exe" -ArgumentList "--self-test", "`"$report`"" -Wait -PassThru
+          "installed self-test exit=$($p.ExitCode)" | Tee-Object $log -Append
+          if ($p.ExitCode -ne 0) { throw "installed program failed self-test" }
+          # 3. обновление поверх: пользовательские данные должны остаться
+          $data = Join-Path $env:LOCALAPPDATA "SkladRekvizita"
+          New-Item -ItemType Directory -Force $data | Out-Null
+          Set-Content (Join-Path $data "marker.txt") "user data"
+          $p = Start-Process $setup -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART","/DIR=$dir" -Wait -PassThru
+          "update exit=$($p.ExitCode); data kept=$(Test-Path (Join-Path $data 'marker.txt'))" | Tee-Object $log -Append
+          if (-not (Test-Path (Join-Path $data "marker.txt"))) { throw "user data lost on update" }
+          # 4. удаление: программа уходит, данные остаются
+          $un = Get-ChildItem "$dir\unins*.exe" | Select-Object -First 1
+          $p = Start-Process $un.FullName -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART" -Wait -PassThru
+          Start-Sleep -Seconds 5
+          "uninstall exit=$($p.ExitCode); exe left=$(Test-Path "$dir\SkladRekvizita.exe"); data kept=$(Test-Path (Join-Path $data 'marker.txt'))" | Tee-Object $log -Append
+          if (Test-Path "$dir\SkladRekvizita.exe") { throw "program not removed" }
+          if (-not (Test-Path (Join-Path $data "marker.txt"))) { throw "user data removed by uninstall" }
+
       - uses: actions/upload-artifact@v4
         with:
           name: SkladRekvizita-Setup
           path: dist/SkladRekvizita_Setup_*.exe
           if-no-files-found: error
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: SkladRekvizita-portable
-          path: dist/SkladRekvizita/
+      - name: Черновик релиза с установщиком
+        if: github.event_name != 'pull_request'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="win-build-${GITHUB_RUN_NUMBER}"
+          gh release create "$TAG" dist/SkladRekvizita_Setup_*.exe --draft --prerelease --target "$GITHUB_SHA" \
+            --title "Windows — сборка ${GITHUB_RUN_NUMBER} (ветка ${GITHUB_REF_NAME})" \
+            --notes "Сборка для проверки. Коммит ${GITHUB_SHA::7}." 2>&1 | tee out/release.txt
+
+      - name: Журналы в ветку ci-renders
+        if: always() && github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          d="win-run-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
+          url="https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          git config --global user.name ci; git config --global user.email ci@users.noreply.github.com
+          for attempt in 1 2 3 4; do
+            rm -rf /tmp/pub && git clone -q --depth 1 --branch ci-renders "$url" /tmp/pub || { mkdir -p /tmp/pub && cd /tmp/pub && git init -q -b ci-renders && git remote add origin "$url"; }
+            mkdir -p "/tmp/pub/$d" && cp -r "$GITHUB_WORKSPACE/out/." "/tmp/pub/$d/"
+            cd /tmp/pub && git add -A && git commit -qm "win $d" ; git push -q origin ci-renders && break
+            cd "$GITHUB_WORKSPACE"; sleep 7
+          done

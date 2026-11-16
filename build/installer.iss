@@ -45,6 +45,12 @@ Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; Tasks: desktopico
 [Run]
 Filename: "{app}\{#AppExe}"; Description: "Запустить {#AppName}"; Flags: nowait postinstall skipifsilent
 
+[InstallDelete]
+; При обновлении поверх прежней версии убираем старые файлы ПРОГРАММЫ (прежние
+; шрифты, удалённые модули). Данные пользователя лежат не здесь, а в
+; %LOCALAPPDATA%\SkladRekvizita, и этим не затрагиваются.
+Type: filesandordirs; Name: "{app}\_internal"
+
 [UninstallDelete]
 ; Удаляется только программа. Рабочая база, фотографии, документы и резервные копии
 ; остаются в %LOCALAPPDATA%\SkladRekvizita и при переустановке подхватываются заново.

@@ -5,7 +5,7 @@ name: Build macOS
 # журналы проверок — в ветку ci-renders.
 on:
   push:
-    branches: [mac-dmg]
+    branches: [mac-dmg, "release/**"]
   pull_request:
     paths: ["requirements-mac.txt", "build/sklad_mac.spec", ".github/workflows/build-mac.yml", "tools/make_icns.py", "tools/check_macho_minos.py", "app/paths.py"]
   workflow_dispatch:
@@ -22,7 +22,7 @@ env:
 jobs:
   build:
     runs-on: macos-15-intel
-    timeout-minutes: 60
+    timeout-minutes: 100
     steps:
       - uses: actions/checkout@v4
 
@@ -49,29 +49,13 @@ jobs:
           python tests/check_imports.py 2>&1 | tee out/check_imports.log | tail -5
           python -c "import app.ui.main_window as m; print('ok', m.MainWindow)" 2>&1 | tee out/smoke.log
 
-      - name: Тесты
-        continue-on-error: true
-        timeout-minutes: 25
-        run: |
-          set +e      # проваленный набор не прерывает остальные
-          : > out/tests_summary.txt
-          for f in tests/test_*.py tests/check_imports.py; do
-            mod=$(echo "${f%.py}" | tr '/' '.')
-            b=$(basename ${f%.py})
-            python -m "$mod" > "out/$b.log" 2>&1
-            code=$?
-            ok=$(grep -c "^  ok " "out/$b.log" || true)
-            fail=$(grep -c "^  FAIL" "out/$b.log" || true)
-            echo "$mod exit=$code ok=$ok fail=$fail" | tee -a out/tests_summary.txt
-          done
+      - name: Нейросеть в поставку (скачать, проверить, положить в assets/models)
+        run: python tools/fetch_model.py 2>&1 | tee out/model.log
 
-      - name: Рендер всех экранов на Qt 6.4.3 (ловит ошибки, которых нет на новых Qt)
+      - name: Тесты, точность поиска, нагрузка, снимки экранов (Qt 6.4.3)
         continue-on-error: true
-        run: |
-          mkdir -p out/renders
-          python -u -m tools.render_ui --out out/renders --scale 1.0 > out/render_x1_0.log 2>&1 || echo "exit=$?" >> out/render_x1_0.log
-          tail -3 out/render_x1_0.log
-          cat out/renders/errors_*.txt 2>/dev/null | head -80
+        timeout-minutes: 50
+        run: bash tools/ci_checks.sh
 
       - name: Иконка .icns
         run: |
@@ -79,9 +63,6 @@ jobs:
           iconutil -c icns assets/app.iconset -o assets/app.icns
           rm -rf assets/app.iconset
           ls -l assets/app.icns
-
-      - name: Нейросеть в поставку (скачать, проверить, положить в assets/models)
-        run: python tools/fetch_model.py 2>&1 | tee out/model.log
 
       - name: Сборка .app (PyInstaller)
         run: |
@@ -114,6 +95,15 @@ jobs:
           ls -R "$SKLAD_DATA_DIR" | head -20 | tee -a out/launch.log
           exit $RES
 
+      - name: Самопроверка собранного приложения
+        run: |
+          dist/SkladRekvizita.app/Contents/MacOS/SkladRekvizita --self-test "$PWD/out/selftest_app.json" > out/selftest_app.log 2>&1
+          code=$?
+          head -60 out/selftest_app.json || tail -30 out/selftest_app.log
+          echo "app self-test exit=$code" | tee out/selftest_app.txt
+          test -f dist/SkladRekvizita.app/Contents/Resources/assets/fonts/Onest-Regular.ttf || find dist/SkladRekvizita.app -name "Onest-Regular.ttf" | grep -q . 
+          exit $code
+
       - name: Образ .dmg
         run: |
           VERSION=$(python -c "from app.version import VERSION; print(VERSION)")
@@ -127,6 +117,12 @@ jobs:
           hdiutil attach "$DMG" -mountpoint "$MP" -nobrowse -quiet
           ls "$MP" | tee out/dmg_contents.txt
           test -d "$MP/SkladRekvizita.app"
+          # установка как у пользователя: копия из образа в папку программ, запуск, удаление
+          rm -rf /tmp/Apps && mkdir /tmp/Apps && cp -R "$MP/SkladRekvizita.app" /tmp/Apps/
+          /tmp/Apps/SkladRekvizita.app/Contents/MacOS/SkladRekvizita --self-test "$PWD/out/selftest_dmg.json" > out/selftest_dmg.log 2>&1
+          echo "dmg-installed self-test exit=$?" | tee out/selftest_dmg.txt
+          grep -q "exit=0" out/selftest_dmg.txt
+          rm -rf /tmp/Apps
           hdiutil detach "$MP" -quiet
           ls -l "$DMG" | tee -a out/sizes.txt
           echo "DMG=$DMG" >> "$GITHUB_ENV"
@@ -144,15 +140,18 @@ jobs:
         run: |
           TAG="mac-build-${GITHUB_RUN_NUMBER}"
           gh release create "$TAG" "$DMG" --draft --prerelease --target "$GITHUB_SHA" \
-            --title "macOS (Intel, 10.15+) — сборка ${GITHUB_RUN_NUMBER}, не подписана" \
+            --title "macOS (Intel, 10.15+) — сборка ${GITHUB_RUN_NUMBER} (ветка ${GITHUB_REF_NAME}), не подписана" \
             --notes "Неподписанная сборка для проверки. Первый запуск: правый клик по программе → «Открыть» → «Открыть». Коммит ${GITHUB_SHA::7}." 2>&1 | tee out/release.txt
 
       - name: Журналы в ветку ci-renders
         if: always() && github.event_name != 'pull_request'
         run: |
-          git config user.name ci; git config user.email ci@example.com
           d="mac-run-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
-          mkdir -p /tmp/pub/$d && cp -R out/. /tmp/pub/$d/
-          git fetch origin ci-renders && git checkout -f ci-renders
-          mkdir -p $d && cp -R /tmp/pub/$d/. $d/
-          git add $d && git commit -qm "mac $d" && git push origin ci-renders
+          url="https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          git config --global user.name ci; git config --global user.email ci@users.noreply.github.com
+          for attempt in 1 2 3 4; do
+            rm -rf /tmp/pub && git clone -q --depth 1 --branch ci-renders "$url" /tmp/pub
+            mkdir -p "/tmp/pub/$d" && cp -R "$GITHUB_WORKSPACE/out/." "/tmp/pub/$d/"
+            (cd /tmp/pub && git add -A && git commit -qm "mac $d"; git push -q origin ci-renders) && break
+            sleep 11
+          done
