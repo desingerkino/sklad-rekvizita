@@ -444,7 +444,10 @@ class ImageSearchService:
             data = (photo_ids, item_ids, matrix)
         else:
             data = (photo_ids, item_ids, [_unpack(row["vector"]) for row in rows])
-        self._matrices = {provider_name: (key, data)}      # держим один набор
+        # в памяти держим наборы действующего способа и встроенного (для сверки)
+        keep = {provider_name, self._fallback.name}
+        self._matrices = {name: value for name, value in self._matrices.items() if name in keep}
+        self._matrices[provider_name] = (key, data)
         return data
 
     @staticmethod
@@ -560,25 +563,28 @@ class ImageSearchService:
             if not allowed:
                 return []
 
+        scores = self._scores(vectors, queries)
+        percents = [similarity_percent(score, provider.name) for score in scores]
+        if provider is not self._fallback and self.fusion_enabled():
+            percents = self._fuse_with_local(image_path, box, photo_ids, percents)
+
         best: dict[int, tuple] = {}
-        for photo_id, item_id, score in zip(photo_ids, item_ids,
-                                            self._scores(vectors, queries)):
+        for photo_id, item_id, score, percent in zip(photo_ids, item_ids, scores, percents):
             if item_id == exclude_item_id or (allowed is not None and item_id not in allowed):
                 continue
             previous = best.get(item_id)
-            if previous is None or score > previous[0]:
-                best[item_id] = (score, photo_id)
-        ranked = sorted(best.items(), key=lambda pair: pair[1][0], reverse=True)
+            if previous is None or (percent, score) > (previous[2], previous[0]):
+                best[item_id] = (score, photo_id, percent)
+        ranked = sorted(best.items(), key=lambda pair: (pair[1][2], pair[1][0]), reverse=True)
 
         results = []
-        for item_id, (score, photo_id) in ranked:
+        for item_id, (score, photo_id, percent) in ranked:
             if score < min_score:
-                break
-            percent = similarity_percent(score, provider.name)
+                continue
             if min_percent is not None and percent < min_percent:
                 break
             results.append({"item_id": item_id, "photo_id": photo_id, "score": float(score),
-                            "percent": percent, "level": similarity_level(percent)})
+                            "percent": int(percent), "level": similarity_level(int(percent))})
             if len(results) >= limit:
                 break
         if results:
@@ -591,6 +597,47 @@ class ImageSearchService:
                 result["name"] = row["name"] if row else ""
                 result["inv_number"] = row["inv_number"] if row else ""
         return results
+
+    @staticmethod
+    def fusion_enabled() -> bool:
+        """Сверка нейросети со встроенным алгоритмом (выключается для замеров)."""
+        import os
+        return os.environ.get("SKLAD_SEARCH_FUSION", "1") != "0"
+
+    def _fuse_with_local(self, image_path: Path, box: Optional[tuple], photo_ids: list,
+                         percents: list) -> list:
+        """
+        Сверяет оценку нейросети со встроенным алгоритмом.
+
+        Нейросеть хорошо понимает, ЧТО на снимке (телефон похож на телефон),
+        но теряется на мелких и размытых кадрах: на замере она находила нужный
+        предмет по снимку плохого качества только в 24 % случаев, тогда как
+        встроенный алгоритм — в 100 %. Встроенный, наоборот, не понимает
+        смысла, зато узнаёт тот же снимок в любом качестве.
+
+        Итоговая оценка — большее из двух: оценка нейросети или среднее
+        оценок обоих способов. Так совпадение, в котором уверен встроенный
+        алгоритм, поднимается, а смысловое сходство от нейросети не теряется.
+        Отпечатки встроенного алгоритма есть у каждой фотографии (они же —
+        запасной путь), поэтому сверка почти ничего не стоит.
+        """
+        try:
+            local_ids, _items, local_vectors = self._load_vectors(self._fallback.name)
+            if not local_ids:
+                return percents
+            local_scores = self._scores(
+                local_vectors, self._embed_views(self._fallback, Path(image_path), box))
+            local = {photo_id: similarity_percent(score, self._fallback.name)
+                     for photo_id, score in zip(local_ids, local_scores)}
+        except Exception:                                          # noqa: BLE001
+            log.exception("Сверка со встроенным алгоритмом не удалась — "
+                          "остаётся оценка нейросети")
+            return percents
+        fused = []
+        for photo_id, percent in zip(photo_ids, percents):
+            other = local.get(photo_id)
+            fused.append(percent if other is None else max(percent, round((percent + other) / 2)))
+        return fused
 
     def similar_to_item(self, item_id: int, limit: int = 12,
                         min_percent: int = 30) -> list[dict]:

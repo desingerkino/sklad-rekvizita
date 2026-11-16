@@ -7,6 +7,11 @@ set +e
 export QT_QPA_PLATFORM=offscreen PYTHONUTF8=1
 mkdir -p out out/renders
 : > out/tests_summary.txt
+# Наборы тестов проверяют и поведение «нейросеть не установлена», поэтому на
+# время тестов файл модели откладывается; замер точности и самопроверка сборки
+# ниже идут уже с моделью.
+MODEL=assets/models/clip_image.onnx
+[ -f "$MODEL" ] && mv "$MODEL" "$MODEL.aside"
 failed=0
 for f in tests/test_*.py tests/check_imports.py; do
   mod=$(echo "${f%.py}" | tr '/' '.')
@@ -17,11 +22,17 @@ for f in tests/test_*.py tests/check_imports.py; do
     python -m "$mod" > "out/$b.log" 2>&1
   fi
   code=$?
-  ok=$(grep -c "\[OK\]\|^  ok " "out/$b.log" || true)
-  fail=$(grep -c "\[FAIL\]\|^  FAIL" "out/$b.log" || true)
+  ok=$(grep -c "\[OK\]\|^ *ok  " "out/$b.log" || true)
+  fail=$(grep -c "\[FAIL\]\|^ *FAIL" "out/$b.log" || true)
   echo "$mod exit=$code ok=$ok fail=$fail" | tee -a out/tests_summary.txt
   [ "$code" != "0" ] && failed=$((failed+1))
 done
+[ -f "$MODEL.aside" ] && mv "$MODEL.aside" "$MODEL"
+# интерфейс проверяется ещё раз — с установленной нейросетью
+python -m tests.test_v40_ui > out/test_v40_ui_with_model.log 2>&1
+code=$?
+echo "tests.test_v40_ui(with model) exit=$code ok=$(grep -c "\[OK\]" out/test_v40_ui_with_model.log) fail=$(grep -c "\[FAIL\]" out/test_v40_ui_with_model.log)" | tee -a out/tests_summary.txt
+[ "$code" != "0" ] && failed=$((failed+1))
 echo "FAILED_SUITES=$failed" | tee -a out/tests_summary.txt
 
 echo "--- точность поиска по фото"
@@ -30,6 +41,8 @@ python -m tools.eval_photo_search --images eval_images --provider local --json o
 tail -1 out/eval_local.log
 python -m tools.eval_photo_search --images eval_images --provider clip --json out/eval_clip.json > out/eval_clip.log 2>&1
 tail -1 out/eval_clip.log
+SKLAD_SEARCH_FUSION=0 python -m tools.eval_photo_search --images eval_images --provider clip --json out/eval_clip_pure.json > out/eval_clip_pure.log 2>&1
+tail -1 out/eval_clip_pure.log
 
 echo "--- нагрузка"
 for n in 1000 5000 10000; do

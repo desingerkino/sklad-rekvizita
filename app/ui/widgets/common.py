@@ -159,6 +159,42 @@ class Card(QFrame):
             shadow(self)
 
 
+class ElidedLabel(QLabel):
+    """
+    Однострочная подпись, которая сокращается многоточием под доступную ширину
+    и не требует места больше, чем есть: окно можно сузить, и соседние элементы
+    не наезжают друг на друга. Полный текст — в подсказке.
+    """
+
+    def __init__(self, text: str = "", parent=None):
+        super().__init__(parent)
+        self._full = ""
+        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
+        self.setMinimumWidth(60)
+        self.setText(text)
+
+    def setText(self, text: str) -> None:                    # noqa: N802 — интерфейс Qt
+        self._full = text or ""
+        self._fit()
+
+    def full_text(self) -> str:
+        return self._full
+
+    def _fit(self) -> None:
+        shown = self.fontMetrics().elidedText(self._full, Qt.ElideRight, max(0, self.width()))
+        QLabel.setText(self, shown)
+        self.setToolTip(self._full if shown != self._full else "")
+
+    def resizeEvent(self, event) -> None:                    # noqa: N802
+        super().resizeEvent(event)
+        self._fit()
+
+    def sizeHint(self):                                      # noqa: N802
+        hint_size = super().sizeHint()
+        hint_size.setWidth(self.fontMetrics().horizontalAdvance(self._full) + 4)
+        return hint_size
+
+
 class ElidedButton(QPushButton):
     """
     Кнопка, которая сокращает длинную подпись многоточием под свою ширину.

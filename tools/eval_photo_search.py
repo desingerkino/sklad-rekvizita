@@ -133,13 +133,19 @@ def main() -> int:
     work = Path(tempfile.mkdtemp(prefix="sklad_evalq_"))
     totals = {kind: {"top1": 0, "top5": 0, "n": 0} for kind in VARIANTS}
     search_ms = []
+    true_scores, other_scores = [], []      # косинусы: тот же предмет и лучший посторонний
     for item_id, image in items.items():
         for kind in VARIANTS:
             query = make_variant(image, kind, work / f"{item_id}_{kind}.jpg", rng)
             began = time.perf_counter()
-            found = image_search.search(query, limit=5, min_score=0.0)
+            found = image_search.search(query, limit=len(items), min_score=-1.0)
             search_ms.append((time.perf_counter() - began) * 1000)
-            ids = [row["item_id"] for row in found]
+            ids = [row["item_id"] for row in found[:5]]
+            mine = next((row["score"] for row in found if row["item_id"] == item_id), None)
+            others = [row["score"] for row in found if row["item_id"] != item_id]
+            if mine is not None and others:
+                true_scores.append(mine)
+                other_scores.append(max(others))
             totals[kind]["n"] += 1
             totals[kind]["top1"] += int(bool(ids) and ids[0] == item_id)
             totals[kind]["top5"] += int(item_id in ids)
@@ -167,6 +173,14 @@ def main() -> int:
                             "top5": round(100 * value["top5"] / value["n"], 1)}
                      for kind, value in totals.items()},
     }
+    def percentiles(values: list) -> dict:
+        ordered = sorted(values)
+        return {f"p{p}": round(ordered[min(len(ordered) - 1, len(ordered) * p // 100)], 3)
+                for p in (5, 25, 50, 75, 95)} if ordered else {}
+    # распределение косинусов — по нему выставляется шкала сходства
+    report["cosine_same_item"] = percentiles(true_scores)
+    report["cosine_best_other"] = percentiles(other_scores)
+    report["fusion"] = image_search.fusion_enabled()
     all_n = sum(v["n"] for v in totals.values())
     report["top1_all"] = round(100 * sum(v["top1"] for v in totals.values()) / all_n, 1)
     report["top5_all"] = round(100 * sum(v["top5"] for v in totals.values()) / all_n, 1)

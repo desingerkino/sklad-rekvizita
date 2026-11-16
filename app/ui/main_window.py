@@ -46,7 +46,7 @@ from .settings_view import SettingsView
 from .theme import Color, Space
 from .widgets.suggest import SuggestList
 from .brand import mark_pixmap
-from .widgets.common import (Card, ClickableCard, PhotoLabel, StatusBadge, fade_in, icon,
+from .widgets.common import (Card, ClickableCard, ElidedLabel, PhotoLabel, StatusBadge, fade_in, icon,
                              icon_button)
 
 log = logging.getLogger(__name__)
@@ -408,13 +408,13 @@ class MainWindow(QMainWindow):
         self.page_title = QLabel(PAGE_TITLES[0])
         self.page_title.setObjectName("PageTitle")
         self.page_title.setMaximumWidth(420)
-        self.page_subtitle = QLabel(PAGE_SUBTITLES[0])
+        self.page_subtitle = ElidedLabel(PAGE_SUBTITLES[0])
         self.page_subtitle.setObjectName("PageSubtitle")
         self.page_subtitle.setMaximumWidth(520)
         titles.addWidget(self.page_title)
         titles.addWidget(self.page_subtitle)
-        layout.addLayout(titles)
-        layout.addStretch()
+        layout.addLayout(titles, 2)
+        layout.addSpacing(Space.MD)
 
         # глобальный поиск: текст слева, камера справа внутри поля
         self.global_search = QLineEdit()
@@ -425,7 +425,7 @@ class MainWindow(QMainWindow):
             icon("camera"), QLineEdit.TrailingPosition)
         self.camera_action.setToolTip("Поиск по фотографии")
         self.camera_action.triggered.connect(self._photo_search)
-        self.global_search.setMinimumWidth(320)
+        self.global_search.setMinimumWidth(220)
         self.global_search.setMaximumWidth(460)
         self.global_search.setMinimumHeight(42)
         self.global_search.returnPressed.connect(self._global_search)

@@ -85,8 +85,10 @@ def main() -> int:
     QInputDialog.getItem = staticmethod(lambda *a, **k: ("", False))
     QInputDialog.getInt = staticmethod(lambda *a, **k: (0, False))
     QInputDialog.getDouble = staticmethod(lambda *a, **k: (0.0, False))
-    import subprocess
-    subprocess.run = lambda *a, **k: None            # «открыть папку» не запускает проводник
+    # «Открыть папку» не должна запускать проводник. Подменяется именно эта
+    # функция, а не subprocess целиком: им же программа проверяет движок нейросети.
+    import app.ui.settings_view as settings_module
+    settings_module.open_folder = lambda *a, **k: None
     if hasattr(os, "startfile"):
         os.startfile = lambda *a, **k: None          # noqa: S606
     from PySide6.QtGui import QDesktopServices

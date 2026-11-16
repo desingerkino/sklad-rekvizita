@@ -261,10 +261,12 @@ class CatalogView(QWidget):
         toolbar.setSpacing(Space.SM)
         self.count_label = QLabel("")
         self.count_label.setObjectName("Muted")
-        self.count_label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
-        toolbar.addWidget(self.count_label, 1)
+        toolbar.addWidget(self.count_label)
+        toolbar.addStretch(1)
 
         self.availability = QComboBox()
+        self.availability.setSizeAdjustPolicy(QComboBox.AdjustToMinimumContentsLengthWithIcon)
+        self.availability.setMinimumContentsLength(14)
         for key, label in inventory_service.AVAILABILITY.items():
             self.availability.addItem(label, key)
         self.availability.setToolTip("Фильтр по доступности на сегодня")
@@ -272,6 +274,8 @@ class CatalogView(QWidget):
         toolbar.addWidget(self.availability)
 
         self.sort = QComboBox()
+        self.sort.setSizeAdjustPolicy(QComboBox.AdjustToMinimumContentsLengthWithIcon)
+        self.sort.setMinimumContentsLength(14)
         for key, (label, _sql) in inventory_service.SORTS.items():
             self.sort.addItem(label, key)
         self.sort.setToolTip("Порядок предметов в каталоге")
@@ -774,10 +778,10 @@ class CatalogView(QWidget):
         if not total:
             self.count_label.setText("")
             return
-        text = f"Найдено: {total}"
-        if loaded < total:
-            text += f" · показано {loaded}, остальные подгрузятся при прокрутке"
-        self.count_label.setText(text)
+        self.count_label.setText(f"Найдено: {total}")
+        self.count_label.setToolTip(
+            f"Загружено {loaded} из {total}; остальные подгружаются при прокрутке."
+            if loaded < total else "")
 
     # -------------------------------------------------------------- выделение
     def _current_view(self) -> QAbstractItemView:
