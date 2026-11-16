@@ -1,0 +1,1 @@
+exe self-test exit=0

@@ -1,0 +1,20 @@
+{
+ "items": 1000,
+ "photos": 400,
+ "seed_s": 53.0,
+ "add_photo_ms": 128.2,
+ "search_empty_120_ms": 2.2,
+ "search_empty_300_ms": 4.2,
+ "search_text_ms": 5.9,
+ "search_available_ms": 3.0,
+ "search_barcode_ms": 5.1,
+ "category_tree_ms": 0.5,
+ "count_ms": 0.0,
+ "available_units_ms": 0.1,
+ "catalog_page_data_ms": 5.3,
+ "photo_search_ms": 81.9,
+ "window_ms": 405,
+ "open_catalog_ms": 61.0,
+ "catalog_search_roundtrip_ms": 65.8,
+ "open_item_card_ms": 101.0
+}
